@@ -1,0 +1,24 @@
+2021-10-22 15:33:37 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE PRODUCT (PRODUCT_CODE BIGINT NOT NULL, PRODUCT_DESC VARCHAR(255), PRODUCT_EDITDATE TIMESTAMP, PRODUCT_HIT INTEGER, PRODUCT_REGDATE TIMESTAMP, PRODUCT_TITLE VARCHAR(255), 3[*]RD_CATE_CODE BIGINT, SELLER_ID VARCHAR(255), PRIMARY KEY (PRODUCT_CODE))"; expected "identifier"; SQL statement:
+create table product (product_code bigint not null, product_desc varchar(255), product_editdate timestamp, product_hit integer, product_regdate timestamp, product_title varchar(255), 3rd_cate_code bigint, seller_id varchar(255), primary key (product_code)) [42001-200]
+2021-10-22 15:33:37 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE PRODUCT ADD CONSTRAINT FKMKIWK7XKE8FMV7RY6PY2RM9TS FOREIGN KEY (3[*]RD_CATE_CODE) REFERENCES CATEGORY3"; expected "identifier"; SQL statement:
+alter table product add constraint FKmkiwk7xke8fmv7ry6py2rm9ts foreign key (3rd_cate_code) references category3 [42001-200]
+2021-10-22 15:33:37 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PRODUCT" not found; SQL statement:
+alter table product add constraint FKesd6fy52tk7esoo2gcls4lfe3 foreign key (seller_id) references seller [42102-200]
+2021-10-22 15:34:11 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE PRODUCT (PRODUCT_CODE BIGINT NOT NULL, PRODUCT_DESC VARCHAR(255), PRODUCT_EDITDATE TIMESTAMP, PRODUCT_HIT INTEGER, PRODUCT_REGDATE TIMESTAMP, PRODUCT_TITLE VARCHAR(255), 3[*]RD_CATE_CODE BIGINT, SELLER_ID VARCHAR(255), PRIMARY KEY (PRODUCT_CODE))"; expected "identifier"; SQL statement:
+create table product (product_code bigint not null, product_desc varchar(255), product_editdate timestamp, product_hit integer, product_regdate timestamp, product_title varchar(255), 3rd_cate_code bigint, seller_id varchar(255), primary key (product_code)) [42001-200]
+2021-10-22 15:34:11 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE PRODUCT ADD CONSTRAINT FKMKIWK7XKE8FMV7RY6PY2RM9TS FOREIGN KEY (3[*]RD_CATE_CODE) REFERENCES CATEGORY3"; expected "identifier"; SQL statement:
+alter table product add constraint FKmkiwk7xke8fmv7ry6py2rm9ts foreign key (3rd_cate_code) references category3 [42001-200]
+2021-10-22 15:34:11 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PRODUCT" not found; SQL statement:
+alter table product add constraint FKesd6fy52tk7esoo2gcls4lfe3 foreign key (seller_id) references seller [42102-200]
+2021-10-22 15:36:54 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "PRODUCT[*]"; expected "PREPARE"; SQL statement:
+PRODUCT [42001-200]
+2021-10-22 15:36:59 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "PRODUCT[*] SELLER"; expected "PREPARE"; SQL statement:
+PRODUCT SELLER [42001-200]
