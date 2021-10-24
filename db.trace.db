@@ -22,3 +22,6 @@ PRODUCT [42001-200]
 2021-10-22 15:36:59 jdbc[13]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "PRODUCT[*] SELLER"; expected "PREPARE"; SQL statement:
 PRODUCT SELLER [42001-200]
+2021-10-24 17:37:54 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT SEQ_PRODUCT_NO.NEXTVAL FROM[*] DUAL"; expected "identifier"; SQL statement:
+SELECT SEQ_PRODUCT_NO.nextval FROM dual [42001-200]

@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -25,7 +26,7 @@ import lombok.ToString;
 @Table(name = "PRODUCT")
 public class Product {
     
-    // 등록일자 + 카테고리번호 + seq 로 코드를 할 예정입니다.
+    // 등록일자 + seq 로 코드를 할 예정입니다.
     @Id
     @Column(name = "PRODUCT_CODE")
     private Long productCode;
@@ -53,4 +54,5 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "SELLER_ID")
     private Seller seller;
+
 }

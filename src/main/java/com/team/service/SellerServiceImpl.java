@@ -1,12 +1,15 @@
 package com.team.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.team.entity.Seller;
 import com.team.repository.SellerRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SellerServiceImpl implements SellerService{
 
     @Autowired
@@ -42,6 +45,14 @@ public class SellerServiceImpl implements SellerService{
         sRepository.deleteById(seller.getSellerId());
 
         return 1;
+    }
+
+    @Override
+    public List<Seller> selectSellerAll() {
+        
+        List<Seller> sellers = sRepository.findAll();
+
+        return sellers;
     }
     
 }

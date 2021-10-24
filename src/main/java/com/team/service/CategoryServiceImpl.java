@@ -11,7 +11,9 @@ import com.team.repository.Category2Repository;
 import com.team.repository.Category3Repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CategoryServiceImpl implements CategoryService{
 
     @Autowired

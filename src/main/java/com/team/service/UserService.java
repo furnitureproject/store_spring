@@ -1,5 +1,7 @@
 package com.team.service;
 
+import java.util.List;
+
 import com.team.entity.User;
 
 import org.springframework.stereotype.Service;
@@ -14,6 +16,10 @@ public interface UserService {
     // 유저 1명 조회
     // return User 혹은 return null(값이 없을 경우)
     public User selectUserOne(String userId);
+
+    // 유저 전체 조회
+    // return List<User>
+    public List<User> selectUserAll();
 
     // 유저 정보 수정
     // return 1

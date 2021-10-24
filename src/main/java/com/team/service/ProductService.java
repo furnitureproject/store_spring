@@ -27,4 +27,10 @@ public interface ProductService {
     // 제품 전체 조회
     // return List<Product>
     public List<Product> selectProductAll();
+
+    // 제품 코드임.
+    // return Long 날짜 + 증가하는 SEQ
+    public Long codeNext();
+
+    
 }

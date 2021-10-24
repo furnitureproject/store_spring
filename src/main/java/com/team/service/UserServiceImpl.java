@@ -1,12 +1,15 @@
 package com.team.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.team.entity.User;
 import com.team.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserServiceImpl implements UserService{
 
     @Autowired
@@ -42,6 +45,14 @@ public class UserServiceImpl implements UserService{
         uRepository.deleteById(user.getUserId());
 
         return 1;
+    }
+
+    @Override
+    public List<User> selectUserAll() {
+        
+        List<User> users = uRepository.findAll();
+
+        return users;
     }
     
 }

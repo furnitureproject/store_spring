@@ -1,5 +1,7 @@
 package com.team.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,7 +9,9 @@ import com.team.entity.Product;
 import com.team.repository.ProductRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ProductServiceImpl implements ProductService{
 
     @Autowired
@@ -50,5 +54,24 @@ public class ProductServiceImpl implements ProductService{
         
         return pRepository.findAll();
     }
+
+    @Override
+    public Long codeNext() {
+        // 시퀀스 값 받기
+        String seq = pRepository.getNextSeqVal();
+        // 오늘 시간 값 받기
+        Date time = new Date();
+         // 받아오는 형태
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+         // 받은값을 today에 넣음
+        String today = format.format(time);
+         // Long으로 되는지 확인해보기위한 형변환
+        Long numtoday = Long.parseLong(today+seq);
+        
+        System.out.println(numtoday);
+        return numtoday;
+    }
+
+    
     
 }
