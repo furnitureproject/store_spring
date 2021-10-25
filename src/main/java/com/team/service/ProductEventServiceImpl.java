@@ -10,49 +10,49 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProductEventServiceImpl implements ProductEventService{
+public class ProductEventServiceImpl implements ProductEventService {
 
     @Autowired
-    ProductEventRepository pRepository;
+    ProductEventRepository peRepository;
 
     @Override
     public int insertProductEvent(ProductEvent productEvent) {
-        
-        pRepository.save(productEvent);
+
+        peRepository.save(productEvent);
 
         return 1;
     }
 
     @Override
     public int updateProductEvent(ProductEvent productEvent) {
-        
-        pRepository.save(productEvent);
+
+        peRepository.save(productEvent);
 
         return 1;
     }
 
     @Override
     public int deleteProductEvent(Long eventCode) {
-        
-        pRepository.deleteById(eventCode);
+
+        peRepository.deleteById(eventCode);
 
         return 1;
     }
 
     @Override
     public ProductEvent selectProductEventOne(Long eventCode) {
-        
-        Optional<ProductEvent> productEvent =  pRepository.findById(eventCode);
+
+        Optional<ProductEvent> productEvent = peRepository.findById(eventCode);
 
         return productEvent.orElse(null);
     }
 
     @Override
     public List<ProductEvent> selectProductEventAll() {
-        
-        List<ProductEvent> productEvents = pRepository.findAll();
+
+        List<ProductEvent> productEvents = peRepository.findAll();
 
         return productEvents;
     }
-    
+
 }

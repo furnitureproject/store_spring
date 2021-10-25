@@ -10,15 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProductOptionServiceImpl implements ProductOptionService{
+public class ProductOptionServiceImpl implements ProductOptionService {
 
     @Autowired
-    ProductOptionRepository pRepository;
+    ProductOptionRepository poRepository;
 
     @Override
     public int insertProductOption(ProductOption productOption) {
-        
-        pRepository.save(productOption);
+
+        poRepository.save(productOption);
 
         return 1;
     }
@@ -26,7 +26,7 @@ public class ProductOptionServiceImpl implements ProductOptionService{
     @Override
     public int updateProductOption(ProductOption productOption) {
 
-        pRepository.save(productOption);
+        poRepository.save(productOption);
 
         return 1;
     }
@@ -34,15 +34,15 @@ public class ProductOptionServiceImpl implements ProductOptionService{
     @Override
     public int deleteProductOption(Long optionCode) {
 
-        pRepository.deleteById(optionCode);
+        poRepository.deleteById(optionCode);
 
         return 1;
     }
 
     @Override
     public ProductOption selectProductOptionOne(Long optionCode) {
-        
-        Optional<ProductOption> productoption = pRepository.findById(optionCode);
+
+        Optional<ProductOption> productoption = poRepository.findById(optionCode);
 
         return productoption.orElse(null);
     }
@@ -50,11 +50,9 @@ public class ProductOptionServiceImpl implements ProductOptionService{
     @Override
     public List<ProductOption> selectProductOptionAll() {
 
-        List<ProductOption> productOptions = pRepository.findAll();
+        List<ProductOption> productOptions = poRepository.findAll();
 
         return productOptions;
     }
 
-   
-    
 }

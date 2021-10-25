@@ -1,19 +1,12 @@
 package com.team.controller.product;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.team.entity.Product;
 import com.team.entity.ProductOption;
-import com.team.entity.Seller;
-import com.team.entity.User;
-import com.team.repository.ProductRepository;
 import com.team.service.ProductOptionService;
-import com.team.service.ProductService;
-import com.team.service.ProductServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -26,37 +19,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/product")
-public class ProductController {
-
-    @Autowired
-    ProductService pService;
+@RequestMapping(value = "/productOption")
+public class ProductOptionController {
 
     @Autowired
     ProductOptionService poService;
 
-    @GetMapping(value = "/test")
-    public Map<String, Object> testproduct() {
-
-        Map<String, Object> map = new HashMap<>();
-        try {
-            pService.codeNext();
-
-            map.put("200", null);
-        } catch (Exception e) {
-            e.printStackTrace();
-            map.put("202", e.hashCode());
-        }
-
-        return map;
-    }
-
     @GetMapping(value = "/select_one", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectOneGET(@RequestParam("code") long productcode) {
+    public Map<String, Object> selectOneGET(@RequestParam("OPTION_CODE") long optionCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            Product product = pService.selectProductOne(productcode);
-            map.put("product", product);
+            ProductOption productOption = poService.selectProductOptionOne(optionCode);
+            map.put("productOption", productOption);
             map.put("status", 200);
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,7 +43,7 @@ public class ProductController {
     public Map<String, Object> selectListGET() {
         Map<String, Object> map = new HashMap<>();
         try {
-            List<Product> list = pService.selectProductAll();
+            List<ProductOption> list = poService.selectProductOptionAll();
             map.put("list", list);
             map.put("status", 200);
         } catch (Exception e) {
@@ -80,14 +54,15 @@ public class ProductController {
     }
 
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> insertPOST(@RequestBody Product product) {
+    public Map<String, Object> insertPOST(@RequestBody ProductOption productOption,
+            @RequestParam("PRODUCT_CODE") long productCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            Seller seller = new Seller();
-            seller.setSellerId("a");
-            product.setSeller(seller);
+            Product product = new Product();
+            product.setProductCode(productCode);
+            productOption.setProduct(product);
 
-            pService.insertProduct(product);
+            poService.insertProductOption(productOption);
             map.put("status", 200);
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,39 +71,16 @@ public class ProductController {
         return map;
     }
 
-    // @PostMapping(value = "/insert1", consumes = MediaType.ALL_VALUE, produces =
-    // MediaType.APPLICATION_JSON_VALUE)
-    // public Map<String, Object> insertPOST1(@RequestBody Product product,
-    // @RequestBody ProductOption productOption) {
-    // Map<String, Object> map = new HashMap<>();
-    // try {
-    // Seller seller = new Seller();
-    // seller.setSellerId("a");
-    // product.setSeller(seller);
-
-    // Product product2 = new Product();
-    // product2.setProductCode(1L);
-    // productOption.setProduct(product2);
-
-    // poService.insertProductOption(productOption);
-    // pService.insertProduct(product);
-    // map.put("status", 200);
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // map.put("status", e.hashCode());
-    // }
-    // return map;
-    // }
-
     @PutMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> UpdatePOST(@RequestBody Product product) {
+    public Map<String, Object> UpdatePOST(@RequestBody ProductOption productOption,
+            @RequestParam("PRODUCT_CODE") long productCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            Seller seller = new Seller();
-            seller.setSellerId("a");
-            product.setSeller(seller);
+            Product product = new Product();
+            product.setProductCode(productCode);
+            productOption.setProduct(product);
 
-            pService.updateProduct(product);
+            poService.updateProductOption(productOption);
             map.put("status", 200);
 
         } catch (Exception e) {
@@ -139,14 +91,15 @@ public class ProductController {
     }
 
     @PutMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> ProductDelete(@RequestBody Product product) {
+    public Map<String, Object> ProductDelete(@RequestBody ProductOption productOption,
+            @RequestParam("PRODUCT_CODE") long productCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            Seller seller = new Seller();
-            seller.setSellerId("a");
-            product.setSeller(seller);
+            Product product = new Product();
+            product.setProductCode(productCode);
+            productOption.setProduct(product);
 
-            pService.updateProduct(product);
+            poService.updateProductOption(productOption);
             map.put("status", 200);
 
         } catch (Exception e) {
