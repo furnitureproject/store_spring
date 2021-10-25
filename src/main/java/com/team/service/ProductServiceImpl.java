@@ -72,6 +72,18 @@ public class ProductServiceImpl implements ProductService{
         return numtoday;
     }
 
+    @Override
+    public List<Product> selectProductByHit() {
+        
+        return pRepository.findAllByOrderByProductHitDesc();
+    }
+
+    @Override
+    public List<Product> selectProductByCode() {
+
+        return pRepository.findAllByOrderByProductCodeDesc();
+    }
+
     
     
 }
