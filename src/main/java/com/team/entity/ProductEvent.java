@@ -34,7 +34,7 @@ public class ProductEvent {
 
     // 등록일자
     @CreationTimestamp
-    @Column(name = "EVENT_REGDATE")
+    @Column(name = "EVENT_REGDATE", updatable = false)
     private Date eventRegdate;
 
     // 할인율 1-100까지
