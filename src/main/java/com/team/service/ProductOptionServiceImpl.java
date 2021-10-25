@@ -50,9 +50,7 @@ public class ProductOptionServiceImpl implements ProductOptionService {
     @Override
     public List<ProductOption> selectProductOptionAll() {
 
-        List<ProductOption> productOptions = poRepository.findAll();
-
-        return productOptions;
+        return poRepository.findAll();
     }
 
 }

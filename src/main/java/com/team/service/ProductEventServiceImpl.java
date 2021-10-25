@@ -50,9 +50,7 @@ public class ProductEventServiceImpl implements ProductEventService {
     @Override
     public List<ProductEvent> selectProductEventAll() {
 
-        List<ProductEvent> productEvents = peRepository.findAll();
-
-        return productEvents;
+        return peRepository.findAll();
     }
 
 }
