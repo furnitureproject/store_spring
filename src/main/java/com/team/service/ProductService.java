@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface ProductService {
-    
+
     // 입력받은 제품 정보를 DB에 저장
     // return 1
     public int insertProduct(Product product);
@@ -39,4 +39,10 @@ public interface ProductService {
     // 코드 기준 정렬(최신순 정렬)
     // return List<Product>
     public List<Product> selectProductByCode();
+
+    // 가격
+    public List<Product> ProductDesc();
+
+    public List<Product> ProductAsc();
+
 }

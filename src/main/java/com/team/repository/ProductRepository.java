@@ -24,7 +24,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     // 인기순 (판매량)
 
     // 가격기준 오름차순/ 내림차순
-    
+    @Query(value = "SELECT * FROM PRODUCT, PRODUCTOPTION WHERE PRODUCT.PRODUCTCODE = PRODUCTOPTION.PRODUCTCODE ORDER BY OPTIONPRICE DESC", nativeQuery = true)
+    public List<Product> querySelectPriceProductDesc();
+
+    @Query(value = "SELECT * FROM PRODUCT, PRODUCTOPTION WHERE PRODUCT.PRODUCTCODE = PRODUCTOPTION.PRODUCTCODE ORDER BY OPTIONPRICE ASC", nativeQuery = true)
+    public List<Product> querySelectPriceProductAsc();
+
     // 조회순
     List<Product> findAllByOrderByProductHitDesc();
 }

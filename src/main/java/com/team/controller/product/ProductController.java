@@ -66,12 +66,26 @@ public class ProductController {
     }
 
     @GetMapping(value = "/select_list", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectListGET() {
+    public Map<String, Object> selectListGET(@RequestParam("sort") long sort) {
         Map<String, Object> map = new HashMap<>();
         try {
-            List<Product> list = pService.selectProductAll();
-            map.put("list", list);
-            map.put("status", 200);
+            if (sort == 1) {
+                List<Product> list = pService.selectProductByCode();
+                map.put("list", list);
+                map.put("status", 200);
+            } else if (sort == 2) {
+                List<Product> list = pService.selectProductByHit();
+                map.put("list", list);
+                map.put("status", 200);
+            } else if (sort == 3) {
+                List<Product> list = pService.ProductDesc();
+                map.put("list", list);
+                map.put("status", 200);
+            } else if (sort == 4) {
+                List<Product> list = pService.ProductAsc();
+                map.put("list", list);
+                map.put("status", 200);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
