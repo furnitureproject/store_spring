@@ -32,4 +32,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // 조회순
     List<Product> findAllByOrderByProductHitDesc();
+
+    
 }

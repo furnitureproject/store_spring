@@ -65,6 +65,9 @@ public class ProductController {
         return map;
     }
 
+    // 기준을 잡고 물품 정렬(최신순, 조회순, 인기순, 가격순)
+    // 127.0.0.1:8080/ROOT/product/select_list?sort=
+    // return [{ Product }, { Product }...]
     @GetMapping(value = "/select_list", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectListGET(@RequestParam("sort") long sort) {
         Map<String, Object> map = new HashMap<>();
@@ -93,6 +96,9 @@ public class ProductController {
         return map;
     }
 
+    // 상품등록
+    // <POST> 127.0.0.1:8080/ROOT/product/insert
+    // 필요 {productTitle, productDesc, category3, seller}
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertPOST(@RequestBody Product product) {
         Map<String, Object> map = new HashMap<>();
@@ -134,8 +140,12 @@ public class ProductController {
     // return map;
     // }
 
+    
+    // update 사용자 정보 필요
+
+
     @PutMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> UpdatePOST(@RequestBody Product product) {
+    public Map<String, Object> UpdatePUT(@RequestBody Product product) {
         Map<String, Object> map = new HashMap<>();
         try {
             Seller seller = new Seller();
