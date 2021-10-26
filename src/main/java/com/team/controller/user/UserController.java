@@ -30,6 +30,7 @@ public class UserController {
 
     @Autowired
 
+    // 회원 가입
     @GetMapping(value = "/join")
     public Map<String, Object> joinUserGET() {
         Map<String, Object> map = new HashMap<>();
@@ -37,6 +38,7 @@ public class UserController {
         return map;
     }
 
+    // 회원 가입(User entity 값)
     @PostMapping(value = "/join", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> joinUser(@RequestBody User user) {
         Map<String, Object> map = new HashMap<>();
@@ -56,6 +58,7 @@ public class UserController {
         return map;
     }
 
+    // 아이디 찾기()
     @PostMapping(value = "/select", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectUser(@RequestBody User user) {
         Map<String, Object> map = new HashMap<>();
@@ -69,6 +72,7 @@ public class UserController {
         return map;
     }
 
+    // 회원 탈퇴
     @GetMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> deleteUserGET() {
         Map<String, Object> map = new HashMap<>();
@@ -76,6 +80,7 @@ public class UserController {
         return map;
     }
 
+    // 회원 탈퇴(userId, userPw)
     @DeleteMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> deleteUser(@RequestBody User user) {
         Map<String, Object> map = new HashMap<>();
@@ -91,12 +96,22 @@ public class UserController {
         return map;
     }
 
+    // 회원 정보 수정(userEmail, userPhone)
     @PutMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> updateUser(@RequestBody User user) {
+    public Map<String, Object> updateUser(@RequestBody User user, @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
-            uService.updateUser(user);
-            map.put("status", 200);
+            if (user.getUserEmail() == null) {
+                map.put("status", 100);
+            } else if (user.getUserPhone() == null) {
+                map.put("status", 101);
+            } else {
+                User user1 = uService.selectUserOne(user.getUserId());
+                user1.setUserPhone(user.getUserPhone());
+                user1.setUserEmail(user.getUserEmail());
+                uService.updateUser(user);
+                map.put("status", 200);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
@@ -104,11 +119,16 @@ public class UserController {
         return map;
     }
 
+    // 회원 정보 수정(User)
     @GetMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> updateUserGET(@RequestBody User user) {
+    public Map<String, Object> updateUserGET() {
         Map<String, Object> map = new HashMap<>();
         try {
+            User user = new User();
+            String id = user.getUserId()
             map.put("status", 200);
+            map.put("kll", uService.selectUserOne(id));
+            
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
@@ -116,14 +136,19 @@ public class UserController {
         return map;
     }
 
+    // 비밀번호 수정(userPw)
     @PostMapping(value = "/pwchange", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> pwchangeUser(@RequestBody User user) {
         Map<String, Object> map = new HashMap<>();
         try {
             User user1 = uService.selectUserOne(user.getUserId());
+<<<<<<< Updated upstream
             System.out.println(user.getUserPw().getClass().getName());
             System.out.println(user1.getUserPw().getClass().getName());
             if (user1.getUserPw() == user.getUserPw()) {
+=======
+            if (user1.getUserPw().equals(user.getUserPw())) {
+>>>>>>> Stashed changes
                 map.put("status", 100);
             }
             else if (user1.getUserPw() != user.getUserPw()) {
@@ -139,12 +164,13 @@ public class UserController {
         return map;
     }
 
+    // 비밀번호 확인(userPw)
     @PostMapping(value = "/pwcheck", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> pwcheck(@RequestBody User user) {
         Map<String, Object> map = new HashMap<>();
         try {
             User user1 = uService.selectUserOne(user.getUserId());
-            if (user1.getUserPw() == user.getUserPw()) {
+            if (user1.getUserPw().equals(user.getUserPw())) {
                 map.put("status", 200);
             } else {
                 map.put("status", 100);

@@ -22,7 +22,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "USER_TB")
 public class User {
-    
+
     @Id
     @Column(name = "USER_ID")
     private String userId;
