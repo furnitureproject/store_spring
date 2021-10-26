@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface UserService {
-    
+
     // 입력받은 유저 정보 DB에 저장
     // return 1
     public int insertUser(User user);
