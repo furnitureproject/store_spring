@@ -143,9 +143,13 @@ public class UserController {
         try {
             User user1 = uService.selectUserOne(user.getUserId());
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             System.out.println(user.getUserPw().getClass().getName());
             System.out.println(user1.getUserPw().getClass().getName());
             if (user1.getUserPw() == user.getUserPw()) {
+=======
+            if (user1.getUserPw().equals(user.getUserPw())) {
+>>>>>>> Stashed changes
 =======
             if (user1.getUserPw().equals(user.getUserPw())) {
 >>>>>>> Stashed changes
