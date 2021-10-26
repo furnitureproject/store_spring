@@ -125,10 +125,10 @@ public class UserController {
         Map<String, Object> map = new HashMap<>();
         try {
             User user = new User();
-            String id = user.getUserId()
+            String id = user.getUserId();
             map.put("status", 200);
             map.put("kll", uService.selectUserOne(id));
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
@@ -142,23 +142,16 @@ public class UserController {
         Map<String, Object> map = new HashMap<>();
         try {
             User user1 = uService.selectUserOne(user.getUserId());
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
             System.out.println(user.getUserPw().getClass().getName());
             System.out.println(user1.getUserPw().getClass().getName());
-            if (user1.getUserPw() == user.getUserPw()) {
-=======
             if (user1.getUserPw().equals(user.getUserPw())) {
->>>>>>> Stashed changes
-=======
-            if (user1.getUserPw().equals(user.getUserPw())) {
->>>>>>> Stashed changes
                 map.put("status", 100);
-            }
-            else if (user1.getUserPw() != user.getUserPw()) {
+            } else if (user1.getUserPw() != user.getUserPw()) {
                 user1.setUserPw(user.getUserPw());
                 uService.updateUser(user1);
                 map.put("status", 200);
+            } else {
+
             }
         } catch (Exception e) {
             e.printStackTrace();
