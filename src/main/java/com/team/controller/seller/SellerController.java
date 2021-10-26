@@ -7,7 +7,9 @@ import com.team.entity.Seller;
 import com.team.service.SellerService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +22,15 @@ public class SellerController {
     
     @Autowired
     SellerService sservice;
+
+    @GetMapping(value = "/test")
+    public Map<String, Object> testttt(){
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", HttpStatus.OK);
+
+        return map;
+    }
 
     // 판매자 계정 생성 페이지
     @RequestMapping(value="/insert", method=RequestMethod.GET,
@@ -147,5 +158,8 @@ public class SellerController {
         return map;
 
     }
+
+    
+
 
 }
