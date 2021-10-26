@@ -121,9 +121,12 @@ public class UserController {
         Map<String, Object> map = new HashMap<>();
         try {
             User user1 = uService.selectUserOne(user.getUserId());
+            System.out.println(user.getUserPw().getClass().getName());
+            System.out.println(user1.getUserPw().getClass().getName());
             if (user1.getUserPw() == user.getUserPw()) {
                 map.put("status", 100);
-            } else if (user1.getUserPw() != user.getUserPw()) {
+            }
+            else if (user1.getUserPw() != user.getUserPw()) {
                 user1.setUserPw(user.getUserPw());
                 uService.updateUser(user1);
                 map.put("status", 200);
