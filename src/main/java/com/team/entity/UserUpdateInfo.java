@@ -1,4 +1,4 @@
-package com.team.repository.mapper;
+package com.team.entity;
 
 public interface UserUpdateInfo {
     String getuserId();

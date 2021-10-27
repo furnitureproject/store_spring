@@ -51,7 +51,6 @@ public class UserAddressController {
     public Map<String, Object> userAddressListGET() {
         Map<String, Object> map = new HashMap<>();
         try {
-
             User user = uService.selectUserOne("aaa");
             String id = user.getUserId();
             System.out.println(uaRepository.findByUser_UserId("aaa"));
