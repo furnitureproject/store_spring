@@ -20,7 +20,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "PRODUCT_OPTION")
 public class ProductOption {
-    
+
     @Id
     @Column(name = "OPTION_CODE")
     private Long optionCode;

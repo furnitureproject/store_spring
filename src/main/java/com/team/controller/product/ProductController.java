@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.team.entity.Product;
 import com.team.entity.ProductOption;
+import com.team.entity.ProductProjection;
 import com.team.entity.Seller;
 import com.team.entity.User;
 import com.team.repository.ProductRepository;
@@ -41,7 +42,7 @@ public class ProductController {
         Map<String, Object> map = new HashMap<>();
         try {
             pService.codeNext();
-
+            System.out.println(pService.codeNext());
             map.put("200", null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,23 +70,27 @@ public class ProductController {
     // 127.0.0.1:8080/ROOT/product/select_list?sort=
     // return [{ Product }, { Product }...]
     @GetMapping(value = "/select_list", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectListGET(@RequestParam("sort") long sort) {
+    public Map<String, Object> selectListGET(@RequestParam long sort) {
         Map<String, Object> map = new HashMap<>();
         try {
+            // 최신순
             if (sort == 1) {
                 List<Product> list = pService.selectProductByCode();
                 map.put("list", list);
                 map.put("status", 200);
+                // 조회수순
             } else if (sort == 2) {
                 List<Product> list = pService.selectProductByHit();
                 map.put("list", list);
                 map.put("status", 200);
+                // 가격 높은순
             } else if (sort == 3) {
-                List<Product> list = pService.ProductDesc();
+                List<ProductProjection> list = pService.ProductHigh();
                 map.put("list", list);
                 map.put("status", 200);
+                // 가격 낮은순
             } else if (sort == 4) {
-                List<Product> list = pService.ProductAsc();
+                List<ProductProjection> list = pService.ProductLow();
                 map.put("list", list);
                 map.put("status", 200);
             }
@@ -140,9 +145,7 @@ public class ProductController {
     // return map;
     // }
 
-    
     // update 사용자 정보 필요
-
 
     @PutMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> UpdatePUT(@RequestBody Product product) {

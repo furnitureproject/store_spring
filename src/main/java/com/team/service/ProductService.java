@@ -3,6 +3,7 @@ package com.team.service;
 import java.util.List;
 
 import com.team.entity.Product;
+import com.team.entity.ProductProjection;
 
 import org.springframework.stereotype.Service;
 
@@ -40,9 +41,10 @@ public interface ProductService {
     // return List<Product>
     public List<Product> selectProductByCode();
 
-    // 가격
-    public List<Product> ProductDesc();
+    // 가격 높은순
+    public List<ProductProjection> ProductHigh();
 
-    public List<Product> ProductAsc();
+    // 가격 낮은순
+    public List<ProductProjection> ProductLow();
 
 }

@@ -19,17 +19,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/productOption")
+@RequestMapping(value = "/productoption")
 public class ProductOptionController {
 
     @Autowired
     ProductOptionService poService;
 
     @GetMapping(value = "/select_one", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectOneGET(@RequestParam("OPTION_CODE") long optionCode) {
+    public Map<String, Object> selectOneGET(@RequestParam("OPTION_CODE") long optioncode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            ProductOption productOption = poService.selectProductOptionOne(optionCode);
+            ProductOption productOption = poService.selectProductOptionOne(optioncode);
             map.put("productOption", productOption);
             map.put("status", 200);
         } catch (Exception e) {
@@ -54,15 +54,14 @@ public class ProductOptionController {
     }
 
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> insertPOST(@RequestBody ProductOption productOption,
-            @RequestParam("PRODUCT_CODE") long productCode) {
+    public Map<String, Object> insertPOST(@RequestBody ProductOption productoption, @RequestParam long productcode) {
         Map<String, Object> map = new HashMap<>();
         try {
             Product product = new Product();
-            product.setProductCode(productCode);
-            productOption.setProduct(product);
+            product.setProductCode(productcode);
+            productoption.setProduct(product);
 
-            poService.insertProductOption(productOption);
+            poService.insertProductOption(productoption);
             map.put("status", 200);
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,12 +71,11 @@ public class ProductOptionController {
     }
 
     @PutMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> UpdatePOST(@RequestBody ProductOption productOption,
-            @RequestParam("PRODUCT_CODE") long productCode) {
+    public Map<String, Object> UpdatePOST(@RequestBody ProductOption productOption, @RequestParam long productcode) {
         Map<String, Object> map = new HashMap<>();
         try {
             Product product = new Product();
-            product.setProductCode(productCode);
+            product.setProductCode(productcode);
             productOption.setProduct(product);
 
             poService.updateProductOption(productOption);
@@ -91,12 +89,11 @@ public class ProductOptionController {
     }
 
     @PutMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> ProductDelete(@RequestBody ProductOption productOption,
-            @RequestParam("PRODUCT_CODE") long productCode) {
+    public Map<String, Object> ProductDelete(@RequestBody ProductOption productOption, @RequestParam long productcode) {
         Map<String, Object> map = new HashMap<>();
         try {
             Product product = new Product();
-            product.setProductCode(productCode);
+            product.setProductCode(productcode);
             productOption.setProduct(product);
 
             poService.updateProductOption(productOption);
