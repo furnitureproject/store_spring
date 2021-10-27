@@ -1,10 +1,10 @@
 package com.team.controller.user;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.team.entity.User;
+import com.team.repository.UserRepository;
 import com.team.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -29,6 +27,7 @@ public class UserController {
     UserService uService;
 
     @Autowired
+    UserRepository uRepository;
 
     // 회원 가입
     @GetMapping(value = "/join")
@@ -125,9 +124,10 @@ public class UserController {
         Map<String, Object> map = new HashMap<>();
         try {
             User user = new User();
+            user.setUserId("aaa");
             String id = user.getUserId();
             map.put("status", 200);
-            map.put("kll", uService.selectUserOne(id));
+            map.put("obj", uRepository.findByuserId(id));
 
         } catch (Exception e) {
             e.printStackTrace();

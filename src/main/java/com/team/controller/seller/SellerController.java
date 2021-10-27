@@ -1,6 +1,8 @@
 package com.team.controller.seller;
 
+import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.team.entity.Seller;
@@ -9,25 +11,34 @@ import com.team.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@RequestMapping(value = "/seller")
+@RequestMapping(value = "/seller", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public class SellerController {
     
     @Autowired
     SellerService sservice;
 
     @GetMapping(value = "/test")
-    public Map<String, Object> testttt(){
+    public Map<String, Object> testttt(@RequestParam String seller1){
 
         Map<String, Object> map = new HashMap<>();
-        map.put("status", HttpStatus.OK);
+        List<Seller> seller = sservice.selectSellerAll();
+        // Assert.notNull(seller1, "데이터를 담아서 보내주세요!");
+    
+
+        map.put("data", seller);
+        map.put("res", ResponseEntity.ok(seller));
+        // map.put("status", HttpStatus.OK);
 
         return map;
     }
@@ -69,7 +80,7 @@ public class SellerController {
     }
 
     // 판매자 정보 전달
-    @RequestMapping(value = "/info", method = RequestMethod.GET,
+    @RequestMapping(value = "/update", method = RequestMethod.GET,
     consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> getSellerInfo(){
         Map<String, Object> map = new HashMap<>();
@@ -94,7 +105,7 @@ public class SellerController {
     }
 
     // 판매자정보 수정
-    @RequestMapping(value = "/info", method = RequestMethod.POST,
+    @RequestMapping(value = "/update", method = RequestMethod.POST,
     consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> postSellerInfo(@RequestBody Seller seller){
         Map<String, Object> map = new HashMap<>();

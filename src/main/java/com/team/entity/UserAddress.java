@@ -10,11 +10,20 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "USER_ADDRESS")
 @SequenceGenerator(name = "SEQ_USER_ADDRESS_NO", sequenceName = "SEQ_USER_ADDRESS_NO", initialValue = 1, allocationSize = 1)
 public class UserAddress {
-    
+
     @Id
     @Column(name = "ADDRESS_NO")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_USER_ADDRESS_NO")

@@ -1,11 +1,17 @@
 package com.team.repository;
 
+import java.util.List;
+import java.util.Optional;
+
 import com.team.entity.UserAddress;
+import com.team.entity.UserAddressInfo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserAddressRepository extends JpaRepository<UserAddress, Long>{
-    
+public interface UserAddressRepository extends JpaRepository<UserAddress, Long> {
+
+    List<UserAddressInfo> findByUser_UserId(String userId);
+
 }
