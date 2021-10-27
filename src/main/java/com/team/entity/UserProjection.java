@@ -1,6 +1,6 @@
 package com.team.entity;
 
-public interface UserUpdateInfo {
+public interface UserProjection {
     String getuserId();
 
     String getuserName();

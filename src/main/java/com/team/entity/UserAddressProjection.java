@@ -1,6 +1,6 @@
 package com.team.entity;
 
-public interface UserAddressInfo {
+public interface UserAddressProjection {
     Long getaddressNo();
 
     String getaddressZipcode();

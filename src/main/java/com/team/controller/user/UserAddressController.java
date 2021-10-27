@@ -54,6 +54,7 @@ public class UserAddressController {
             User user = uService.selectUserOne("aaa");
             String id = user.getUserId();
             System.out.println(uaRepository.findByUser_UserId("aaa"));
+
             map.put("status", 200);
             map.put("list", uaRepository.findByUser_UserId(id));
         } catch (Exception e) {
