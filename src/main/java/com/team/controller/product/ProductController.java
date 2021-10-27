@@ -121,30 +121,6 @@ public class ProductController {
         return map;
     }
 
-    // @PostMapping(value = "/insert1", consumes = MediaType.ALL_VALUE, produces =
-    // MediaType.APPLICATION_JSON_VALUE)
-    // public Map<String, Object> insertPOST1(@RequestBody Product product,
-    // @RequestBody ProductOption productOption) {
-    // Map<String, Object> map = new HashMap<>();
-    // try {
-    // Seller seller = new Seller();
-    // seller.setSellerId("a");
-    // product.setSeller(seller);
-
-    // Product product2 = new Product();
-    // product2.setProductCode(1L);
-    // productOption.setProduct(product2);
-
-    // poService.insertProductOption(productOption);
-    // pService.insertProduct(product);
-    // map.put("status", 200);
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // map.put("status", e.hashCode());
-    // }
-    // return map;
-    // }
-
     // update 사용자 정보 필요
 
     @PutMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
