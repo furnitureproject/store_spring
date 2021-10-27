@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.team.entity.Product;
+import com.team.entity.ProductProjection;
 import com.team.repository.ProductRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,13 +86,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> ProductDesc() {
-        return pRepository.querySelectPriceProductDesc();
+    public List<ProductProjection> ProductHigh() {
+        return pRepository.querySelectPriceProductHigh();
     }
 
     @Override
-    public List<Product> ProductAsc() {
-        return pRepository.querySelectPriceProductAsc();
+    public List<ProductProjection> ProductLow() {
+        return pRepository.querySelectPriceProductLow();
     }
 
 }
