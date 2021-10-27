@@ -22,19 +22,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@RequestMapping(value = "/seller", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/seller")
 public class SellerController {
     
     @Autowired
     SellerService sservice;
 
     @GetMapping(value = "/test")
-    public Map<String, Object> testttt(@RequestParam String seller1){
+    public Map<String, Object> testttt(){
 
         Map<String, Object> map = new HashMap<>();
-        List<Seller> seller = sservice.selectSellerAll();
+        // List<Seller> seller = sservice.selectSellerAll();
         // Assert.notNull(seller1, "데이터를 담아서 보내주세요!");
-    
+        Seller seller = new Seller();
+        System.out.println(seller.getSellerRole().toString());
 
         map.put("data", seller);
         map.put("res", ResponseEntity.ok(seller));
