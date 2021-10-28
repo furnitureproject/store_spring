@@ -65,11 +65,11 @@ public class UserAddressController {
     }
 
     @GetMapping(value = "/one", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> userAddressOneGET(@RequestParam("adno") long no) {
+    public Map<String, Object> userAddressOneGET(@RequestParam("addressno") long no) {
         Map<String, Object> map = new HashMap<>();
         try {
             map.put("status", 200);
-            map.put("obj", uaService.selectUserAddressOne(no));
+            map.put("obj", uaRepository.findByAddressNo(no));
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());

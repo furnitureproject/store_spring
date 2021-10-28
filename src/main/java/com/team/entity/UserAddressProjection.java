@@ -8,4 +8,8 @@ public interface UserAddressProjection {
     String getaddressCity();
 
     String getaddressDetail();
+
+    String getUser_UserName();
+
+    String getUser_UserPhone();
 }
