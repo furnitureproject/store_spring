@@ -1,6 +1,5 @@
 package com.team.repository;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import com.team.entity.Product;

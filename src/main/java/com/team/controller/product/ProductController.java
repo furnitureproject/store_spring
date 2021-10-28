@@ -1,20 +1,19 @@
 package com.team.controller.product;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.team.entity.Product;
-import com.team.entity.ProductOption;
+import com.team.entity.ProductDesImage;
 import com.team.entity.ProductProjection;
+import com.team.entity.ProductThumnail;
 import com.team.entity.Seller;
-import com.team.entity.User;
-import com.team.repository.ProductRepository;
+import com.team.service.ProductDesImageService;
 import com.team.service.ProductOptionService;
 import com.team.service.ProductService;
-import com.team.service.ProductServiceImpl;
+import com.team.service.ProductThumnailService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/product")
@@ -35,6 +35,12 @@ public class ProductController {
 
     @Autowired
     ProductOptionService poService;
+
+    @Autowired
+    ProductThumnailService ptService;
+
+    @Autowired
+    ProductDesImageService pdServise;
 
     @GetMapping(value = "/test")
     public Map<String, Object> testproduct() {
@@ -122,7 +128,6 @@ public class ProductController {
     }
 
     // update 사용자 정보 필요
-
     @PutMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> UpdatePUT(@RequestBody Product product) {
         Map<String, Object> map = new HashMap<>();
@@ -150,6 +155,54 @@ public class ProductController {
             product.setSeller(seller);
 
             pService.updateProduct(product);
+            map.put("status", 200);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    @PostMapping(value = "/insert_thumnail", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> insertThumnailPOST(@RequestParam long productcode,
+            @RequestParam(name = "file") MultipartFile file) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            Product product = pService.selectProductOne(productcode);
+            ProductThumnail productthumnail = new ProductThumnail();
+            productthumnail.setProduct(product);
+            productthumnail.setThumImgNum(2L);
+            productthumnail.setThumImgData(file.getBytes());
+            productthumnail.setThumImgName(file.getOriginalFilename());
+            productthumnail.setThumImgSize(file.getSize());
+            productthumnail.setThumImgType(file.getContentType());
+            ptService.insertThumnail(productthumnail);
+            map.put("status", 200);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    @PostMapping(value = "/insert_desimage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> insertdesImagePOST(@RequestParam long productcode,
+            @RequestParam(name = "file") MultipartFile[] files) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<ProductDesImage> list = new ArrayList<>();
+            Product product = pService.selectProductOne(productcode);
+            for (int i = 0; i < files.length; i++) {
+                ProductDesImage productDesImage = new ProductDesImage();
+                productDesImage.setProduct(product);
+                productDesImage.setDesImgData(files[i].getBytes());
+                productDesImage.setDesImgName(files[i].getOriginalFilename());
+                productDesImage.setDesImgSize(files[i].getSize());
+                productDesImage.setDesImgType(files[i].getContentType());
+                list.add(productDesImage);
+            }
+            pdServise.insertDesImageList(list);
             map.put("status", 200);
 
         } catch (Exception e) {

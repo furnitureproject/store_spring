@@ -8,10 +8,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface OptionImageService {
-    
+
     // 이미지 등록
     // return 1
     public int insertOptionImage(OptionImage optionImage);
+
+    // 다수 이미지 등록
+    // return 1
+    public int insertOptionImageList(List<OptionImage> list);
 
     // 이미지 수정
     // return 1

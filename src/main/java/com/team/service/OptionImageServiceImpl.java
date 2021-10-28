@@ -10,15 +10,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class OptionImageServiceImpl implements OptionImageService{
+public class OptionImageServiceImpl implements OptionImageService {
 
     @Autowired
     OptionImageRepository oRepository;
 
     @Override
     public int insertOptionImage(OptionImage optionImage) {
-        
+
         oRepository.save(optionImage);
+
+        return 1;
+    }
+
+    @Override
+    public int insertOptionImageList(List<OptionImage> list) {
+
+        oRepository.saveAll(list);
 
         return 1;
     }
@@ -49,14 +57,14 @@ public class OptionImageServiceImpl implements OptionImageService{
 
     @Override
     public List<OptionImage> selectOptionImageAll() {
-        
+
         return oRepository.findAll();
     }
 
     @Override
     public List<OptionImage> selectByOptionCode(Long optionCode) {
-        
+
         return oRepository.findByProductOption_OptionCodeOrderByOptionImgNumDesc(optionCode);
     }
-    
+
 }

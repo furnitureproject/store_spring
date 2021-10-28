@@ -8,10 +8,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface ProductDesImageService {
-    
+
     // 상세 이미지 추가
     // return 1
     public int insertDesImage(ProductDesImage productDesImage);
+
+    // 상세 이미지 다수 추가
+    // return 1
+    public int insertDesImageList(List<ProductDesImage> list);
 
     // 상세 이미지 수정
     // return 1
