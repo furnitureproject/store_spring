@@ -35,6 +35,9 @@ public interface UserAddressService {
     // return List
     public List<UserAddressProjection> selectOneUserAddressList(String userId);
 
+    // 한 사람 주소 조회(전부)
+    // public List<UserAddress> selectOneUserAddressALL(String userId);
+
     // 주소 1개 조회(그 사람의 이름, 폰번호 추가)
     // return Optional
     public Optional<UserAddressProjection> selectUserAddressOneProjection(Long addressNo);

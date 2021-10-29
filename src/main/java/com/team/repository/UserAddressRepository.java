@@ -14,6 +14,8 @@ public interface UserAddressRepository extends JpaRepository<UserAddress, Long> 
 
     List<UserAddressProjection> findByUser_UserId(String userId);
 
+    // List<UserAddress> findByUser_UserIdOrderByUserNameDesc(String userId);
+
     Optional<UserAddressProjection> findByAddressNo(long addressNo);
 
 }

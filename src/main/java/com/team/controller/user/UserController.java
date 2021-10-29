@@ -4,12 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.team.entity.User;
+import com.team.jwt.JwtUtil;
 import com.team.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 // import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,6 +26,9 @@ public class UserController {
     @Autowired
     UserService uService;
 
+    @Autowired
+    JwtUtil jwtUtil;
+
     // 회원 가입
     @GetMapping(value = "/join")
     public Map<String, Object> joinUserGET() {
@@ -39,8 +43,8 @@ public class UserController {
         Map<String, Object> map = new HashMap<>();
         try {
             if (uService.selectUserOne(user.getUserId()) == null) {
-                // BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
-                // user.setUserPw(bcpe.encode(user.getUserPw()));
+                BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
+                user.setUserPw(bcpe.encode(user.getUserPw()));
                 uService.insertUser(user);
                 map.put("status", 200);
             } else {
@@ -77,10 +81,11 @@ public class UserController {
 
     // 회원 탈퇴(userId, userPw)
     @PutMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> deleteUser(@RequestBody User user) {
+    public Map<String, Object> deleteUser(@RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
-
+            String userid = jwtUtil.extractUsername(token);
+            User user = uService.selectUserOne(userid);
             if (uService.selectUserOne(user.getUserId()) != null)
                 user.setUserDeletecheck(1);
             uService.updateUser(user);
@@ -103,10 +108,11 @@ public class UserController {
             } else if (user.getUserPhone() == null) {
                 map.put("status", 101);
             } else {
-                User user1 = uService.selectUserOne(user.getUserId());
+                String userid = jwtUtil.extractUsername(token);
+                User user1 = uService.selectUserOne(userid);
                 user1.setUserPhone(user.getUserPhone());
                 user1.setUserEmail(user.getUserEmail());
-                uService.updateUser(user);
+                uService.updateUser(user1);
                 map.put("status", 200);
             }
         } catch (Exception e) {
@@ -118,14 +124,12 @@ public class UserController {
 
     // 회원 정보 수정(User)
     @GetMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> updateUserGET() {
+    public Map<String, Object> updateUserGET(@RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
-            User user = new User();
-            user.setUserId("aaa");
-            String id = user.getUserId();
+            String userid = jwtUtil.extractUsername(token);
             map.put("status", 200);
-            map.put("obj", uService.selectUserOneProjection(id));
+            map.put("obj", uService.selectUserOneProjection(userid));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -136,20 +140,21 @@ public class UserController {
 
     // 비밀번호 수정(userPw)
     @PostMapping(value = "/pwchange", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> pwchangeUser(@RequestBody User user) {
+    public Map<String, Object> pwchangeUser(@RequestHeader("token") String token, @RequestBody User user) {
         Map<String, Object> map = new HashMap<>();
         try {
-            User user1 = uService.selectUserOne(user.getUserId());
-            // System.out.println(user.getUserPw().getClass().getName());
-            // System.out.println(user1.getUserPw().getClass().getName());
-            if (user1.getUserPw().equals(user.getUserPw())) {
-                map.put("status", 100);
-            } else if (user1.getUserPw() != user.getUserPw()) {
-                user1.setUserPw(user.getUserPw());
-                uService.updateUser(user1);
-                map.put("status", 200);
+            String userid = jwtUtil.extractUsername(token);
+            User user1 = uService.selectUserOne(userid);
+            if (user.getUserId().equals(userid)) {
+                if (user1.getUserPw().equals(user.getUserPw())) {
+                    map.put("status", 100);
+                } else {
+                    user1.setUserPw(user.getUserPw());
+                    uService.updateUser(user1);
+                    map.put("status", 200);
+                }
             } else {
-
+                map.put("status", 101);
             }
         } catch (Exception e) {
             e.printStackTrace();

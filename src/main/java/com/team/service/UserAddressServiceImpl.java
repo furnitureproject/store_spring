@@ -65,4 +65,9 @@ public class UserAddressServiceImpl implements UserAddressService {
         return uAddressRepository.findByAddressNo(addressNo);
     }
 
+    // @Override
+    // public List<UserAddress> selectOneUserAddressALL(String userId) {
+    // return uAddressRepository.findByUser_UserIdOrderByUserNameDesc(userId);
+    // }
+
 }

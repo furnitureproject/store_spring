@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.team.entity.User;
 import com.team.entity.UserAddress;
-import com.team.repository.UserAddressRepository;
+import com.team.entity.UserAddressProjection;
 import com.team.service.UserAddressService;
 import com.team.service.UserService;
 
@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -61,11 +62,16 @@ public class UserAddressController {
     }
 
     @GetMapping(value = "/one", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> userAddressOneGET(@RequestParam("addressno") long no) {
+    public Map<String, Object> userAddressOneGET(@RequestParam("addressno") long no, User user) {
         Map<String, Object> map = new HashMap<>();
         try {
-            map.put("status", 200);
-            map.put("obj", uaService.selectUserAddressOneProjection(no));
+            String userid = user.getUserId();
+            if (uaService.selectUserAddressOne(no).getUser().getUserId().equals(userid)) {
+                map.put("status", 200);
+                map.put("obj", uaService.selectUserAddressOneProjection(no));
+            } else {
+                map.put("status", 100);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
@@ -79,6 +85,25 @@ public class UserAddressController {
         try {
             uaService.updateUserAddress(address);
             map.put("status", 200);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    @DeleteMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> useraddressdeletePUT(@RequestParam("addressno") long adno,
+            @RequestBody UserAddressProjection address) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            User user = new User();
+            if (uaService.selectOneUserAddressList(user.getUserId()).contains(address)) {
+                uaService.deleteUserAddress(adno);
+                map.put("status", 200);
+            } else {
+                map.put("status", 100);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
