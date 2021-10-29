@@ -26,7 +26,7 @@ public class Seller {
     @Id
     @Column(name = "SELLER_ID")
     private String sellerId;
-    private String sellerRole = "SROLE";
+    private String role = "SELLER";
 
     @Column(name = "SELLER_PW")
     private String sellerPw;

@@ -48,7 +48,7 @@ public class JwtUtil {
     // 토큰 유효성 확인
     // vue에서 오는 토큰에서 꺼낸 아이디 정보(string token)
     // 시큐리티 세션에 보관되어 있던 아이디 정보(string userid)
-    public Boolean validateToken(String token, String userid){
+    public Boolean validateToken(String token, String userId){
 
         // 토큰에서 아이디 정보 추출
         final String username = this.extractUsername(token);
@@ -56,7 +56,7 @@ public class JwtUtil {
         // 유효성 검사
         // 프론트에서 온 토큰에서 꺼낸 아이디 정보와 세큐리티 세션에 보관되어 있던 아이디정보가 같은지 비교
         // && 만료시간이 유지되고 있는가
-        if(username.equals(userid) && !isTokenExpired(token)){
+        if(username.equals(userId) && !isTokenExpired(token)){
             return true;
         }
         return false;
