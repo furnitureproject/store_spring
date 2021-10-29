@@ -17,7 +17,8 @@
     <properties>
         <java.version>11</java.version>
     </properties>
-    <dependencies><!-- jjwt -->
+    <dependencies>
+        <!-- jjwt -->
 		<!-- 토큰 발행용 라이브러리 -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -25,10 +26,10 @@
 			<version>0.9.1</version>
 		</dependency>
         <!-- security -->
-		<!-- <dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency> -->
+		</dependency>
 		<!-- mybatis-->
 		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>

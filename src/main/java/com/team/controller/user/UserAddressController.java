@@ -29,9 +29,6 @@ public class UserAddressController {
     @Autowired
     UserAddressService uaService;
 
-    @Autowired
-    UserAddressRepository uaRepository;
-
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> userAddressInsertPOST(@RequestBody UserAddress address) {
         Map<String, Object> map = new HashMap<>();
@@ -53,10 +50,9 @@ public class UserAddressController {
         try {
             User user = uService.selectUserOne("aaa");
             String id = user.getUserId();
-            System.out.println(uaRepository.findByUser_UserId("aaa"));
 
             map.put("status", 200);
-            map.put("list", uaRepository.findByUser_UserId(id));
+            map.put("list", uaService.selectOneUserAddressList(id));
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
@@ -69,7 +65,7 @@ public class UserAddressController {
         Map<String, Object> map = new HashMap<>();
         try {
             map.put("status", 200);
-            map.put("obj", uaRepository.findByAddressNo(no));
+            map.put("obj", uaService.selectUserAddressOneProjection(no));
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());

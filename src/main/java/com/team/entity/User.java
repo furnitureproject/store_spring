@@ -26,6 +26,7 @@ public class User {
     @Id
     @Column(name = "USER_ID")
     private String userId;
+    private String role = "USER";
 
     @Column(name = "USER_PW")
     private String userPw;

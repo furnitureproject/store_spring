@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +36,7 @@ public class SellerController {
         // List<Seller> seller = sservice.selectSellerAll();
         // Assert.notNull(seller1, "데이터를 담아서 보내주세요!");
         Seller seller = new Seller();
-        System.out.println(seller.getSellerRole().toString());
+        System.out.println(seller.getRole().toString());
 
         map.put("data", seller);
         map.put("res", ResponseEntity.ok(seller));
@@ -68,7 +69,8 @@ public class SellerController {
 
         Map<String, Object> map = new HashMap<>();
         try{
-            
+            BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
+            seller.setSellerPw(bcpe.encode(seller.getSellerPw()));
             sservice.insertSeller(seller);
             map.put("200", "connect");
         }

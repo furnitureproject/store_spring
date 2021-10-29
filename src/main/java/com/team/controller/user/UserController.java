@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.team.entity.User;
-import com.team.repository.UserRepository;
 import com.team.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +24,6 @@ public class UserController {
 
     @Autowired
     UserService uService;
-
-    @Autowired
-    UserRepository uRepository;
 
     // 회원 가입
     @GetMapping(value = "/join")
@@ -80,12 +76,14 @@ public class UserController {
     }
 
     // 회원 탈퇴(userId, userPw)
-    @DeleteMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> deleteUser(@RequestBody User user) {
         Map<String, Object> map = new HashMap<>();
         try {
+
             if (uService.selectUserOne(user.getUserId()) != null)
-                uService.deleteUser(user);
+                user.setUserDeletecheck(1);
+            uService.updateUser(user);
             map.put("status", 200);
 
         } catch (Exception e) {
@@ -127,7 +125,7 @@ public class UserController {
             user.setUserId("aaa");
             String id = user.getUserId();
             map.put("status", 200);
-            map.put("obj", uRepository.findByuserId(id));
+            map.put("obj", uService.selectUserOneProjection(id));
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,8 +1,10 @@
 package com.team.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.team.entity.User;
+import com.team.entity.UserProjection;
 
 import org.springframework.stereotype.Service;
 
@@ -28,4 +30,8 @@ public interface UserService {
     // 유저 정보 삭제, 구현 X 사용 X, updateUser 사용할것
     // return 1
     public int deleteUser(User user);
+
+    // 유저 1명 조회
+    // return 값은 UserProjection
+    public Optional<UserProjection> selectUserOneProjection(String userId);
 }
