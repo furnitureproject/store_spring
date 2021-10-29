@@ -4,20 +4,21 @@ import java.util.List;
 import java.util.Optional;
 
 import com.team.entity.User;
+import com.team.entity.UserProjection;
 import com.team.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository uRepository;
 
     @Override
     public int insertUser(User user) {
-        
+
         uRepository.save(user);
 
         return 1;
@@ -49,8 +50,14 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public List<User> selectUserAll() {
-        
+
         return uRepository.findAll();
     }
-    
+
+    @Override
+    public Optional<UserProjection> selectUserOneProjection(String userId) {
+
+        return uRepository.findByuserId(userId);
+    }
+
 }
