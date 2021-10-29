@@ -19,7 +19,7 @@ public interface ProductService {
     public int updateProduct(Product product);
 
     // 제품 정보 삭제, 구현 X 사용 X, updateProduct 사용할것
-    public int deleteProduct(Product product);
+    public int deleteProduct(Long productCode);
 
     // 제품 한개 조회
     // return product 혹은 null

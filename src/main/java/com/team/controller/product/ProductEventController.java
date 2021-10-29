@@ -9,6 +9,7 @@ import com.team.service.ProductEventService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -79,11 +80,11 @@ public class ProductEventController {
         return map;
     }
 
-    @PutMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> ProductDelete(@RequestBody ProductEvent productevent) {
+    @DeleteMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> ProductDelete(@RequestParam long eventcode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            peService.updateProductEvent(productevent);
+            peService.deleteProductEvent(eventcode);
             map.put("status", 200);
 
         } catch (Exception e) {

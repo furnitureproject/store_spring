@@ -59,7 +59,7 @@ public class ProductController {
     }
 
     @GetMapping(value = "/select_one", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectOneGET(@RequestParam("code") long productcode) {
+    public Map<String, Object> selectOneGET(@RequestParam long productcode) {
         Map<String, Object> map = new HashMap<>();
         try {
             Product product = pService.selectProductOne(productcode);
@@ -147,12 +147,16 @@ public class ProductController {
     }
 
     @PutMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> ProductDelete(@RequestBody Product product) {
+    public Map<String, Object> ProductDelete(@RequestParam long productcode) {
         Map<String, Object> map = new HashMap<>();
         try {
             Seller seller = new Seller();
             seller.setSellerId("a");
+            Product product1 = pService.selectProductOne(productcode);
+            Product product = new Product();
             product.setSeller(seller);
+            product.setProductCode(productcode);
+            product.setProductTitle(product1.getProductTitle());
 
             pService.updateProduct(product);
             map.put("status", 200);

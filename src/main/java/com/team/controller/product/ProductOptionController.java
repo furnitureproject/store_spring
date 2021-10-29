@@ -34,7 +34,7 @@ public class ProductOptionController {
     OptionImageService oService;
 
     @GetMapping(value = "/select_one", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectOneGET(@RequestParam("OPTION_CODE") long optioncode) {
+    public Map<String, Object> selectOneGET(@RequestParam long optioncode) {
         Map<String, Object> map = new HashMap<>();
         try {
             ProductOption productOption = poService.selectProductOptionOne(optioncode);
@@ -84,14 +84,19 @@ public class ProductOptionController {
     }
 
     @PutMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> UpdatePOST(@RequestBody ProductOption productOption, @RequestParam long productcode) {
+    public Map<String, Object> UpdatePOST(@RequestBody ProductOption productoption, @RequestParam long productcode,
+            @RequestParam long eventcode) {
         Map<String, Object> map = new HashMap<>();
         try {
             Product product = new Product();
             product.setProductCode(productcode);
-            productOption.setProduct(product);
+            productoption.setProduct(product);
 
-            poService.updateProductOption(productOption);
+            ProductEvent productEvent = new ProductEvent();
+            productEvent.setEventCode(eventcode);
+            productoption.setProductEvent(productEvent);
+
+            poService.updateProductOption(productoption);
             map.put("status", 200);
 
         } catch (Exception e) {
@@ -102,13 +107,15 @@ public class ProductOptionController {
     }
 
     @PutMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> ProductDelete(@RequestBody ProductOption productOption, @RequestParam long productcode) {
+    public Map<String, Object> ProductDelete(@RequestParam long optioncode, @RequestParam long productcode) {
         Map<String, Object> map = new HashMap<>();
         try {
             Product product = new Product();
             product.setProductCode(productcode);
+            ProductOption productOption = new ProductOption();
+            ProductOption productOption1 = poService.selectProductOptionOne(optioncode);
             productOption.setProduct(product);
-
+            productOption.setOptionCode(productOption1.getOptionCode());
             poService.updateProductOption(productOption);
             map.put("status", 200);
 
