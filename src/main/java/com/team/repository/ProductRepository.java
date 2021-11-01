@@ -2,12 +2,15 @@ package com.team.repository;
 
 import java.util.List;
 
+import com.team.dto.ThumnailDto;
 import com.team.entity.Product;
 import com.team.entity.ProductProjection;
+import com.team.entity.ProductProjection1;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -30,8 +33,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
         List<Product> findByProductTitleAndProductDescIgnoreCaseContainingOrderByProductCodeDesc(String productTitle,
                         String productDesc, Pageable pageable);
-
-        long countByProductTitleContaining(String productTitle);
 
         long countByProductDescContaining(String productDesc);
 
@@ -56,4 +57,64 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         List<Product> findByProductTitleAndProductDescIgnoreCaseContainingOrderByProductHitDesc(String productTitle,
                         String productDesc, Pageable pageable);
 
+        // @Query(value = "SELECT * FROM PRODUCT WHERE CATEGORY3_CODE=:code")
+        // List<Product> category3Select(@Param("code") long code);
+
+        // @Query(value = "SELECT PRODUCT.PRODUCT_CODE,
+        // PRODUCT.PRODUCT_TITLE,PRODUCT.PRODUCT_DESC,"
+        // + "PRODUCT.PRODUCT_HIT,
+        // CATEGORY3.CATEGORY3_CODE,PRODUCT.SELLER_ID,CATEGORY3.CATEGORY3_NAME,"
+        // + " CATEGORY3.CATEGORY2_CODE FROM PRODUCT, CATEGORY3 "
+        // + " WHERE PRODUCT.CATEGORY3_CODE=CATEGORY3.CATEGORY3_CODE AND
+        // CATEGORY2_CODE=:code")
+        // List<Product> category2Select(@Param("code") long code);
+
+        // @Query(value = "SELECT * FROM CATEGORY2, (SELECT PRODUCT.PRODUCT_CODE, "
+        // + "PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, PRODUCT.PRODUCT_HIT, "
+        // + "CATEGORY3.CATEGORY3_CODE, PRODUCT.SELLER_ID, CATEGORY3.CATEGORY3_NAME, "
+        // + "CATEGORY3.CATEGORY2_CODE FROM PRODUCT, CATEGORY3 "
+        // + "WHERE PRODUCT.CATEGORY3_CODE=CATEGORY3.CATEGORY3_CODE) CATE "
+        // + "WHERE CATEGORY2.CATEGORY2_CODE= CATE.CATEGORY2_CODE
+        // ANDCATEGORY1_CODE=:code")
+        // List<Product> category1Select(@Param("code") long code);
+
+        // 카테고리3분류 최신순
+        // 1. 제목 검색
+        // @Query(value = "SELECT PRODUCT.PRODUCT_CODE, PRODUCT.PRODUCT_TITLE,"
+        // + " PRODUCT.PRODUCT_HIT, PRODUCT.CATEGORY3_CODE, PRODUCT.PRODUCT_DESC, "
+        // + " PRODUCT_THUMNAIL.THUM_IMG_DATA, PRODUCT_THUMNAIL.THUM_IMG_TYPE FROM
+        // PRODUCT,PRODUCT_THUMNAIL "
+        // + " WHERE PRODUCT.PRODUCT_CODE=PRODUCT_THUMNAIL.PRODUCT_CODE AND
+        // CATEGORY3_CODE=:code"
+        // + " AND PRODUCT_TITLE LIKE '%' || :title || '%' ORDER BY PRODUCT_CODE DESC",
+        // nativeQuery = true)
+        // public List<ProductProjection1> category3TitleSelect(@Param("code") long
+        // code, @Param("title") String title);
+
+        @Query(name = "thumnail_projection_image_dto", nativeQuery = true)
+        List<ThumnailDto> category3TitleSelect(@Param("code") long code, @Param("title") String title);
+
+        // long countByProducttitleAndCategory3codeContaining(String productTitle, long
+        // category3code);
+
+        // 2. 내용 검색
+
+        @Query(value = "SELECT PRODUCT.PRODUCT_CODE, PRODUCT.PRODUCT_TITLE,"
+                        + " PRODUCT.PRODUCT_HIT, PRODUCT.CATEGORY3_CODE, PRODUCT.PRODUCT_DESC, "
+                        + " PRODUCT_THUMNAIL.THUM_IMG_DATA, PRODUCT_THUMNAIL.THUM_IMG_TYPE FROM PRODUCT,PRODUCT_THUMNAIL"
+                        + " WHERE PRODUCT.PRODUCT_CODE=PRODUCT_THUMNAIL.PRODUCT_CODE AND CATEGORY3_CODE=:code"
+                        + " AND PRODUCT_DESC LIKE '%' || :desc || '%' ORDER BY PRODUCT_CODE DESC", nativeQuery = true)
+        public List<ProductProjection1> category3DescSelect(@Param("code") long code, @Param("desc") String desc);
+
+        List<ProductProjection1> findByCategory3_Category2_Category1_Category1CodeOrderByCategory3_Category2_Category1_Category1Code(
+                        long code);
+
+        // 3. 제목 + 내용검색
+        @Query(value = "SELECT PRODUCT.PRODUCT_CODE, PRODUCT.PRODUCT_TITLE,"
+                        + " PRODUCT.PRODUCT_HIT, PRODUCT.CATEGORY3_CODE, PRODUCT.PRODUCT_DESC, "
+                        + " PRODUCT_THUMNAIL.THUM_IMG_DATA, PRODUCT_THUMNAIL.THUM_IMG_TYPE FROM PRODUCT,PRODUCT_THUMNAIL"
+                        + " WHERE PRODUCT.PRODUCT_CODE=PRODUCT_THUMNAIL.PRODUCT_CODE AND CATEGORY3_CODE=:code"
+                        + " AND PRODUCT_DESC LIKE '%' || :desc || '%' AND PRODUCT_TITLE LIKE '%' || :title || '%' ORDER BY PRODUCT_CODE DESC", nativeQuery = true)
+        public List<ProductProjection1> category3TitleDescSelect(@Param("code") long code, @Param("desc") String desc,
+                        @Param("title") String title);
 }

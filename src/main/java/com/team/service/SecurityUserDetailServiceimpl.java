@@ -18,8 +18,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SecurityUserDetailServiceimpl implements UserDetailsService{
-    
+public class SecurityUserDetailServiceimpl implements UserDetailsService {
+
     @Autowired
     UserRepository uRepository;
 
@@ -28,7 +28,7 @@ public class SecurityUserDetailServiceimpl implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        
+
         // username 은 아이디
 
         Optional<User> oUser = uRepository.findById(username);
@@ -39,52 +39,55 @@ public class SecurityUserDetailServiceimpl implements UserDetailsService{
         System.out.println(oUser.getClass().getName());
         System.out.println(oSeller.getClass().getName());
 
-        if(oSeller.isEmpty()){
-            String[] role = {oUser.get().getRole()};
+        if (oSeller.isEmpty()) {
+            String[] role = { oUser.get().getRole() };
             Collection<GrantedAuthority> roles = AuthorityUtils.createAuthorityList(role);
 
-            org.springframework.security.core.userdetails.User user = new org.springframework.security.core.userdetails.User(oUser.get().getUserId(), oUser.get().getUserPw(), roles);
+            org.springframework.security.core.userdetails.User user = new org.springframework.security.core.userdetails.User(
+                    oUser.get().getUserId(), oUser.get().getUserPw(), roles);
             System.out.println(user);
             return user;
-        }
-        else if(oUser.isEmpty()){
-            String[] role = {oSeller.get().getRole()};
+        } else if (oUser.isEmpty()) {
+            String[] role = { oSeller.get().getRole() };
             Collection<GrantedAuthority> roles = AuthorityUtils.createAuthorityList(role);
 
-            org.springframework.security.core.userdetails.User seller = new org.springframework.security.core.userdetails.User(oSeller.get().getSellerId(), oSeller.get().getSellerPw(), roles);
+            org.springframework.security.core.userdetails.User seller = new org.springframework.security.core.userdetails.User(
+                    oSeller.get().getSellerId(), oSeller.get().getSellerPw(), roles);
             System.out.println(seller);
             return seller;
-        }
-        else{
+        } else {
             return null;
         }
-
 
         // 정상작동
 
         // Optional<User> oUser = uRepository.findById(username);
-        
-        // String[] role = {oUser.get().getRole()};
-        // Collection<GrantedAuthority> roles = AuthorityUtils.createAuthorityList(role);
 
-        // org.springframework.security.core.userdetails.User seller = new org.springframework.security.core.userdetails.User(oUser.get().getUserId(), oUser.get().getUserPw(), roles);
+        // String[] role = {oUser.get().getRole()};
+        // Collection<GrantedAuthority> roles =
+        // AuthorityUtils.createAuthorityList(role);
+
+        // org.springframework.security.core.userdetails.User seller = new
+        // org.springframework.security.core.userdetails.User(oUser.get().getUserId(),
+        // oUser.get().getUserPw(), roles);
         // System.out.println(seller);
         // return seller;
-        
 
     }
 
-    // public UserDetails loadSellerBySellername(String username) throws UsernameNotFoundException {
-    //     Optional<Seller> oSeller = sRepository.findById(username);
+    // public UserDetails loadSellerBySellername(String username) throws
+    // UsernameNotFoundException {
+    // Optional<Seller> oSeller = sRepository.findById(username);
 
-    //     String[] role = {oSeller.get().getRole()};
-    //     Collection<GrantedAuthority> roles = AuthorityUtils.createAuthorityList(role);
+    // String[] role = {oSeller.get().getRole()};
+    // Collection<GrantedAuthority> roles =
+    // AuthorityUtils.createAuthorityList(role);
 
-    //     org.springframework.security.core.userdetails.User seller = new org.springframework.security.core.userdetails.User(oSeller.get().getSellerId(), oSeller.get().getSellerPw(), roles);
-    //     System.out.println(seller);
-    //     return seller;
+    // org.springframework.security.core.userdetails.User seller = new
+    // org.springframework.security.core.userdetails.User(oSeller.get().getSellerId(),
+    // oSeller.get().getSellerPw(), roles);
+    // System.out.println(seller);
+    // return seller;
     // }
-
-
 
 }

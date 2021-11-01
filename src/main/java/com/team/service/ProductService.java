@@ -2,8 +2,10 @@ package com.team.service;
 
 import java.util.List;
 
+import com.team.dto.ThumnailDto;
 import com.team.entity.Product;
 import com.team.entity.ProductProjection;
+import com.team.entity.ProductProjection1;
 
 import org.springframework.stereotype.Service;
 
@@ -46,5 +48,17 @@ public interface ProductService {
 
     // 가격 낮은순
     public List<ProductProjection> ProductLow();
+
+    public List<ThumnailDto> category3TitleSelect(long code, String title);
+
+    public List<ProductProjection1> category3DescSelect(long code, String desc);
+
+    public List<ProductProjection1> category3TitleDescSelect(long code, String desc, String title);
+
+    public List<ProductProjection1> category1Select(long code);
+
+    // public List<Product> category2Select(long code);
+
+    // public List<Product> category1Select(long code);
 
 }

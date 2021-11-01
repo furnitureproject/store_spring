@@ -1,13 +1,16 @@
 package com.team.controller.product;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.team.dto.ThumnailDto;
 import com.team.entity.Product;
 import com.team.entity.ProductDesImage;
 import com.team.entity.ProductProjection;
+import com.team.entity.ProductProjection1;
 import com.team.entity.ProductThumnail;
 import com.team.entity.Seller;
 import com.team.service.ProductDesImageService;
@@ -76,14 +79,21 @@ public class ProductController {
     // 127.0.0.1:8080/ROOT/product/select_list?sort=
     // return [{ Product }, { Product }...]
     @GetMapping(value = "/select_list", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectListGET(@RequestParam long sort) {
+    public Map<String, Object> selectListGET(@RequestParam long sort,
+            @RequestParam(name = "title", required = false, defaultValue = "") String title,
+            @RequestParam(name = "desc", required = false, defaultValue = "") String desc,
+            @RequestParam(name = "query", required = false, defaultValue = "1") int query,
+            @RequestParam(name = "code") long code) {
         Map<String, Object> map = new HashMap<>();
         try {
             // 최신순
             if (sort == 1) {
-                List<Product> list = pService.selectProductByCode();
-                map.put("list", list);
-                map.put("status", 200);
+                if (query == 1) { // 제목으로만 검색
+                    List<ThumnailDto> list = pService.category3TitleSelect(code, title);
+                    map.put("list", list);
+                    map.put("status", 200);
+                }
+
                 // 조회수순
             } else if (sort == 2) {
                 List<Product> list = pService.selectProductByHit();
@@ -100,6 +110,21 @@ public class ProductController {
                 map.put("list", list);
                 map.put("status", 200);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    @GetMapping(value = "/select_list1", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> selectListGET(@RequestParam(name = "code") long code) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<ProductProjection1> list = pService.category1Select(code);
+            map.put("list", list);
+            map.put("status", 200);
+
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
@@ -135,7 +160,8 @@ public class ProductController {
             Seller seller = new Seller();
             seller.setSellerId("a");
             product.setSeller(seller);
-
+            Date date = new Date();
+            product.setProductEditdate(date);
             pService.updateProduct(product);
             map.put("status", 200);
 
@@ -176,7 +202,6 @@ public class ProductController {
             Product product = pService.selectProductOne(productcode);
             ProductThumnail productthumnail = new ProductThumnail();
             productthumnail.setProduct(product);
-            productthumnail.setThumImgNum(2L);
             productthumnail.setThumImgData(file.getBytes());
             productthumnail.setThumImgName(file.getOriginalFilename());
             productthumnail.setThumImgSize(file.getSize());
