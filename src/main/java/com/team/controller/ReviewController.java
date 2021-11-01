@@ -90,21 +90,21 @@ public class ReviewController {
         return map;
     }
 
-    @PostMapping(value = "/review_image")
-    public Map<String, Object> ImagePost(@RequestBody Review review, @RequestParam(name = "file") MultipartFile file) {
-        Map<String, Object> map = new HashMap<>();
-        try {
-            review.setReviewImgName(file.getOriginalFilename());
-            review.setReviewImgData(file.getBytes());
-            review.setReviewImgSize(file.getSize());
-            review.setReviewImgType(file.getContentType());
-            rService.insertReview(review);
-            map.put("status", 200);
-        } catch (Exception e) {
-            map.put("status", e.hashCode());
-        }
-        return map;
-    }
+    // @PostMapping(value = "/review_image")
+    // public Map<String, Object> ImagePost(@RequestBody Review review, @RequestParam(name = "file") MultipartFile file) {
+    //     Map<String, Object> map = new HashMap<>();
+    //     try {
+    //         review.setReviewImgName(file.getOriginalFilename());
+    //         review.setReviewImgData(file.getBytes());
+    //         review.setReviewImgSize(file.getSize());
+    //         review.setReviewImgType(file.getContentType());
+    //         rService.insertReview(review);
+    //         map.put("status", 200);
+    //     } catch (Exception e) {
+    //         map.put("status", e.hashCode());
+    //     }
+    //     return map;
+    // }
 
     // 이미지는 데이터랑 타입만 넘겨주도록
     @GetMapping(value = "/review_image")

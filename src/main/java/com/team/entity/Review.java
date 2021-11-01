@@ -50,23 +50,6 @@ public class Review {
     @Column(name = "REVIEW_STAR", nullable = false)
     private int reviewStar;
 
-    // 이미지 파일 이름
-    @Column(name = "REVIEW_IMG_NAME", nullable = true)
-    private String reviewImgName;
-
-    // 이미지 파일 데이터
-    @Lob
-    @Column(name = "REVIEW_IMG_DATA", nullable = true)
-    private byte[] reviewImgData;
-
-    // 이미지 파일 사이즈
-    @Column(name = "REVIEW_IMG_SIZE", nullable = true)
-    private Long reviewImgSize;
-
-    // 이미지 파일 타입
-    @Column(name = "REVIEW_IMG_TYPE", nullable = true)
-    private String reviewImgType;
-
     // 등록일자
     @CreationTimestamp
     @Column(name = "REVIEW_REG_DATE", updatable = false)
