@@ -44,8 +44,10 @@ public class LoginController {
 
         Map<String, Object> map = new HashMap<String, Object>();
         try {
+
             authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(user.getUserId(), user.getUserPw()));
+            
             map.put("status", 200);
             map.put("token", jwtUtil.generateToken(user.getUserId()));
         } catch (Exception e) {
