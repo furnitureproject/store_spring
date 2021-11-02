@@ -12,7 +12,6 @@ import com.team.entity.Product;
 import com.team.entity.Review;
 import com.team.entity.ReviewImg;
 import com.team.entity.ReviewImgProjection;
-import com.team.entity.ReviewProjection;
 import com.team.entity.User;
 import com.team.jwt.JwtUtil;
 import com.team.service.ProductService;
@@ -64,22 +63,30 @@ public class ReviewController {
     }
 
     @PostMapping(value = "/review", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> insertReview(@RequestBody Review review,
-            // @RequestHeader("token") String token,
-            @RequestParam("num") Long productCode) {
+    public Map<String, Object> insertReview(@RequestBody Review review, @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
-        // String userid = jwtUtil.extractUsername(token);
+        String userid = jwtUtil.extractUsername(token);
         try {
-            // User user = uService.selectUserOne(userid);
-            User user = uService.selectUserOne("s");
+            User user = uService.selectUserOne(userid);
+            Long productCode = review.getProduct().getProductCode();
             Product product = pService.selectProductOne(productCode);
-            if (user != null && product != null) {
+            if (review.getReviewTitle() == null) {
+                // 리뷰 제목을 입력 안 함
+                map.put("status", "제목을 입력하지 않았습니다");
+            } else if (review.getReviewContent() == null) {
+                // 리뷰 내용을 입력하지 않음
+                map.put("status", "내용을 입력하지 않았습니다");
+            } else if (review.getReviewStar() == 0) {
+                // 리뷰 별점을 입력하지 않음
+                map.put("status", "별점을 입력하지 않았습니다.");
+            } else if (user != null && product != null) {
                 review.setUser(user);
                 review.setProduct(product);
                 rService.insertReview(review);
                 map.put("status", 200);
             } else {
-                map.put("status", 100);
+                // 유저가 없거나 제품이 없을 경우 오류로 반환
+                map.put("status", "제품이 없거나 잘못된 유저입니다");
             }
         } catch (Exception e) {
             map.put("status", e.hashCode());
@@ -88,13 +95,10 @@ public class ReviewController {
     }
 
     @DeleteMapping(value = "/review", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> deleteReview(@RequestParam("reviewnum") Long reviewNum
-    // , @RequestHeader("token") String token
-    ) {
+    public Map<String, Object> deleteReview(@RequestParam("reviewnum") Long reviewNum,
+            @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
-        // String userid = jwtUtil.extractUsername(token);
-        User user = uService.selectUserOne("s");
-        String userid = user.getUserId();
+        String userid = jwtUtil.extractUsername(token);
         try {
             if (rService.selectReview(reviewNum).getUser().getUserId().equals(userid)) {
                 List<ReviewImgProjection> rimg = rIService.selectReviewImgList(reviewNum);
@@ -106,7 +110,8 @@ public class ReviewController {
                 rService.deleteReview(reviewNum);
                 map.put("status", 200);
             } else {
-                map.put("status", 100);
+                // review를 작성한 유저와 delete하려는 user가 다를 때 반환
+                map.put("status", "유저가 맞지않습니다");
             }
         } catch (Exception e) {
             map.put("status", e.hashCode());
@@ -116,11 +121,9 @@ public class ReviewController {
 
     @PostMapping(value = "/reviewimage")
     public Map<String, Object> ImagePost(@RequestParam("reviewnum") Long reviewNum,
-            // @RequestHeader("token") String token,
-            @RequestParam(name = "file") MultipartFile[] files) {
+            @RequestHeader("token") String token, @RequestParam(name = "file") MultipartFile[] files) {
         Map<String, Object> map = new HashMap<>();
-        User user = uService.selectUserOne("d");
-        String userId = user.getUserId();
+        String userId = jwtUtil.extractUsername(token);
         try {
             Review review = rService.selectReview(reviewNum);
             if (review.getUser().getUserId().equals(userId)) {
@@ -139,11 +142,11 @@ public class ReviewController {
                     map.put("status", 200);
                 } else {
                     // 이미지가 3개를 넘을 경우
-                    map.put("status", 100);
+                    map.put("status", "이미지 숫자 초과");
                 }
             } else {
                 // 리뷰한 아이디와 이미지 넣는 아이디가 다를 경우
-                map.put("status", 484);
+                map.put("status", "리뷰한 아이디와 이미지 넣는 아이디가 다름");
             }
         } catch (Exception e) {
             map.put("status", e.hashCode());

@@ -8,7 +8,7 @@ public interface ReviewProjection {
 
     String getReviewTitle();
 
-    String getReviewcontent();
+    String getReviewContent();
 
     Integer getReviewStar();
 

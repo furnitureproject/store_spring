@@ -1,7 +1,5 @@
 package com.team.entity;
 
-import org.springframework.beans.factory.annotation.Value;
-
 public interface ProductProjection1 {
 
     Long getproduct_Code();

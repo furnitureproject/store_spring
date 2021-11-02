@@ -43,7 +43,7 @@ public class Review {
 
     // 내용
     @Column(name = "REVIEW_CONTENT", nullable = false)
-    private String reviewcontent;
+    private String reviewContent;
 
     // 별점 최대 5
     @Column(name = "REVIEW_STAR", nullable = false)

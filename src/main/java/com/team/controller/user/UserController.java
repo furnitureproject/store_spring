@@ -10,6 +10,7 @@ import com.team.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 // import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +49,7 @@ public class UserController {
                 uService.insertUser(user);
                 map.put("status", 200);
             } else {
+                // 이미 가입한 User의 아이디를 사용한 경우 오류 반환
                 map.put("status", 484);
             }
         } catch (Exception e) {
@@ -80,17 +82,16 @@ public class UserController {
     }
 
     // 회원 탈퇴(userId, userPw)
-    @PutMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> deleteUser(@RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token);
             User user = uService.selectUserOne(userid);
-            if (uService.selectUserOne(user.getUserId()) != null)
-                user.setUserDeletecheck(1);
-            uService.updateUser(user);
-            map.put("status", 200);
-
+            if (uService.selectUserOne(user.getUserId()) != null) {
+                uService.deleteUser(user);
+                map.put("status", 200);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
@@ -104,8 +105,10 @@ public class UserController {
         Map<String, Object> map = new HashMap<>();
         try {
             if (user.getUserEmail() == null) {
+                // 이메일을 넣지 않은 경우
                 map.put("status", 100);
             } else if (user.getUserPhone() == null) {
+                // phone을 넣지 않은 경우
                 map.put("status", 101);
             } else {
                 String userid = jwtUtil.extractUsername(token);
@@ -154,7 +157,8 @@ public class UserController {
                     map.put("status", 200);
                 }
             } else {
-                map.put("status", 101);
+                // User가 서로 같지 않을 경우 오류 반환
+                map.put("status", "잘못된 유저입니다");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -173,7 +177,8 @@ public class UserController {
             if (user1.getUserPw().equals(user.getUserPw())) {
                 map.put("status", 200);
             } else {
-                map.put("status", 100);
+                // 비밀번호가 틀릴 경우 오류 반환
+                map.put("status", "비밀번호가 틀렸습니다");
             }
         } catch (Exception e) {
             e.printStackTrace();

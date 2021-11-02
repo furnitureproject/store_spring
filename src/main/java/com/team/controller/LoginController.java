@@ -45,7 +45,6 @@ public class LoginController {
 
         Map<String, Object> map = new HashMap<String, Object>();
         try {
-
             authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(user.getUserId(), user.getUserPw()));
             
@@ -59,20 +58,18 @@ public class LoginController {
         return map;
     }
 
-    @PostMapping(value = "/userinsert", consumes = MediaType.ALL_VALUE, produces
-    = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> userinsertTest(@RequestBody User user){
-    Map<String, Object> map = new HashMap<>();
-    try {
-        BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
-        user.setUserPw(bcpe.encode(user.getUserPw()));
-        uService.insertUser(user);
-        map.put("status", 200);
-    }
-        catch(Exception e){
-        e.printStackTrace();
-        map.put("status", e.hashCode());
-    }
+    @PostMapping(value = "/userinsert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> userinsertTest(@RequestBody User user) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
+            user.setUserPw(bcpe.encode(user.getUserPw()));
+            uService.insertUser(user);
+            map.put("status", 200);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
         return map;
     }
 

@@ -34,4 +34,5 @@ public interface UserService {
     // 유저 1명 조회
     // return 값은 UserProjection
     public Optional<UserProjection> selectUserOneProjection(String userId);
+
 }
