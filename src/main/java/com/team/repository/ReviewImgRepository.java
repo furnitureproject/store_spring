@@ -10,4 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ReviewImgRepository extends JpaRepository<ReviewImg, Long> {
 
     List<ReviewImgProjection> findByReview_ReviewNum(Long reviewNum);
+
+    void deleteByReview_ReviewNum(Long reviewNum);
 }

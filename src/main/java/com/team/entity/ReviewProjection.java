@@ -24,6 +24,6 @@ public interface ReviewProjection {
 
     String getUser_UserId();
 
-    Long getProduct_ProductCode();
+    // Long getProduct_ProductCode();
 
 }

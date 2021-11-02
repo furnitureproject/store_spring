@@ -23,21 +23,27 @@ public class ReviewImgServiceImpl implements ReviewImgService {
     }
 
     @Override
-    public int deleteReview(Long reviewImgNum) {
+    public int deleteReviewImg(Long reviewImgNum) {
         rIRepository.deleteById(reviewImgNum);
         return 1;
     }
 
     @Override
-    public List<ReviewImgProjection> selectReviewList(Long reviewNum) {
+    public List<ReviewImgProjection> selectReviewImgList(Long reviewNum) {
 
         return rIRepository.findByReview_ReviewNum(reviewNum);
     }
 
     @Override
-    public ReviewImg selectReview(Long reviewImgNum) {
+    public ReviewImg selectReviewImg(Long reviewImgNum) {
         Optional<ReviewImg> rImg = rIRepository.findById(reviewImgNum);
         return rImg.orElse(null);
+    }
+
+    @Override
+    public int deleteReviewImgList(Long reviewNum) {
+        rIRepository.deleteByReview_ReviewNum(reviewNum);
+        return 1;
     }
 
 }

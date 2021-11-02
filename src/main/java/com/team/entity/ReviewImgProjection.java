@@ -2,7 +2,7 @@ package com.team.entity;
 
 public interface ReviewImgProjection {
 
-    // Long getReviewImgNum();
+    Long getReviewImgNum();
 
     byte[] getReviewImgData();
 

@@ -12,6 +12,7 @@ import com.team.entity.Product;
 import com.team.entity.Review;
 import com.team.entity.ReviewImg;
 import com.team.entity.ReviewImgProjection;
+import com.team.entity.ReviewProjection;
 import com.team.entity.User;
 import com.team.jwt.JwtUtil;
 import com.team.service.ProductService;
@@ -50,7 +51,7 @@ public class ReviewController {
     ProductService pService;
 
     @GetMapping(value = "/review", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectProductReview(@RequestParam Long productCode) {
+    public Map<String, Object> selectProductReview(@RequestParam("productcode") Long productCode) {
         Map<String, Object> map = new HashMap<>();
         try {
             map.put("status", 200);
@@ -63,18 +64,23 @@ public class ReviewController {
     }
 
     @PostMapping(value = "/review", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> insertReview(@RequestBody Review review, @RequestHeader("token") String token,
+    public Map<String, Object> insertReview(@RequestBody Review review,
+            // @RequestHeader("token") String token,
             @RequestParam("num") Long productCode) {
         Map<String, Object> map = new HashMap<>();
-        String userid = jwtUtil.extractUsername(token);
+        // String userid = jwtUtil.extractUsername(token);
         try {
-            User user = uService.selectUserOne(userid);
+            // User user = uService.selectUserOne(userid);
+            User user = uService.selectUserOne("s");
             Product product = pService.selectProductOne(productCode);
-            review.setUser(user);
-            review.setProduct(product);
-            map.put("status", review);
-            // rService.insertReview(review);
-            map.put("status", 200);
+            if (user != null && product != null) {
+                review.setUser(user);
+                review.setProduct(product);
+                rService.insertReview(review);
+                map.put("status", 200);
+            } else {
+                map.put("status", 100);
+            }
         } catch (Exception e) {
             map.put("status", e.hashCode());
         }
@@ -82,11 +88,21 @@ public class ReviewController {
     }
 
     @DeleteMapping(value = "/review", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> deleteReview(@RequestParam("num") Long reviewNum, @RequestHeader("token") String token) {
+    public Map<String, Object> deleteReview(@RequestParam("reviewnum") Long reviewNum
+    // , @RequestHeader("token") String token
+    ) {
         Map<String, Object> map = new HashMap<>();
-        String userid = jwtUtil.extractUsername(token);
+        // String userid = jwtUtil.extractUsername(token);
+        User user = uService.selectUserOne("s");
+        String userid = user.getUserId();
         try {
             if (rService.selectReview(reviewNum).getUser().getUserId().equals(userid)) {
+                List<ReviewImgProjection> rimg = rIService.selectReviewImgList(reviewNum);
+                for (int i = 0; i < rimg.size(); i++) {
+                    ReviewImgProjection rP = rimg.get(i);
+                    Long rINum = rP.getReviewImgNum();
+                    rIService.deleteReviewImg(rINum);
+                }
                 rService.deleteReview(reviewNum);
                 map.put("status", 200);
             } else {
@@ -98,40 +114,36 @@ public class ReviewController {
         return map;
     }
 
-    // @PostMapping(value = "/review_image")
-    // public Map<String, Object> insertReviewImg(@RequestParam("file")
-    // MultipartFile file) {
-    // Map<String, Object> map = new HashMap<>();
-    // try {
-
-    // map.put("status", 200);
-    // } catch (Exception e) {
-    // map.put("status", e.hashCode());
-    // }
-    // return map;
-    // }
-
-    @PostMapping(value = "/review_image")
-    public Map<String, Object> ImagePost(@RequestParam("num") Long reviewNum,
+    @PostMapping(value = "/reviewimage")
+    public Map<String, Object> ImagePost(@RequestParam("reviewnum") Long reviewNum,
+            // @RequestHeader("token") String token,
             @RequestParam(name = "file") MultipartFile[] files) {
         Map<String, Object> map = new HashMap<>();
+        User user = uService.selectUserOne("d");
+        String userId = user.getUserId();
         try {
             Review review = rService.selectReview(reviewNum);
-            List<ReviewImg> list = new ArrayList<>();
-            if (files.length <= 3) {
-                for (int i = 0; i < files.length; i++) {
-                    ReviewImg reviewImg = new ReviewImg();
-                    reviewImg.setReview(review);
-                    reviewImg.setReviewImgData(files[i].getBytes());
-                    reviewImg.setReviewImgName(files[i].getOriginalFilename());
-                    reviewImg.setReviewImgSize(files[i].getSize());
-                    reviewImg.setReviewImgType(files[i].getContentType());
-                    list.add(reviewImg);
+            if (review.getUser().getUserId().equals(userId)) {
+                List<ReviewImg> list = new ArrayList<>();
+                if (files.length <= 3) {
+                    for (int i = 0; i < files.length; i++) {
+                        ReviewImg reviewImg = new ReviewImg();
+                        reviewImg.setReview(review);
+                        reviewImg.setReviewImgData(files[i].getBytes());
+                        reviewImg.setReviewImgName(files[i].getOriginalFilename());
+                        reviewImg.setReviewImgSize(files[i].getSize());
+                        reviewImg.setReviewImgType(files[i].getContentType());
+                        list.add(reviewImg);
+                    }
+                    rIService.insertReviewImg(list);
+                    map.put("status", 200);
+                } else {
+                    // 이미지가 3개를 넘을 경우
+                    map.put("status", 100);
                 }
-                rIService.insertReviewImg(list);
-                map.put("status", 200);
             } else {
-                map.put("status", 100);
+                // 리뷰한 아이디와 이미지 넣는 아이디가 다를 경우
+                map.put("status", 484);
             }
         } catch (Exception e) {
             map.put("status", e.hashCode());
@@ -140,10 +152,10 @@ public class ReviewController {
     }
 
     // 이미지는 데이터랑 타입만 넘겨주도록
-    // <img src="/review_image?itemno=16&idx=1">
-    @GetMapping(value = "/review_image")
-    public ResponseEntity<byte[]> ImageGet(@RequestParam("num") Long reviewNum, @RequestParam("idx") int idx) {
-        List<ReviewImgProjection> list = rIService.selectReviewList(reviewNum);
+    // <img src="/review_image?num=16&idx=1">
+    @GetMapping(value = "/reviewimage")
+    public ResponseEntity<byte[]> ImageGet(@RequestParam("reviewnum") Long reviewNum, @RequestParam("idx") int idx) {
+        List<ReviewImgProjection> list = rIService.selectReviewImgList(reviewNum);
         ReviewImgProjection rImg = list.get(idx);
         HttpHeaders headers = new HttpHeaders();
         if (rImg.getReviewImgType().equals("image/jpeg")) {

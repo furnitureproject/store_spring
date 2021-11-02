@@ -13,13 +13,15 @@ public interface ReviewImgService {
     // return 1
     public int insertReviewImg(List<ReviewImg> reviewImg);
 
-    // 리뷰 정보 삭제, 구현 X 사용 X, updateProduct 사용할것
-    public int deleteReview(Long reviewImgNum);
+    public int deleteReviewImg(Long reviewImgNum);
 
     // 제품에 따른 리뷰 조회
-    public List<ReviewImgProjection> selectReviewList(Long reviewNum);
+    public List<ReviewImgProjection> selectReviewImgList(Long reviewNum);
 
     // 리뷰 하나
-    public ReviewImg selectReview(Long reviewImgNum);
+    public ReviewImg selectReviewImg(Long reviewImgNum);
+
+    // 리뷰 코드에 따른 리뷰 삭제(TEST)
+    public int deleteReviewImgList(Long reviewNum);
 
 }
