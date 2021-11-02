@@ -112,13 +112,6 @@ public class ProductServiceImpl implements ProductService {
         return pRepository.category3TitleDescSelect(code, desc, title);
     }
 
-    @Override
-    public List<ProductProjection1> category1Select(long code) {
-        return pRepository
-                .findByCategory3_Category2_Category1_Category1CodeOrderByCategory3_Category2_Category1_Category1Code(
-                        code);
-    }
-
     // @Override
     // public List<Product> category2Select(long code) {
     // return pRepository.category2Select(code);

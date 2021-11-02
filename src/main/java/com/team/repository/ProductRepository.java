@@ -106,8 +106,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                         + " AND PRODUCT_DESC LIKE '%' || :desc || '%' ORDER BY PRODUCT_CODE DESC", nativeQuery = true)
         public List<ProductProjection1> category3DescSelect(@Param("code") long code, @Param("desc") String desc);
 
-        List<ProductProjection1> findByCategory3_Category2_Category1_Category1CodeOrderByCategory3_Category2_Category1_Category1Code(
-                        long code);
+        // List<ProductProjection1>
+        // findByCategory3_Category2_Category1_Category1CodeOrderByCategory3_Category2_Category1_Category1Code(
+        // long code);
 
         // 3. 제목 + 내용검색
         @Query(value = "SELECT PRODUCT.PRODUCT_CODE, PRODUCT.PRODUCT_TITLE,"

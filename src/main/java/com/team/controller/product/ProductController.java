@@ -117,21 +117,6 @@ public class ProductController {
         return map;
     }
 
-    @GetMapping(value = "/select_list1", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectListGET(@RequestParam(name = "code") long code) {
-        Map<String, Object> map = new HashMap<>();
-        try {
-            List<ProductProjection1> list = pService.category1Select(code);
-            map.put("list", list);
-            map.put("status", 200);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            map.put("status", e.hashCode());
-        }
-        return map;
-    }
-
     // 상품등록
     // <POST> 127.0.0.1:8080/ROOT/product/insert
     // 필요 {productTitle, productDesc, category3, seller}

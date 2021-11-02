@@ -55,8 +55,6 @@ public interface ProductService {
 
     public List<ProductProjection1> category3TitleDescSelect(long code, String desc, String title);
 
-    public List<ProductProjection1> category1Select(long code);
-
     // public List<Product> category2Select(long code);
 
     // public List<Product> category1Select(long code);
