@@ -11,9 +11,15 @@ import com.team.service.SellerService;
 import com.team.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.BeanIds;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -83,9 +89,29 @@ public class LoginController {
 
             map.put("status", 200);
             map.put("token", jwtUtil.generateToken(seller.getSellerId()));
-        } catch (Exception e) {
-            e.printStackTrace();
-            map.put("error", e.hashCode());
+        } 
+        // catch (Exception e) {
+        //     e.printStackTrace();
+        //     map.put("error", e.hashCode());
+        // }
+        catch(DisabledException | LockedException | BadCredentialsException e){
+            if (e.getClass().equals(BadCredentialsException.class)) {
+                e.printStackTrace();
+                map.put("error", e.hashCode());
+                map.put("status", "invalid-password");
+            } else if (e.getClass().equals(DisabledException.class)) {
+                e.printStackTrace();
+                map.put("error", e.hashCode());
+                map.put("status", "disable");
+            } else if (e.getClass().equals(LockedException.class)) {
+                e.printStackTrace();
+                map.put("error", e.hashCode());
+                map.put("status", "locked");
+            } else {
+                e.printStackTrace();
+                map.put("error", e.hashCode());
+                map.put("status", "unknown");
+            }
         }
 
         return map;
