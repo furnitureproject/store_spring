@@ -22,7 +22,7 @@ import lombok.ToString;
 @Entity
 @SequenceGenerator(name = "SEQ_CART_NUM", sequenceName = "SEQ_CART_NUM", initialValue = 1, allocationSize = 1)
 public class Cart {
-    
+
     // 카트 순서용 넘버링
     @Id
     @Column(name = "CART_NO")
@@ -44,7 +44,7 @@ public class Cart {
 
     // 금액
     private Long cartOptionPrice;
-    
+
     // 대표 사진 이름
     private String cartImgName;
 
@@ -54,7 +54,7 @@ public class Cart {
     // 대표 사진 사이즈
     private Long cartImgSize;
 
-    // 대표 사진 썸네일
+    // 대표 사진 타입
     private String cartImgType;
 
     @ManyToOne
@@ -64,6 +64,5 @@ public class Cart {
     @ManyToOne
     @JoinColumn(name = "OPTION_CODE")
     private ProductOption productOption;
-
 
 }

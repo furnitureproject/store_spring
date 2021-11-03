@@ -78,7 +78,7 @@ public class ReviewController {
                 map.put("status", "내용을 입력하지 않았습니다");
             } else if (review.getReviewStar() == 0) {
                 // 리뷰 별점을 입력하지 않음
-                map.put("status", "별점을 입력하지 않았습니다.");
+                map.put("status", "별점을 입력하지 않았습니다");
             } else if (user != null && product != null) {
                 review.setUser(user);
                 review.setProduct(product);
@@ -111,7 +111,7 @@ public class ReviewController {
                 map.put("status", 200);
             } else {
                 // review를 작성한 유저와 delete하려는 user가 다를 때 반환
-                map.put("status", "유저가 맞지않습니다");
+                map.put("status", "올바른 유저가 아닙니다");
             }
         } catch (Exception e) {
             map.put("status", e.hashCode());
@@ -142,11 +142,11 @@ public class ReviewController {
                     map.put("status", 200);
                 } else {
                     // 이미지가 3개를 넘을 경우
-                    map.put("status", "이미지 숫자 초과");
+                    map.put("status", "이미지 숫자를 초과하였습니다");
                 }
             } else {
                 // 리뷰한 아이디와 이미지 넣는 아이디가 다를 경우
-                map.put("status", "리뷰한 아이디와 이미지 넣는 아이디가 다름");
+                map.put("status", "권한 있는 유저가 아닙니다");
             }
         } catch (Exception e) {
             map.put("status", e.hashCode());

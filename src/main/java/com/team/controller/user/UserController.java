@@ -3,6 +3,8 @@ package com.team.controller.user;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.team.entity.User;
 import com.team.jwt.JwtUtil;
 import com.team.service.UserService;
@@ -30,6 +32,15 @@ public class UserController {
     @Autowired
     JwtUtil jwtUtil;
 
+    // TEST
+    // @GetMapping(value = "/login")
+    // public Map<String, Object> loginUserGET(HttpServletRequest request) {
+    // Map<String, Object> map = new HashMap<>();
+    // System.out.println(request.getSession());
+    // map.put("status", 200);
+    // return map;
+    // }
+
     // 회원 가입
     @GetMapping(value = "/join")
     public Map<String, Object> joinUserGET() {
@@ -50,7 +61,7 @@ public class UserController {
                 map.put("status", 200);
             } else {
                 // 이미 가입한 User의 아이디를 사용한 경우 오류 반환
-                map.put("status", 484);
+                map.put("status", "같은 아이디가 존재하고 있습니다");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -91,6 +102,8 @@ public class UserController {
             if (uService.selectUserOne(user.getUserId()) != null) {
                 uService.deleteUser(user);
                 map.put("status", 200);
+            } else {
+                map.put("status", "존재하지 않는 유저입니다");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,10 +119,10 @@ public class UserController {
         try {
             if (user.getUserEmail() == null) {
                 // 이메일을 넣지 않은 경우
-                map.put("status", 100);
+                map.put("status", "이메일을 입력하지 않았습니다");
             } else if (user.getUserPhone() == null) {
                 // phone을 넣지 않은 경우
-                map.put("status", 101);
+                map.put("status", "전화번호를 입력하지 않았습니다");
             } else {
                 String userid = jwtUtil.extractUsername(token);
                 User user1 = uService.selectUserOne(userid);
