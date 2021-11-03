@@ -74,18 +74,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> selectProductByHit() {
-
-        return pRepository.findAllByOrderByProductHitDesc();
-    }
-
-    // @Override
-    // public List<Product> selectProductByCode() {
-
-    // return pRepository.findAllByOrderByProductCodeDesc();
-    // }
-
-    @Override
     public List<ProductProjection> ProductHigh() {
         return pRepository.querySelectPriceProductHigh();
     }
@@ -96,20 +84,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> categoryTitleSelerct(long categoryCode, String productTitle) {
+    public List<Product> categorySelerct(long categoryCode) {
 
-        return pRepository.findByCategory_CategoryCodeAndProductTitleIgnoreCaseContainingOrderByProductCodeDesc(
-                categoryCode, productTitle);
+        return pRepository.findByCategory_CategoryCodeOrderByProductCodeDesc(categoryCode);
     }
-
-    // @Override
-    // public List<Product> category2Select(long code) {
-    // return pRepository.category2Select(code);
-    // }
-
-    // @Override
-    // public List<Product> category1Select(long code) {
-    // return pRepository.category1Select(code);
-    // }
 
 }

@@ -84,25 +84,23 @@ public class ProductController {
     // return [{ Product }, { Product }...]
     @GetMapping(value = "/select_list", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectListGET(@RequestParam long sort,
-            @RequestParam(name = "productTitle", required = false, defaultValue = "") String productTitle,
-            @RequestParam(name = "desc", required = false, defaultValue = "") String desc,
             @RequestParam(name = "query", required = false, defaultValue = "1") int query,
             @RequestParam long categoryCode) {
         Map<String, Object> map = new HashMap<>();
         try {
             // 최신순
             if (sort == 1) {
-                if (query == 1) { // 제목으로만 검색
-                    List<Product> list = pService.categoryTitleSelerct(categoryCode, productTitle);
+                if (query == 1) {
+                    List<Product> list = pService.categorySelerct(categoryCode);
                     map.put("list", list);
                     map.put("status", 200);
                 }
 
                 // 조회수순
             } else if (sort == 2) {
-                List<Product> list = pService.selectProductByHit();
-                map.put("list", list);
-                map.put("status", 200);
+                // List<Product> list = pService.selectProductByHit();
+                // map.put("list", list);
+                // map.put("status", 200);
                 // 가격 높은순
             } else if (sort == 3) {
                 List<ProductProjection> list = pService.ProductHigh();

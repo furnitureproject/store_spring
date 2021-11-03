@@ -35,18 +35,14 @@ public interface ProductService {
 
     // 조회수 기준 정렬
     // return List<Product>
-    public List<Product> selectProductByHit();
 
     // 코드 기준 정렬(최신순 정렬)
-    // return List<Product>
-    // public List<Product> selectProductByCode();
+    public List<Product> categorySelerct(long categoryCode);
 
     // 가격 높은순
     public List<ProductProjection> ProductHigh();
 
     // 가격 낮은순
     public List<ProductProjection> ProductLow();
-
-    public List<Product> categoryTitleSelerct(long categoryCode, String productTitle);
 
 }
