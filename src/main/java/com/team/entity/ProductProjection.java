@@ -8,6 +8,12 @@ public interface ProductProjection {
 
     Long getoption_Price();
 
+    Long getCategory_Code();
+
     int getrown();
+
+    byte[] getThumImg_Name();
+
+    String getThumImg_Type();
 
 }
