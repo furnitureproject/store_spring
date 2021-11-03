@@ -27,47 +27,47 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import lombok.RequiredArgsConstructor;
 
 // 1
-// @Configuration
-// @EnableWebSecurity
-// public class SecurityConfig extends WebSecurityConfigurerAdapter{
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter{
     
-//     @Autowired
-//     SecurityUserDetailServiceimpl sudService;
+    @Autowired
+    SecurityUserDetailServiceimpl sudService;
 
-//     @Bean
-//     public BCryptPasswordEncoder encode(){
-//         return new BCryptPasswordEncoder();
-//     }
+    @Bean
+    public BCryptPasswordEncoder encode(){
+        return new BCryptPasswordEncoder();
+    }
 
-//     @Override
-//     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//         auth.userDetailsService(sudService).passwordEncoder(encode());
-//     }
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(sudService).passwordEncoder(encode());
+    }
 
-//     @Autowired
-//     private JwtRequestFilter jwtRequestFilter;
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter;
 
-//     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
-//     @Override
-//     public AuthenticationManager authenticationManagerBean() throws Exception {
-//         return super.authenticationManagerBean();
-//     }
+    @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
-//     @Override
-//     protected void configure(HttpSecurity http) throws Exception {
-//         http.authorizeRequests()
-//         .antMatchers("/admin", "/admin/*", "/api/admin/*").hasAnyRole("ADMIN")
-//         .anyRequest().permitAll();
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+        .antMatchers("/admin", "/admin/*", "/api/admin/*").hasAnyRole("ADMIN")
+        .anyRequest().permitAll();
 
-//         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-//         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-//         http.csrf().disable();
-//         http.headers().frameOptions().sameOrigin();
+        http.csrf().disable();
+        http.headers().frameOptions().sameOrigin();
 
-//     }
-// }
+    }
+}
 
 
 // 2
@@ -163,111 +163,111 @@ import lombok.RequiredArgsConstructor;
 
 
 // 3
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig{
+// @Configuration
+// @EnableWebSecurity
+// public class SecurityConfig{
 
-    @Order(1)
-    @Configuration
-    public static class FirstUserConfig extends WebSecurityConfigurerAdapter{
+//     @Order(1)
+//     @Configuration
+//     public static class FirstUserConfig extends WebSecurityConfigurerAdapter{
 
-        @Autowired
-        @Qualifier("UserDetailServiceimpl")
-        private UserDetailsService UserDetailServiceimpl;
-        // @Autowired
-        // UserDetailServiceimpl uDetailServiceimpl;
+//         @Autowired
+//         @Qualifier("UserDetailServiceimpl")
+//         private UserDetailsService UserDetailServiceimpl;
+//         // @Autowired
+//         // UserDetailServiceimpl uDetailServiceimpl;
 
-        @Bean
-        public BCryptPasswordEncoder encode(){
-            return new BCryptPasswordEncoder();
-        }
+//         @Bean
+//         public BCryptPasswordEncoder encode(){
+//             return new BCryptPasswordEncoder();
+//         }
 
-        // https://stackoverflow.com/questions/62185767/spring-boot-app-with-two-authentication-authenticationmanager-beans-problem
+//         // https://stackoverflow.com/questions/62185767/spring-boot-app-with-two-authentication-authenticationmanager-beans-problem
 
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            System.out.println("uService 가능");
-            // auth.userDetailsService(uService).passwordEncoder(encode());
-            auth.userDetailsService(UserDetailServiceimpl).passwordEncoder(encode());
-        }
-        // @PostConstruct
-        //@Primary //이거 붙으면 작동하고 안하면 작동 안함
-        @Override
-        @Bean
-        public AuthenticationManager authenticationManagerBean() throws Exception {
-            System.out.println("uManager 가능");
-            return super.authenticationManagerBean();
-        }
+//         @Override
+//         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//             System.out.println("uService 가능");
+//             // auth.userDetailsService(uService).passwordEncoder(encode());
+//             auth.userDetailsService(UserDetailServiceimpl).passwordEncoder(encode());
+//         }
+//         // @PostConstruct
+//         //@Primary //이거 붙으면 작동하고 안하면 작동 안함
+//         @Override
+//         @Bean
+//         public AuthenticationManager authenticationManagerBean() throws Exception {
+//             System.out.println("uManager 가능");
+//             return super.authenticationManagerBean();
+//         }
 
-        @Autowired
-        private JwtRequestFilter jwtRequestFilter;
+//         @Autowired
+//         private JwtRequestFilter jwtRequestFilter;
 
 
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http.authorizeRequests()
-            // .antMatchers("/xxx", "/xexe/*", "/oxox/admin/*").hasAnyRole("XOXO")
-            .anyRequest().permitAll();
+//         @Override
+//         protected void configure(HttpSecurity http) throws Exception {
+//             http.authorizeRequests()
+//             // .antMatchers("/xxx", "/xexe/*", "/oxox/admin/*").hasAnyRole("XOXO")
+//             .anyRequest().permitAll();
 
-            http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+//             http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-            http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//             http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-            http.csrf().disable();
-            http.headers().frameOptions().sameOrigin();
+//             http.csrf().disable();
+//             http.headers().frameOptions().sameOrigin();
 
-        }
-    }
-    @Order(2)
-    @Configuration
-    public static class SecondSellerConfig extends WebSecurityConfigurerAdapter{
+//         }
+//     }
+//     @Order(2)
+//     @Configuration
+//     public static class SecondSellerConfig extends WebSecurityConfigurerAdapter{
 
         
-        @Autowired
-        @Qualifier("SellerDetailService")
-        private UserDetailsService SellerDetailService;
+//         @Autowired
+//         @Qualifier("SellerDetailService")
+//         private UserDetailsService SellerDetailService;
 
-        // @Autowired
-        // SellerDetailService sService;
+//         // @Autowired
+//         // SellerDetailService sService;
 
-        @Bean
-        public BCryptPasswordEncoder encode(){
-            return new BCryptPasswordEncoder();
-        }
+//         @Bean
+//         public BCryptPasswordEncoder encode(){
+//             return new BCryptPasswordEncoder();
+//         }
 
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            System.out.println("sService 가능");
-            auth.userDetailsService(SellerDetailService).passwordEncoder(encode());
-        }
+//         @Override
+//         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//             System.out.println("sService 가능");
+//             auth.userDetailsService(SellerDetailService).passwordEncoder(encode());
+//         }
 
-        // @PostConstruct
-        @Override
-        @Bean
-        public AuthenticationManager authenticationManagerBean() throws Exception {
-            System.out.println("sManager 가능");
-            return super.authenticationManagerBean();
-        }
-
-
-        @Autowired
-        private JwtRequestFilter jwtRequestFilter;
+//         // @PostConstruct
+//         @Override
+//         @Bean
+//         public AuthenticationManager authenticationManagerBean() throws Exception {
+//             System.out.println("sManager 가능");
+//             return super.authenticationManagerBean();
+//         }
 
 
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http.authorizeRequests()
-            .antMatchers("/admin", "/admin/*").hasAnyRole("ADMIN")
-            .anyRequest().permitAll();
+//         @Autowired
+//         private JwtRequestFilter jwtRequestFilter;
 
-            http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-            http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//         @Override
+//         protected void configure(HttpSecurity http) throws Exception {
+//             http.authorizeRequests()
+//             .antMatchers("/admin", "/admin/*").hasAnyRole("ADMIN")
+//             .anyRequest().permitAll();
 
-            http.csrf().disable();
-            http.headers().frameOptions().sameOrigin();
+//             http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-        }
-    }
+//             http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+//             http.csrf().disable();
+//             http.headers().frameOptions().sameOrigin();
+
+//         }
+//     }
     
-}
+// }
