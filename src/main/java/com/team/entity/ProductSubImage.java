@@ -22,29 +22,30 @@ import lombok.ToString;
 @ToString
 
 @Entity
-@Table(name = "PRODUCT_DES_IMG")
-@SequenceGenerator(name = "SEQ_DESIMG_NUM", sequenceName = "SEQ_DESIMG_NUM", initialValue = 1, allocationSize = 1)
-public class ProductDesImage {
+@SequenceGenerator(name = "SEQ_SUBIMG_NUM", sequenceName = "SEQ_SUBIMG_NUM", initialValue = 1, allocationSize = 1)
+@Table(name = "PRODUCT_SUB_IMG")
+public class ProductSubImage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_DESIMG_NUM")
-    @Column(name = "DES_IMG_NUM")
-    private Long desImgNum;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_SUBIMG_NUM")
+    @Column(name = "SUB_IMG_NUM")
+    private Long subImgNum;
 
-    @Column(name = "DES_IMG_NAME")
-    private String desImgName;
+    @Column(name = "SUB_IMG_NAME")
+    private String subImgName;
 
     @Lob
-    @Column(name = "DES_IMG_DATA")
-    private byte[] desImgData;
+    @Column(name = "SUB_IMG_DATA")
+    private byte[] subImgdata;
 
-    @Column(name = "DES_IMG_SIZE")
-    private Long desImgSize;
+    @Column(name = "SUB_IMG_SIZE")
+    private Long subImgSize;
 
-    @Column(name = "DES_IMG_TYPE")
-    private String desImgType;
+    @Column(name = "SUB_IMG_TYPE")
+    private String subImgType;
 
     @ManyToOne
     @JoinColumn(name = "PRODUCT_CODE")
     private Product product;
+
 }
