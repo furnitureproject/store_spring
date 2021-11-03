@@ -1,5 +1,7 @@
 package com.team.service;
 
+import java.util.Optional;
+
 import com.team.entity.QnA;
 import com.team.repository.QnaRepository;
 
@@ -16,6 +18,13 @@ public class QnaServiceImpl implements QnaService{
     @Override
     public void insertQna(QnA qnA) {
         qRepository.save(qnA);
+    }
+
+    //qna 정보 가져오기
+    @Override
+    public QnA selectQna(long no) {
+        Optional<QnA> qna = qRepository.findById(no);
+        return qna.orElse(null);
     }
     
     
