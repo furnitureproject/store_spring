@@ -24,6 +24,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         List<Product> findByCategory_CategoryCodeAndProductTitleIgnoreCaseContainingOrderByProductCodeDesc(
                         Long categoryCode, String productTitle);
 
+        long countByCategory_CategoryCodeAndProductTitleContaining(Long categoryCode, String productTitle);
+
         // 제목 카테고리별 내용 검색
         List<Product> findByCategory_CategoryCodeAndProductDescIgnoreCaseContainingOrderByProductCodeDesc(
                         Long categoryCode, String productDesc);
@@ -31,9 +33,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         // // 제목 카테고리별 제목+내용 검색
         List<Product> findByCategory_CategoryCodeAndProductTitleAndAndProductDescIgnoreCaseContainingOrderByProductCodeDesc(
                         String productTitle, Long categoryCode, String productDesc);
-
-        // long countByCategory_CategoryCodeandProductDescContaining(Long categoryCode,
-        // String productDesc);
 
         // 인기순 (판매량)
 

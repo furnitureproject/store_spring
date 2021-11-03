@@ -10,11 +10,13 @@ import com.team.entity.Category;
 import com.team.entity.Product;
 import com.team.entity.ProductDesImage;
 import com.team.entity.ProductProjection;
+import com.team.entity.ProductSubImage;
 import com.team.entity.Seller;
 import com.team.service.CategoryService;
 import com.team.service.ProductDesImageService;
 import com.team.service.ProductOptionService;
 import com.team.service.ProductService;
+import com.team.service.ProductSubImageService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -43,6 +45,9 @@ public class ProductController {
 
     @Autowired
     CategoryService cService;
+
+    @Autowired
+    ProductSubImageService psService;
 
     @GetMapping(value = "/test")
     public Map<String, Object> testproduct() {
@@ -203,6 +208,32 @@ public class ProductController {
                 list.add(productDesImage);
             }
             pdServise.insertDesImageList(list);
+            map.put("status", 200);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    @PostMapping(value = "/insert_subimage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> insertImagePOST(@RequestParam long productCode,
+            @RequestParam(name = "file") MultipartFile[] files) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<ProductSubImage> list = new ArrayList<>();
+            Product product = pService.selectProductOne(productCode);
+            for (int i = 0; i < files.length; i++) {
+                ProductSubImage productSubImage = new ProductSubImage();
+                productSubImage.setProduct(product);
+                productSubImage.setSubImgdata(files[i].getBytes());
+                productSubImage.setSubImgName(files[i].getOriginalFilename());
+                productSubImage.setSubImgSize(files[i].getSize());
+                productSubImage.setSubImgType(files[i].getContentType());
+                list.add(productSubImage);
+            }
+            psService.insertSubImageList(list);
             map.put("status", 200);
 
         } catch (Exception e) {

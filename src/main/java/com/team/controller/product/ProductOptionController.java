@@ -1,15 +1,12 @@
 package com.team.controller.product;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.team.entity.OptionImage;
 import com.team.entity.Product;
 import com.team.entity.ProductEvent;
 import com.team.entity.ProductOption;
-import com.team.service.OptionImageService;
 import com.team.service.ProductOptionService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/productoption")
@@ -29,9 +25,6 @@ public class ProductOptionController {
 
     @Autowired
     ProductOptionService poService;
-
-    @Autowired
-    OptionImageService oService;
 
     @GetMapping(value = "/select_one", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectOneGET(@RequestParam long optioncode) {
@@ -117,32 +110,6 @@ public class ProductOptionController {
             productOption.setProduct(product);
             productOption.setOptionCode(productOption1.getOptionCode());
             poService.updateProductOption(productOption);
-            map.put("status", 200);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            map.put("status", e.hashCode());
-        }
-        return map;
-    }
-
-    @PostMapping(value = "/insert_optionimage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> insertdesImagePOST(@RequestParam long optioncode,
-            @RequestParam(name = "file") MultipartFile[] files) {
-        Map<String, Object> map = new HashMap<>();
-        try {
-            List<OptionImage> list = new ArrayList<>();
-            ProductOption productOption = poService.selectProductOptionOne(optioncode);
-            for (int i = 0; i < files.length; i++) {
-                OptionImage optionImage = new OptionImage();
-                optionImage.setProductOption(productOption);
-                optionImage.setOptionImgdata(files[i].getBytes());
-                optionImage.setOptionImgName(files[i].getOriginalFilename());
-                optionImage.setOptionImgSize(files[i].getSize());
-                optionImage.setOptionImgType(files[i].getContentType());
-                list.add(optionImage);
-            }
-            oService.insertOptionImageList(list);
             map.put("status", 200);
 
         } catch (Exception e) {
