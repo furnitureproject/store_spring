@@ -14,6 +14,16 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
+
 @Entity
 @SequenceGenerator(name = "SEQ_QNA_NUM", sequenceName = "SEQ_QNA_NUM", initialValue = 1, allocationSize = 1)
 @Table(name = "QNA_TB")
