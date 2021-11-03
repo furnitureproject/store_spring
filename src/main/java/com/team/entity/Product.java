@@ -47,17 +47,17 @@ public class Product {
     @Column(name = "PRODUCT_EDITDATE", nullable = true)
     private Date productEditdate;
 
-    @Column(name = "IMG_NAME")
+    @Column(name = "PRODCT_IMG_NAME")
     private String thumImgName;
 
     @Lob
-    @Column(name = "IMG_DATA")
+    @Column(name = "PRODUCT_IMG_DATA")
     private byte[] thumImgData;
 
-    @Column(name = "IMG_SIZE")
+    @Column(name = "PRODUCT_IMG_SIZE")
     private Long thumImgSize;
 
-    @Column(name = "IMG_TYPE")
+    @Column(name = "PRODUCT_IMG_TYPE")
     private String thumImgType;
 
     @ManyToOne
