@@ -5,10 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import com.team.dto.ThumnailDto;
 import com.team.entity.Product;
 import com.team.entity.ProductProjection;
-import com.team.entity.ProductProjection1;
 import com.team.repository.ProductRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,11 +79,11 @@ public class ProductServiceImpl implements ProductService {
         return pRepository.findAllByOrderByProductHitDesc();
     }
 
-    @Override
-    public List<Product> selectProductByCode() {
+    // @Override
+    // public List<Product> selectProductByCode() {
 
-        return pRepository.findAllByOrderByProductCodeDesc();
-    }
+    // return pRepository.findAllByOrderByProductCodeDesc();
+    // }
 
     @Override
     public List<ProductProjection> ProductHigh() {
@@ -98,18 +96,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ThumnailDto> category3TitleSelect(long code, String title) {
-        return pRepository.category3TitleSelect(code, title);
-    }
+    public List<Product> categoryTitleSelerct(long categoryCode, String productTitle) {
 
-    @Override
-    public List<ProductProjection1> category3DescSelect(long code, String desc) {
-        return pRepository.category3DescSelect(code, desc);
-    }
-
-    @Override
-    public List<ProductProjection1> category3TitleDescSelect(long code, String desc, String title) {
-        return pRepository.category3TitleDescSelect(code, desc, title);
+        return pRepository.findByCategory_CategoryCodeAndProductTitleIgnoreCaseContainingOrderByProductCodeDesc(
+                categoryCode, productTitle);
     }
 
     // @Override

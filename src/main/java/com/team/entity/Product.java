@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -46,9 +47,22 @@ public class Product {
     @Column(name = "PRODUCT_EDITDATE", nullable = true)
     private Date productEditdate;
 
+    @Column(name = "IMG_NAME")
+    private String thumImgName;
+
+    @Lob
+    @Column(name = "IMG_DATA")
+    private byte[] thumImgData;
+
+    @Column(name = "IMG_SIZE")
+    private Long thumImgSize;
+
+    @Column(name = "IMG_TYPE")
+    private String thumImgType;
+
     @ManyToOne
-    @JoinColumn(name = "CATEGORY3_CODE")
-    private Category3 category3;
+    @JoinColumn(name = "CATE_CODE")
+    private Category category;
 
     @ManyToOne
     @JoinColumn(name = "SELLER_ID")

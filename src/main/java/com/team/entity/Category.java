@@ -14,14 +14,20 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-
 @Entity
-@Table(name = "CATEGORY1")
-public class Category1 {
-    @Id
-    @Column(name = "CATEGORY1_CODE")
-    private Long category1Code;
+@Table(name = "CATEGORY")
+public class Category {
 
-    @Column(name = "CATEGORY1_NAME")
-    private String category1Name;
+    @Id
+    @Column(name = "CATE_CODE")
+    private Long categoryCode;
+
+    @Column(name = "CATE_NAME")
+    private String categoryName;
+
+    @Column(name = "CATE_TIER")
+    private Integer categoryTier;
+
+    @Column(name = "CATE_PARENT")
+    private Long categoryParent;
 }

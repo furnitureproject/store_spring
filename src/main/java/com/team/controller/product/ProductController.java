@@ -6,21 +6,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.team.dto.ThumnailDto;
+import com.team.entity.Category;
 import com.team.entity.Product;
 import com.team.entity.ProductDesImage;
 import com.team.entity.ProductProjection;
-import com.team.entity.ProductProjection1;
-import com.team.entity.ProductThumnail;
 import com.team.entity.Seller;
+import com.team.service.CategoryService;
 import com.team.service.ProductDesImageService;
 import com.team.service.ProductOptionService;
 import com.team.service.ProductService;
-import com.team.service.ProductThumnailService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,10 +39,10 @@ public class ProductController {
     ProductOptionService poService;
 
     @Autowired
-    ProductThumnailService ptService;
+    ProductDesImageService pdServise;
 
     @Autowired
-    ProductDesImageService pdServise;
+    CategoryService cService;
 
     @GetMapping(value = "/test")
     public Map<String, Object> testproduct() {
@@ -80,16 +79,16 @@ public class ProductController {
     // return [{ Product }, { Product }...]
     @GetMapping(value = "/select_list", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectListGET(@RequestParam long sort,
-            @RequestParam(name = "title", required = false, defaultValue = "") String title,
+            @RequestParam(name = "productTitle", required = false, defaultValue = "") String productTitle,
             @RequestParam(name = "desc", required = false, defaultValue = "") String desc,
             @RequestParam(name = "query", required = false, defaultValue = "1") int query,
-            @RequestParam(name = "code") long code) {
+            @RequestParam long categoryCode) {
         Map<String, Object> map = new HashMap<>();
         try {
             // 최신순
             if (sort == 1) {
                 if (query == 1) { // 제목으로만 검색
-                    List<ThumnailDto> list = pService.category3TitleSelect(code, title);
+                    List<Product> list = pService.categoryTitleSelerct(categoryCode, productTitle);
                     map.put("list", list);
                     map.put("status", 200);
                 }
@@ -121,13 +120,21 @@ public class ProductController {
     // <POST> 127.0.0.1:8080/ROOT/product/insert
     // 필요 {productTitle, productDesc, category3, seller}
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> insertPOST(@RequestBody Product product) {
+    public Map<String, Object> insertPOST(@ModelAttribute Product product, @RequestParam long categoryCode,
+            @RequestParam(name = "file") MultipartFile file) {
         Map<String, Object> map = new HashMap<>();
         try {
             Seller seller = new Seller();
             seller.setSellerId("a");
             product.setSeller(seller);
 
+            Category category = cService.selectCategory(categoryCode);
+            product.setCategory(category);
+
+            product.setThumImgData(file.getBytes());
+            product.setThumImgName(file.getOriginalFilename());
+            product.setThumImgSize(file.getSize());
+            product.setThumImgType(file.getContentType());
             pService.insertProduct(product);
             map.put("status", 200);
         } catch (Exception e) {
@@ -172,27 +179,6 @@ public class ProductController {
             pService.updateProduct(product);
             map.put("status", 200);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            map.put("status", e.hashCode());
-        }
-        return map;
-    }
-
-    @PostMapping(value = "/insert_thumnail", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> insertThumnailPOST(@RequestParam long productcode,
-            @RequestParam(name = "file") MultipartFile file) {
-        Map<String, Object> map = new HashMap<>();
-        try {
-            Product product = pService.selectProductOne(productcode);
-            ProductThumnail productthumnail = new ProductThumnail();
-            productthumnail.setProduct(product);
-            productthumnail.setThumImgData(file.getBytes());
-            productthumnail.setThumImgName(file.getOriginalFilename());
-            productthumnail.setThumImgSize(file.getSize());
-            productthumnail.setThumImgType(file.getContentType());
-            ptService.insertThumnail(productthumnail);
-            map.put("status", 200);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
