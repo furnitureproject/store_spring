@@ -59,11 +59,15 @@ public class QnaController {
             String userid = jwtUtil.extractUsername(token); // token을 통해 회원정보 찾기
             User user = uService.selectUserOne(userid); //user 정보 찾기
             Product product = pService.selectProductOne(productCode); //product 정보 찾기
-            qnA.setUser(user); //userid
-            qnA.setProduct(product);  //productno
-            qService.insertQna(qnA);
-            map.put("result", 1L);
-            map.put("result", 0L);
+            if(jwtUtil.extractUsername(token).equals(userid)){
+                qnA.setUser(user); //userid
+                qnA.setProduct(product);  //productcode
+                qService.insertQna(qnA);
+                map.put("result", 1L);
+            }
+            else{
+                map.put("result", 0L);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("result", e.hashCode());
