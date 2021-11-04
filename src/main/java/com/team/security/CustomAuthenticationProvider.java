@@ -31,17 +31,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider{
 		System.out.println(authentication.toString());
 
 		String roles = authentication.getAuthorities().iterator().next().toString();
-        if(roles.equals("USER")){
-            UserDetails accountContext = uService.loadUserByUsername(username);
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            if (!passwordEncoder.matches(password, accountContext.getPassword())) {
-                throw new BadCredentialsException("BadCredentialsException");
-            }
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    accountContext, null, accountContext.getAuthorities());
-            return authenticationToken;
-            }
-        else if(roles.equals("SELLER")){
+        if(roles.equals("SELLER")){
             UserDetails accountContext = sService.loadUserByUsername(username);
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             if (!passwordEncoder.matches(password, accountContext.getPassword())) {
@@ -51,11 +41,20 @@ public class CustomAuthenticationProvider implements AuthenticationProvider{
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     accountContext, null, accountContext.getAuthorities());
             return authenticationToken;
+        }  
+        
+        // roles가 USER일때
+        UserDetails accountContext = uService.loadUserByUsername(username);
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            if (!passwordEncoder.matches(password, accountContext.getPassword())) {
+                throw new BadCredentialsException("BadCredentialsException");
+            }
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    accountContext, null, accountContext.getAuthorities());
+            return authenticationToken;
         }
-        else{
-            return null;
-        }
-    }
+    
+    
 
     @Override
     public boolean supports(Class<?> authentication) {
