@@ -40,13 +40,12 @@ public interface ProductService {
     // return List<Product>
 
     // 코드 기준 정렬(최신순 정렬)
-    public List<Product> categorySelerct(long categoryCode);
 
     // 전체 조회시
-    // 최신순
-
+    // 최신 등록순
     public List<Product> selectCodeList(String Title);
 
+    // 조회수 높은순
     public List<Product> selectHitList(String Title);
 
     // 가격 높은순
@@ -54,5 +53,31 @@ public interface ProductService {
 
     // 가격 낮은순
     public List<ProductVO> selectPriceLow(String Title);
+
+    // 소분류
+    // 최신 등록순
+    public List<Product> categoryCodeSelect1(long categoryCode);
+
+    // 조회수 높은순
+    public List<Product> categoryHitSelect1(long categoryCode);
+
+    // 가격 높은순
+    public List<ProductVO> selectPriceHigh1(Long categoryCode);
+
+    // 가격 낮은순
+    public List<ProductVO> selectPriceLow1(Long categoryCode);
+
+    // 중분류
+    // 최신 등록순
+    public List<Product> categoryCodeSelect2(long categoryParent);
+
+    // 조회수 높은순
+    public List<Product> categoryHitSelect2(long categoryParent);
+
+    // 가격 높은순
+    public List<ProductVO> selectPriceHigh2(Long categoryParent);
+
+    // 가격 낮은순
+    public List<ProductVO> selectPriceLow2(Long categoryParent);
 
 }

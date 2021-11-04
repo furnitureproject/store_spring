@@ -85,31 +85,82 @@ public class ProductServiceImpl implements ProductService {
         return numtoday;
     }
 
-    @Override
-    public List<Product> categorySelerct(long categoryCode) {
-
-        return pRepository.findByCategory_CategoryCodeOrderByProductCodeDesc(categoryCode);
-    }
-
     // 전체물품 검색시
+    // 가격 높은순
     @Override
     public List<ProductVO> selectPriceHigh(String Title) {
         return sqlFactory.openSession().selectList("Product.select_product_price_high_list", Title);
     }
 
+    // 가격 낮은순
     @Override
     public List<ProductVO> selectPriceLow(String Title) {
         return sqlFactory.openSession().selectList("Product.select_product_price_low_list", Title);
     }
 
+    // 최신순
     @Override
     public List<Product> selectCodeList(String Title) {
         return pRepository.findByProductTitleIgnoreCaseContainingOrderByProductCodeDesc(Title);
     }
 
+    // 조회수순
     @Override
     public List<Product> selectHitList(String Title) {
         return pRepository.findByProductTitleIgnoreCaseContainingOrderByProductHitDesc(Title);
+    }
+
+    // 소분류
+    // 최신순
+    @Override
+    public List<Product> categoryCodeSelect1(long categoryCode) {
+
+        return pRepository.findByCategory_CategoryCodeOrderByProductCodeDesc(categoryCode);
+    }
+
+    // 조회수순
+    @Override
+    public List<Product> categoryHitSelect1(long categoryCode) {
+        return pRepository.findByCategory_CategoryCodeOrderByProductHitDesc(categoryCode);
+    }
+
+    // 가격 높은순
+    @Override
+    public List<ProductVO> selectPriceHigh1(Long categoryCode) {
+        return sqlFactory.openSession().selectList("select_product_price_high_list1", categoryCode);
+    }
+
+    // 가격 낮은순
+    @Override
+    public List<ProductVO> selectPriceLow1(Long categoryCode) {
+        return sqlFactory.openSession().selectList("select_product_price_row_list1", categoryCode);
+    }
+
+    // 중분류
+
+    // 최신순
+    @Override
+    public List<Product> categoryCodeSelect2(long categoryParent) {
+        return pRepository.findByCategory_CategoryParentOrderByProductCodeDesc(categoryParent);
+    }
+
+    // 조회수순
+    @Override
+    public List<Product> categoryHitSelect2(long categoryParent) {
+        return pRepository.findByCategory_CategoryParentOrderByProductHitDesc(categoryParent);
+    }
+
+    // 가격 높은순
+    @Override
+    public List<ProductVO> selectPriceHigh2(Long categoryParent) {
+        return sqlFactory.openSession().selectList("select_product_price_high_list2", categoryParent);
+    }
+
+    // 가격 낮은순
+    @Override
+    public List<ProductVO> selectPriceLow2(Long categoryParent) {
+        return sqlFactory.openSession().selectList("select_product_price_low_list2", categoryParent);
+
     }
 
 }

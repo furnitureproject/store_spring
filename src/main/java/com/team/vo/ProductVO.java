@@ -21,6 +21,8 @@ public class ProductVO {
 
     private Long productHit;
 
+    private Long categoryCode;
+
     private byte[] thumImgData;
 
     private String thumImgType;

@@ -131,38 +131,69 @@ public class ProductController {
         return map;
     }
 
-    // 기준을 잡고 물품 정렬(최신순, 조회순, 인기순, 가격순)
+    // 소분류 물품 검색
     // 127.0.0.1:8080/ROOT/product/select_list?sort=
     // return [{ Product }, { Product }...]
     @GetMapping(value = "/select_list", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectListGET(@RequestParam long sort,
-            @RequestParam(name = "query", required = false, defaultValue = "1") int query,
-            @RequestParam(name = "categoryCode", required = false, defaultValue = "0") long categoryCode) {
+            @RequestParam(name = "categoryCode") long categoryCode) {
         Map<String, Object> map = new HashMap<>();
         try {
             // 최신순
             if (sort == 1) {
-                if (query == 1) {
-                    List<Product> list = pService.categorySelerct(categoryCode);
-                    map.put("list", list);
-                    map.put("status", 200);
-                }
+                List<Product> list = pService.categoryCodeSelect1(categoryCode);
+                map.put("list", list);
+                map.put("status", 200);
 
                 // 조회수순
             } else if (sort == 2) {
-                // List<Product> list = pService.selectProductByHit();
-                // map.put("list", list);
-                // map.put("status", 200);
+                List<Product> list = pService.categoryHitSelect1(categoryCode);
+                map.put("list", list);
+                map.put("status", 200);
                 // 가격 높은순
             } else if (sort == 3) {
-
-                // map.put("list", list);
-                // map.put("status", 200);
+                List<ProductVO> list = pService.selectPriceHigh1(categoryCode);
+                map.put("list", list);
+                map.put("status", 200);
                 // 가격 낮은순
             } else if (sort == 4) {
+                List<ProductVO> list = pService.selectPriceLow1(categoryCode);
+                map.put("list", list);
+                map.put("status", 200);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
 
-                // map.put("list", list);
-                // map.put("status", 200);
+    @GetMapping(value = "/select_list1", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> selectList1GET(@RequestParam long sort,
+            @RequestParam(name = "categoryParent") long categoryParent) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            // 최신순
+            if (sort == 1) {
+                List<Product> list = pService.categoryCodeSelect2(categoryParent);
+                map.put("list", list);
+                map.put("status", 200);
+
+                // 조회수순
+            } else if (sort == 2) {
+                List<Product> list = pService.categoryHitSelect2(categoryParent);
+                map.put("list", list);
+                map.put("status", 200);
+                // 가격 높은순
+            } else if (sort == 3) {
+                List<ProductVO> list = pService.selectPriceHigh2(categoryParent);
+                map.put("list", list);
+                map.put("status", 200);
+                // 가격 낮은순
+            } else if (sort == 4) {
+                List<ProductVO> list = pService.selectPriceLow2(categoryParent);
+                map.put("list", list);
+                map.put("status", 200);
             }
         } catch (Exception e) {
             e.printStackTrace();
