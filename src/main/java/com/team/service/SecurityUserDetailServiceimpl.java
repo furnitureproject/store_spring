@@ -36,6 +36,7 @@ public class SecurityUserDetailServiceimpl implements UserDetailsService {
         Optional<User> oUser = uRepository.findById(username);
         Optional<Seller> oSeller = sRepository.findById(username);
 
+
         System.out.println(oUser);
         System.out.println(oSeller);
         System.out.println(oUser.getClass().getName());

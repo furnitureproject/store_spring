@@ -1,10 +1,13 @@
 package com.team.controller;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.team.entity.Seller;
 import com.team.entity.User;
+import com.team.jwt.JwtSellerUtil;
+import com.team.jwt.JwtUserUtil;
 import com.team.jwt.JwtUtil;
 import com.team.service.SecurityUserDetailServiceimpl;
 import com.team.service.SellerService;
@@ -20,6 +23,8 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.BeanIds;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,7 +40,10 @@ public class LoginController {
     SellerService sellerService;
 
     @Autowired
-    JwtUtil jwtUtil;
+    JwtUserUtil jwtUserUtil;
+
+    @Autowired
+    JwtSellerUtil jwtSellerUtil;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -51,11 +59,14 @@ public class LoginController {
 
         Map<String, Object> map = new HashMap<String, Object>();
         try {
+            String[] userRoles = { user.getRole() };
+            Collection<GrantedAuthority> roles = AuthorityUtils.createAuthorityList(userRoles);
+
             authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(user.getUserId(), user.getUserPw()));
+                    .authenticate(new UsernamePasswordAuthenticationToken(user.getUserId(), user.getUserPw(), roles));
             
             map.put("status", 200);
-            map.put("token", jwtUtil.generateToken(user.getUserId()));
+            map.put("token", jwtUserUtil.generateToken(user.getUserId()));
         } catch (Exception e) {
             e.printStackTrace();
             map.put("error", e.hashCode());
@@ -84,11 +95,14 @@ public class LoginController {
 
         Map<String, Object> map = new HashMap<String, Object>();
         try {
+            String[] userRoles = { seller.getRole() };
+            Collection<GrantedAuthority> roles = AuthorityUtils.createAuthorityList(userRoles);
+
             authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(seller.getSellerId(), seller.getSellerPw()));
+                    .authenticate(new UsernamePasswordAuthenticationToken(seller.getSellerId(), seller.getSellerPw(), roles));
 
             map.put("status", 200);
-            map.put("token", jwtUtil.generateToken(seller.getSellerId()));
+            map.put("token", jwtSellerUtil.generateToken(seller.getSellerId()));
         } 
         // catch (Exception e) {
         //     e.printStackTrace();
