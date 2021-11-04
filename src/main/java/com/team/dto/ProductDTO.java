@@ -1,7 +1,5 @@
 package com.team.dto;
 
-import com.team.entity.Seller;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;

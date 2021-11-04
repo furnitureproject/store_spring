@@ -56,7 +56,7 @@ public class ProductOptionController {
 
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertPOST(@RequestBody ProductOption productoption, @RequestParam long productcode,
-            @RequestParam long eventcode) {
+            @RequestParam(name = "eventcode", required = false, defaultValue = "0") long eventcode) {
         Map<String, Object> map = new HashMap<>();
         try {
             Product product = new Product();
