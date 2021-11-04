@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.team.dto.ProductDTO;
 import com.team.entity.Category;
 import com.team.entity.Product;
 import com.team.entity.ProductDesImage;
-import com.team.entity.ProductProjection;
 import com.team.entity.ProductSubImage;
 import com.team.entity.Seller;
 import com.team.service.CategoryService;
@@ -17,6 +17,7 @@ import com.team.service.ProductDesImageService;
 import com.team.service.ProductOptionService;
 import com.team.service.ProductService;
 import com.team.service.ProductSubImageService;
+import com.team.vo.ProductVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -79,13 +80,64 @@ public class ProductController {
         return map;
     }
 
+    // 2개만 뽑는거
+    @GetMapping(value = "/select_one1", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> selectOneGET1(@RequestParam long productcode) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            ProductDTO product = pService.selectProductDTOOne(productcode);
+            map.put("product", product);
+            map.put("status", 200);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    // 전체물품 검색
+    @GetMapping(value = "/select_listall", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> selectListGET1(@RequestParam(name = "sort") long sort,
+            @RequestParam(name = "title", required = false, defaultValue = "") String title) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+
+            // 최신순
+            if (sort == 1) {
+                List<Product> list = pService.selectCodeList(title);
+                map.put("list", list);
+                map.put("status", 200);
+
+                // 조회수순
+            } else if (sort == 2) {
+                List<Product> list = pService.selectHitList(title);
+                map.put("list", list);
+                map.put("status", 200);
+                // 가격 높은순
+            } else if (sort == 3) {
+                List<ProductVO> list = pService.selectPriceHigh(title);
+                map.put("list", list);
+                map.put("status", 200);
+                // 가격 낮은순
+            } else if (sort == 4) {
+                List<ProductVO> list = pService.selectPriceLow(title);
+                map.put("list", list);
+                map.put("status", 200);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
     // 기준을 잡고 물품 정렬(최신순, 조회순, 인기순, 가격순)
     // 127.0.0.1:8080/ROOT/product/select_list?sort=
     // return [{ Product }, { Product }...]
     @GetMapping(value = "/select_list", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectListGET(@RequestParam long sort,
             @RequestParam(name = "query", required = false, defaultValue = "1") int query,
-            @RequestParam long categoryCode) {
+            @RequestParam(name = "categoryCode", required = false, defaultValue = "0") long categoryCode) {
         Map<String, Object> map = new HashMap<>();
         try {
             // 최신순
@@ -103,14 +155,14 @@ public class ProductController {
                 // map.put("status", 200);
                 // 가격 높은순
             } else if (sort == 3) {
-                List<ProductProjection> list = pService.ProductHigh();
-                map.put("list", list);
-                map.put("status", 200);
+
+                // map.put("list", list);
+                // map.put("status", 200);
                 // 가격 낮은순
             } else if (sort == 4) {
-                List<ProductProjection> list = pService.ProductLow();
-                map.put("list", list);
-                map.put("status", 200);
+
+                // map.put("list", list);
+                // map.put("status", 200);
             }
         } catch (Exception e) {
             e.printStackTrace();

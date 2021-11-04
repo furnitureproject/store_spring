@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Product">
+
+    <resultMap type="com.team.vo.ProductVO" id="map1">
+        <result column="PRODUCT_CODE" property="productCode" />
+        <result column="PRODUCT_TITLE" property="productTitle" />
+        <result column="PRODUCT_DESC" property="productDesc"/>
+        <result column="PRODUCT_HIT" property="productHit" />
+        <result column="PRODUCT_IMG_DATA" property="thumImgData" jdbcType="BLOB" />
+        <result column="PRODUCT_IMG_TYPE" property="thumImgType" />
+        <result column="OPTION_PRICE" property="optionPrice" />
+    </resultMap>
+
+    <select id="select_product_price_high_list" parameterType="String" resultMap="map1">
+        SELECT PRODUCT.PRODUCT_CODE,PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, PRODUCT.PRODUCT_HIT, 
+        PRODUCT.PRODUCT_IMG_DATA, PRODUCT.PRODUCT_IMG_TYPE,PRODUCT_OPTION.OPTION_PRICE FROM PRODUCT, PRODUCT_OPTION 
+        WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE AND PRODUCT_TITLE LIKE '%' || #{title} || '%' ORDER BY OPTION_PRICE DESC;
+    </select>
+
+    <resultMap type="com.team.vo.ProductVO" id="map2">
+        <result column="PRODUCT_CODE" property="productCode" />
+        <result column="PRODUCT_TITLE" property="productTitle" />
+        <result column="PRODUCT_DESC" property="productDesc"/>
+        <result column="PRODUCT_HIT" property="productHit" />
+        <result column="PRODUCT_IMG_DATA" property="thumImgData" jdbcType="BLOB" />
+        <result column="PRODUCT_IMG_TYPE" property="thumImgType" />
+        <result column="OPTION_PRICE" property="optionPrice" />
+    </resultMap>
+
+    <select id="select_product_price_low_list" parameterType="String" resultMap="map2">
+        SELECT PRODUCT.PRODUCT_CODE,PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, PRODUCT.PRODUCT_HIT, 
+        PRODUCT.PRODUCT_IMG_DATA, PRODUCT.PRODUCT_IMG_TYPE,PRODUCT_OPTION.OPTION_PRICE FROM PRODUCT, PRODUCT_OPTION 
+        WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE AND PRODUCT_TITLE LIKE '%' || #{title} || '%' ORDER BY OPTION_PRICE ASC;
+    </select>
+
+    
+    <resultMap type="com.team.dto.ProductDTO" id="map4">
+        <result column="PRODUCT_CODE" property="productCode" />
+        <result column="SELLER_ID" property="sellerId" />
+    </resultMap>
+    <select id="select_product" parameterType="Long" resultMap="map4">
+        SELECT PRODUCT.PRODUCT_CODE, PRODUCT.SELLER_ID FROM PRODUCT WHERE PRODUCT_CODE = #{productCode}
+    </select>
+
+
+
+    
+
+</mapper>

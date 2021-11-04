@@ -2,8 +2,9 @@ package com.team.service;
 
 import java.util.List;
 
+import com.team.dto.ProductDTO;
 import com.team.entity.Product;
-import com.team.entity.ProductProjection;
+import com.team.vo.ProductVO;
 
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,8 @@ public interface ProductService {
     // return product 혹은 null
     public Product selectProductOne(Long productCode);
 
+    public ProductDTO selectProductDTOOne(Long productCode);
+
     // 제품 전체 조회
     // return List<Product>
     public List<Product> selectProductAll();
@@ -39,10 +42,17 @@ public interface ProductService {
     // 코드 기준 정렬(최신순 정렬)
     public List<Product> categorySelerct(long categoryCode);
 
+    // 전체 조회시
+    // 최신순
+
+    public List<Product> selectCodeList(String Title);
+
+    public List<Product> selectHitList(String Title);
+
     // 가격 높은순
-    public List<ProductProjection> ProductHigh();
+    public List<ProductVO> selectPriceHigh(String Title);
 
     // 가격 낮은순
-    public List<ProductProjection> ProductLow();
+    public List<ProductVO> selectPriceLow(String Title);
 
 }

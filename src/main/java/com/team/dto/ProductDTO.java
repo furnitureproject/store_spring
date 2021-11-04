@@ -1,5 +1,7 @@
 package com.team.dto;
 
+import com.team.entity.Seller;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -11,20 +13,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ThumnailDto {
+public class ProductDTO {
 
     private Long productCode;
 
-    private String productTitle;
-
-    private String productDesc;
-
-    private Long productHit;
-
-    private Long category3Code;
-
-    private byte[] thumImgData;
-
-    private String thumImgType;
+    private String sellerId;
 
 }

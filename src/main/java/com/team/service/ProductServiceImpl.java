@@ -5,9 +5,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.team.dto.ProductDTO;
 import com.team.entity.Product;
-import com.team.entity.ProductProjection;
 import com.team.repository.ProductRepository;
+import com.team.vo.ProductVO;
+
+import org.apache.ibatis.session.SqlSessionFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     ProductRepository pRepository;
+
+    @Autowired
+    SqlSessionFactory sqlFactory;
 
     @Override
     public int insertProduct(Product product) {
@@ -51,6 +57,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ProductDTO selectProductDTOOne(Long productCode) {
+        return sqlFactory.openSession().selectOne("select_product", productCode);
+
+    }
+
+    @Override
     public List<Product> selectProductAll() {
 
         return pRepository.findAll();
@@ -74,19 +86,30 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductProjection> ProductHigh() {
-        return pRepository.querySelectPriceProductHigh();
-    }
-
-    @Override
-    public List<ProductProjection> ProductLow() {
-        return pRepository.querySelectPriceProductLow();
-    }
-
-    @Override
     public List<Product> categorySelerct(long categoryCode) {
 
         return pRepository.findByCategory_CategoryCodeOrderByProductCodeDesc(categoryCode);
+    }
+
+    // 전체물품 검색시
+    @Override
+    public List<ProductVO> selectPriceHigh(String Title) {
+        return sqlFactory.openSession().selectList("Product.select_product_price_high_list", Title);
+    }
+
+    @Override
+    public List<ProductVO> selectPriceLow(String Title) {
+        return sqlFactory.openSession().selectList("Product.select_product_price_low_list", Title);
+    }
+
+    @Override
+    public List<Product> selectCodeList(String Title) {
+        return pRepository.findByProductTitleIgnoreCaseContainingOrderByProductCodeDesc(Title);
+    }
+
+    @Override
+    public List<Product> selectHitList(String Title) {
+        return pRepository.findByProductTitleIgnoreCaseContainingOrderByProductHitDesc(Title);
     }
 
 }
