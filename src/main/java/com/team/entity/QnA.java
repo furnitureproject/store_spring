@@ -26,7 +26,7 @@ import lombok.ToString;
 
 @Entity
 @SequenceGenerator(name = "SEQ_QNA_NUM", sequenceName = "SEQ_QNA_NUM", initialValue = 1, allocationSize = 1)
-@Table(name = "QNA_TB")
+@Table(name = "QNA_TB2")
 public class QnA {
     
     @Id
@@ -47,7 +47,7 @@ public class QnA {
     @Column(name = "QNA_REPLY")
     private String qnaReply = null;
 
-    @CreationTimestamp
+    
     @Column(name = "QNA_REPLY_REGDATE")
     private Date qnaReplyRegdate = null;
 
@@ -55,11 +55,11 @@ public class QnA {
     private int qnaReplyCheck = 0;
 
     @ManyToOne
-    @JoinColumn(name = "USER_ID", nullable = false)
+    @JoinColumn(name = "USER_ID", nullable = false, updatable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "PRODUCT_CODE")
+    @JoinColumn(name = "PRODUCT_CODE", updatable = false)
     private Product product;
 
 
