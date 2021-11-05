@@ -1,0 +1,24 @@
+package com.team.entity;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "PAYMENT")
+public class Payment {
+    
+    @Id
+    @Column(name = "PAYMENT_NO")
+    private Long paymentNo;
+
+    @Column(name = "PAYMENT_STATE")
+    private int paymentStatus;
+
+    @Column(name = "PAYMENT_REGDATE")
+    private Date paymentRegdate;
+
+}

@@ -57,6 +57,9 @@ public class Cart {
     // 대표 사진 타입
     private String cartImgType;
 
+    @Column(name = "CART_STATUS")
+    private int cartStatus;
+
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     private User user;
