@@ -8,6 +8,7 @@ import java.util.Map;
 import com.team.entity.Cart;
 import com.team.entity.ProductOption;
 import com.team.entity.User;
+import com.team.enums.OrderStatus;
 import com.team.jwt.JwtUtil;
 import com.team.service.CartService;
 import com.team.service.ProductOptionService;
@@ -102,6 +103,14 @@ public class CartController {
         } catch (Exception e) {
             map.put("status", e.hashCode());
         }
+        return map;
+    }
+
+    @GetMapping(value = "/cart1")
+    public Map<String, Object> Cart() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", OrderStatus.COMPLETE.getCode());
+        map.put("statis", OrderStatus.COMPLETE.getStatus());
         return map;
     }
 
