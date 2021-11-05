@@ -20,6 +20,7 @@ import com.team.service.ProductSubImageService;
 import com.team.vo.ProductVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -49,6 +50,8 @@ public class ProductController {
 
     @Autowired
     ProductSubImageService psService;
+
+    int PAGECNT = 10;
 
     @GetMapping(value = "/test")
     public Map<String, Object> testproduct() {
@@ -96,31 +99,54 @@ public class ProductController {
     }
 
     // 전체물품 검색
-    @GetMapping(value = "/select_listall", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/select_list", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectListGET1(@RequestParam(name = "sort") long sort,
-            @RequestParam(name = "title", required = false, defaultValue = "") String title) {
+            @RequestParam(name = "title", required = false, defaultValue = "") String title,
+            @RequestParam(name = "page", required = false, defaultValue = "1") int page) {
         Map<String, Object> map = new HashMap<>();
         try {
 
             // 최신순
+            long cnt = pService.countByProduct1(title);
             if (sort == 1) {
-                List<Product> list = pService.selectCodeList(title);
+                PageRequest pageRequest = PageRequest.of(page - 1, PAGECNT);
+                List<Product> list = pService.selectCodeList(title, pageRequest);
+                map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
 
                 // 조회수순
             } else if (sort == 2) {
-                List<Product> list = pService.selectHitList(title);
+                PageRequest pageRequest = PageRequest.of(page - 1, PAGECNT);
+                List<Product> list = pService.selectHitList(title, pageRequest);
+
+                map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
                 // 가격 높은순
             } else if (sort == 3) {
-                List<ProductVO> list = pService.selectPriceHigh(title);
+                Map<String, Object> map1 = new HashMap<>();
+                int rpage1 = page * PAGECNT;
+                int rpage = rpage1 - (PAGECNT - 1);
+
+                map1.put("page", rpage);
+                map1.put("page1", rpage1);
+                map1.put("title", title);
+                List<ProductVO> list = pService.selectPriceHigh(map1);
+                map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
                 // 가격 낮은순
             } else if (sort == 4) {
-                List<ProductVO> list = pService.selectPriceLow(title);
+                Map<String, Object> map2 = new HashMap<>();
+                int rpage1 = page * PAGECNT;
+                int rpage = rpage1 - (PAGECNT - 1);
+
+                map2.put("page", rpage);
+                map2.put("page1", rpage1);
+                map2.put("title", title);
+                List<ProductVO> list = pService.selectPriceLow(map2);
+                map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
             }
@@ -134,30 +160,52 @@ public class ProductController {
     // 소분류 물품 검색
     // 127.0.0.1:8080/ROOT/product/select_list?sort=
     // return [{ Product }, { Product }...]
-    @GetMapping(value = "/select_list", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/select_list1", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectListGET(@RequestParam long sort,
-            @RequestParam(name = "categoryCode") long categoryCode) {
+            @RequestParam(name = "categoryCode") long categoryCode,
+            @RequestParam(name = "page", required = false, defaultValue = "1") int page) {
         Map<String, Object> map = new HashMap<>();
         try {
             // 최신순
+            long cnt = pService.countByProduct2(categoryCode);
             if (sort == 1) {
-                List<Product> list = pService.categoryCodeSelect1(categoryCode);
+                PageRequest pageRequest = PageRequest.of(page - 1, PAGECNT);
+                List<Product> list = pService.categoryCodeSelect1(categoryCode, pageRequest);
+                map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
 
                 // 조회수순
             } else if (sort == 2) {
-                List<Product> list = pService.categoryHitSelect1(categoryCode);
+                PageRequest pageRequest = PageRequest.of(page - 1, PAGECNT);
+                List<Product> list = pService.categoryHitSelect1(categoryCode, pageRequest);
+                map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
                 // 가격 높은순
             } else if (sort == 3) {
-                List<ProductVO> list = pService.selectPriceHigh1(categoryCode);
+                Map<String, Object> map1 = new HashMap<>();
+                int rpage1 = page * PAGECNT;
+                int rpage = rpage1 - (PAGECNT - 1);
+
+                map1.put("page", rpage);
+                map1.put("page1", rpage1);
+                map1.put("categoryCode", categoryCode);
+                List<ProductVO> list = pService.selectPriceHigh1(map1);
+                map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
                 // 가격 낮은순
             } else if (sort == 4) {
-                List<ProductVO> list = pService.selectPriceLow1(categoryCode);
+                Map<String, Object> map2 = new HashMap<>();
+                int rpage1 = page * PAGECNT;
+                int rpage = rpage1 - (PAGECNT - 1);
+
+                map2.put("page", rpage);
+                map2.put("page1", rpage1);
+                map2.put("categoryCode", categoryCode);
+                List<ProductVO> list = pService.selectPriceLow1(map2);
+                map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
             }
@@ -168,30 +216,50 @@ public class ProductController {
         return map;
     }
 
-    @GetMapping(value = "/select_list1", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/select_list2", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectList1GET(@RequestParam long sort,
-            @RequestParam(name = "categoryParent") long categoryParent) {
+            @RequestParam(name = "categoryParent") long categoryParent,
+            @RequestParam(name = "page", required = false, defaultValue = "1") int page) {
         Map<String, Object> map = new HashMap<>();
+        long cnt = pService.countByProduct3(categoryParent);
         try {
             // 최신순
             if (sort == 1) {
-                List<Product> list = pService.categoryCodeSelect2(categoryParent);
+                PageRequest pageRequest = PageRequest.of(page - 1, PAGECNT);
+                List<Product> list = pService.categoryCodeSelect2(categoryParent, pageRequest);
+                map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
 
                 // 조회수순
             } else if (sort == 2) {
-                List<Product> list = pService.categoryHitSelect2(categoryParent);
+                PageRequest pageRequest = PageRequest.of(page - 1, PAGECNT);
+                List<Product> list = pService.categoryHitSelect2(categoryParent, pageRequest);
+                map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
                 // 가격 높은순
             } else if (sort == 3) {
-                List<ProductVO> list = pService.selectPriceHigh2(categoryParent);
+                Map<String, Object> map1 = new HashMap<>();
+                int rpage1 = page * PAGECNT;
+                int rpage = rpage1 - (PAGECNT - 1);
+                map1.put("page", rpage);
+                map1.put("page1", rpage1);
+                map1.put("categoryParent", categoryParent);
+                List<ProductVO> list = pService.selectPriceHigh2(map1);
+                map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
                 // 가격 낮은순
             } else if (sort == 4) {
-                List<ProductVO> list = pService.selectPriceLow2(categoryParent);
+                Map<String, Object> map2 = new HashMap<>();
+                int rpage1 = page * PAGECNT;
+                int rpage = rpage1 - (PAGECNT - 1);
+                map2.put("page", rpage);
+                map2.put("page1", rpage1);
+                map2.put("categoryParent", categoryParent);
+                List<ProductVO> list = pService.selectPriceLow2(map2);
+                map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
             }

@@ -3,6 +3,7 @@ package com.team.service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.team.dto.ProductDTO;
@@ -13,6 +14,7 @@ import com.team.vo.ProductVO;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -88,79 +90,97 @@ public class ProductServiceImpl implements ProductService {
     // 전체물품 검색시
     // 가격 높은순
     @Override
-    public List<ProductVO> selectPriceHigh(String Title) {
-        return sqlFactory.openSession().selectList("Product.select_product_price_high_list", Title);
+    public List<ProductVO> selectPriceHigh(Map<String, Object> map) {
+        return sqlFactory.openSession().selectList("Product.select_product_price_high_list", map);
     }
 
     // 가격 낮은순
     @Override
-    public List<ProductVO> selectPriceLow(String Title) {
-        return sqlFactory.openSession().selectList("Product.select_product_price_low_list", Title);
+    public List<ProductVO> selectPriceLow(Map<String, Object> map) {
+        return sqlFactory.openSession().selectList("Product.select_product_price_low_list", map);
     }
 
     // 최신순
     @Override
-    public List<Product> selectCodeList(String Title) {
-        return pRepository.findByProductTitleIgnoreCaseContainingOrderByProductCodeDesc(Title);
+    public List<Product> selectCodeList(String Title, Pageable pageable) {
+        return pRepository.findByProductTitleIgnoreCaseContainingOrderByProductCodeDesc(Title, pageable);
     }
 
     // 조회수순
     @Override
-    public List<Product> selectHitList(String Title) {
-        return pRepository.findByProductTitleIgnoreCaseContainingOrderByProductHitDesc(Title);
+    public List<Product> selectHitList(String Title, Pageable pageable) {
+        return pRepository.findByProductTitleIgnoreCaseContainingOrderByProductHitDesc(Title, pageable);
+    }
+
+    // 총개수
+    @Override
+    public long countByProduct1(String Title) {
+        return pRepository.countByProductTitleIgnoreCaseContaining(Title);
     }
 
     // 소분류
     // 최신순
     @Override
-    public List<Product> categoryCodeSelect1(long categoryCode) {
+    public List<Product> categoryCodeSelect1(long categoryCode, Pageable pageable) {
 
-        return pRepository.findByCategory_CategoryCodeOrderByProductCodeDesc(categoryCode);
+        return pRepository.findByCategory_CategoryCodeOrderByProductCodeDesc(categoryCode, pageable);
     }
 
     // 조회수순
     @Override
-    public List<Product> categoryHitSelect1(long categoryCode) {
-        return pRepository.findByCategory_CategoryCodeOrderByProductHitDesc(categoryCode);
+    public List<Product> categoryHitSelect1(long categoryCode, Pageable pageable) {
+        return pRepository.findByCategory_CategoryCodeOrderByProductHitDesc(categoryCode, pageable);
     }
 
     // 가격 높은순
     @Override
-    public List<ProductVO> selectPriceHigh1(Long categoryCode) {
-        return sqlFactory.openSession().selectList("select_product_price_high_list1", categoryCode);
+    public List<ProductVO> selectPriceHigh1(Map<String, Object> map) {
+        return sqlFactory.openSession().selectList("select_product_price_high_list1", map);
     }
 
     // 가격 낮은순
     @Override
-    public List<ProductVO> selectPriceLow1(Long categoryCode) {
-        return sqlFactory.openSession().selectList("select_product_price_row_list1", categoryCode);
+    public List<ProductVO> selectPriceLow1(Map<String, Object> map) {
+        return sqlFactory.openSession().selectList("select_product_price_row_list1", map);
+    }
+
+    // 총개수
+    @Override
+    public long countByProduct2(Long categoryCode) {
+        return pRepository.countByCategory_CategoryCode(categoryCode);
     }
 
     // 중분류
 
     // 최신순
     @Override
-    public List<Product> categoryCodeSelect2(long categoryParent) {
-        return pRepository.findByCategory_CategoryParentOrderByProductCodeDesc(categoryParent);
+    public List<Product> categoryCodeSelect2(long categoryParent, Pageable pageable) {
+        return pRepository.findByCategory_CategoryParentOrderByProductCodeDesc(categoryParent, pageable);
     }
 
     // 조회수순
     @Override
-    public List<Product> categoryHitSelect2(long categoryParent) {
-        return pRepository.findByCategory_CategoryParentOrderByProductHitDesc(categoryParent);
+    public List<Product> categoryHitSelect2(long categoryParent, Pageable pageable) {
+        return pRepository.findByCategory_CategoryParentOrderByProductHitDesc(categoryParent, pageable);
     }
 
     // 가격 높은순
     @Override
-    public List<ProductVO> selectPriceHigh2(Long categoryParent) {
-        return sqlFactory.openSession().selectList("select_product_price_high_list2", categoryParent);
+    public List<ProductVO> selectPriceHigh2(Map<String, Object> map) {
+        return sqlFactory.openSession().selectList("select_product_price_high_list2", map);
     }
 
     // 가격 낮은순
     @Override
-    public List<ProductVO> selectPriceLow2(Long categoryParent) {
-        return sqlFactory.openSession().selectList("select_product_price_low_list2", categoryParent);
+    public List<ProductVO> selectPriceLow2(Map<String, Object> map) {
+        return sqlFactory.openSession().selectList("select_product_price_low_list2", map);
 
+    }
+
+    // 총개수
+    @Override
+    public long countByProduct3(Long categoryParent) {
+        return pRepository.countBycategory_CategoryParent(categoryParent);
     }
 
 }

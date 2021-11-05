@@ -1,11 +1,13 @@
 package com.team.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.team.dto.ProductDTO;
 import com.team.entity.Product;
 import com.team.vo.ProductVO;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -43,41 +45,50 @@ public interface ProductService {
 
     // 전체 조회시
     // 최신 등록순
-    public List<Product> selectCodeList(String Title);
+    public List<Product> selectCodeList(String Title, Pageable pageable);
 
     // 조회수 높은순
-    public List<Product> selectHitList(String Title);
+    public List<Product> selectHitList(String Title, Pageable pageable);
 
     // 가격 높은순
-    public List<ProductVO> selectPriceHigh(String Title);
+    public List<ProductVO> selectPriceHigh(Map<String, Object> map);
 
     // 가격 낮은순
-    public List<ProductVO> selectPriceLow(String Title);
+    public List<ProductVO> selectPriceLow(Map<String, Object> map);
+
+    // 총 개수
+    long countByProduct1(String Title);
 
     // 소분류
     // 최신 등록순
-    public List<Product> categoryCodeSelect1(long categoryCode);
+    public List<Product> categoryCodeSelect1(long categoryCode, Pageable pageable);
 
     // 조회수 높은순
-    public List<Product> categoryHitSelect1(long categoryCode);
+    public List<Product> categoryHitSelect1(long categoryCode, Pageable pageable);
 
     // 가격 높은순
-    public List<ProductVO> selectPriceHigh1(Long categoryCode);
+    public List<ProductVO> selectPriceHigh1(Map<String, Object> map);
 
     // 가격 낮은순
-    public List<ProductVO> selectPriceLow1(Long categoryCode);
+    public List<ProductVO> selectPriceLow1(Map<String, Object> map);
+
+    // 총 개수
+    long countByProduct2(Long categoryCode);
 
     // 중분류
     // 최신 등록순
-    public List<Product> categoryCodeSelect2(long categoryParent);
+    public List<Product> categoryCodeSelect2(long categoryParent, Pageable pageable);
 
     // 조회수 높은순
-    public List<Product> categoryHitSelect2(long categoryParent);
+    public List<Product> categoryHitSelect2(long categoryParent, Pageable pageable);
 
     // 가격 높은순
-    public List<ProductVO> selectPriceHigh2(Long categoryParent);
+    public List<ProductVO> selectPriceHigh2(Map<String, Object> map);
 
     // 가격 낮은순
-    public List<ProductVO> selectPriceLow2(Long categoryParent);
+    public List<ProductVO> selectPriceLow2(Map<String, Object> map);
+
+    // 총 개수
+    long countByProduct3(Long categoryParent);
 
 }
