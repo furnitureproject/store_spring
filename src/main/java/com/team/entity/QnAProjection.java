@@ -2,8 +2,6 @@ package com.team.entity;
 
 import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Value;
-
 public interface QnAProjection {
     
     Long getQna_Num();
@@ -15,6 +13,8 @@ public interface QnAProjection {
     Date getQna_Regdate();
 
     String getQna_Reply();
+
+    Date getQna_Reply_ReDate();
 
     //엔티티의 JoinColumn으로 되어있는 변수 Projection
     // @Value("#{target.user}")

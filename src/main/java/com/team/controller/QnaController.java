@@ -13,6 +13,8 @@ import com.team.entity.QnA;
 import com.team.entity.QnAProjection;
 import com.team.entity.Seller;
 import com.team.entity.User;
+import com.team.jwt.JwtSellerUtil;
+import com.team.jwt.JwtUserUtil;
 import com.team.jwt.JwtUtil;
 import com.team.service.ProductService;
 import com.team.service.QnaService;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class QnaController {
+    
     @Autowired
     JwtUtil jwtUtil;
 
@@ -59,7 +62,7 @@ public class QnaController {
             String userid = jwtUtil.extractUsername(token); // token을 통해 회원정보 찾기
             User user = uService.selectUserOne(userid); //user 정보 찾기
             Product product = pService.selectProductOne(productCode); //product 정보 찾기
-            if(jwtUtil.extractUsername(token).equals(userid)){
+            if(userid.equals(user.getUserId())){
                 qnA.setUser(user); //userid
                 qnA.setProduct(product);  //productcode
                 qService.insertQna(qnA);
@@ -119,7 +122,7 @@ public class QnaController {
                 qnA2.setQnaReply(qnA.getQnaReply());
                 qnA2.setQnaReplyCheck(1);
                 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                System.out.println(timestamp);
+                //System.out.println(timestamp);
                 qnA2.setQnaReplyRegdate(timestamp);
                 qService.updateQna(qnA2);
                 map.put("result", 1L);
@@ -143,6 +146,24 @@ public class QnaController {
         Map<String, Object> map = new HashMap<>();
         try {
             List<QnAProjection> list = qService.selectQnaList(code);
+            map.put("list", list);
+            map.put("result", 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("result", e.hashCode());
+        }
+        return map;
+    }
+
+    //회원id 별 qna 조회
+    // 127.0.0.1:8080/ROOT/select_userqnalist?id= userid
+    @RequestMapping(value = "/select_userqnalist", method = {
+        RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> selectPcodeQnaGET(
+    @RequestParam("id") String userid) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<QnAProjection> list = qService.selectUserQnaList(userid);
             map.put("list", list);
             map.put("result", 1);
         } catch (Exception e) {

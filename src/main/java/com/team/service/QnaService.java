@@ -21,4 +21,7 @@ public interface QnaService {
 
     //qna 물품 코드 별 목록 조회
     public List<QnAProjection> selectQnaList(Long code);
+
+    //회원id 별 qna 조회
+    public List<QnAProjection> selectUserQnaList(String userid);
 }

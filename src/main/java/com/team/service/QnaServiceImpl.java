@@ -40,6 +40,12 @@ public class QnaServiceImpl implements QnaService{
     public List<QnAProjection> selectQnaList(Long code) {
         return qRepository.queryListPcodeQna(code);
     }
+
+    //회원id 별 qna 조회
+    @Override
+    public List<QnAProjection> selectUserQnaList(String userid) {
+        return qRepository.queryListUseridQna(userid);
+    }
     
     
 }
