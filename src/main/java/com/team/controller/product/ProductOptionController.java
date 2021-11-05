@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/productoption")
 public class ProductOptionController {
-
     @Autowired
     ProductOptionService poService;
 
