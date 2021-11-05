@@ -47,7 +47,6 @@ public class QnA {
     @Column(name = "QNA_REPLY")
     private String qnaReply = null;
 
-    
     @Column(name = "QNA_REPLY_REGDATE")
     private Date qnaReplyRegdate = null;
 

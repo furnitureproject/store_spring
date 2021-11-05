@@ -1,20 +1,14 @@
 package com.team.controller;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.team.dto.ProductDTO;
 import com.team.entity.Product;
 import com.team.entity.QnA;
 import com.team.entity.QnAProjection;
-import com.team.entity.Seller;
 import com.team.entity.User;
-import com.team.jwt.JwtSellerUtil;
-import com.team.jwt.JwtUserUtil;
 import com.team.jwt.JwtUtil;
 import com.team.service.ProductService;
 import com.team.service.QnaService;
@@ -23,7 +17,6 @@ import com.team.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -78,8 +71,8 @@ public class QnaController {
         return map;
     }
 
-    //qna 수정(user)
-    //127.0.0.1:8080/ROOT/qna/update?qnano=1
+    // qna 수정(user)
+    // 127.0.0.1:8080/ROOT/qna/update?qnano=1
     @RequestMapping(value = "/qna/update", method = {
         RequestMethod.PUT }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> qnaUpdatePUT(@RequestBody QnA qnA,
@@ -106,8 +99,8 @@ public class QnaController {
         return map;
     }
 
-    //qna 수정(seller)
-    //127.0.0.1:8080/ROOT/qna/update2?qnano=
+    // qna 수정(seller)
+    // 127.0.0.1:8080/ROOT/qna/update2?qnano=
     @RequestMapping(value = "/qna/update2", method = {
         RequestMethod.PUT }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> qnaUpdate2PUT(@RequestBody QnA qnA,
@@ -155,7 +148,7 @@ public class QnaController {
         return map;
     }
 
-    //회원id 별 qna 조회
+    // 회원id 별 qna 조회
     // 127.0.0.1:8080/ROOT/select_userqnalist?id= userid
     @RequestMapping(value = "/select_userqnalist", method = {
         RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

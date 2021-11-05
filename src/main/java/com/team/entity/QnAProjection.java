@@ -14,12 +14,6 @@ public interface QnAProjection {
 
     String getQna_Reply();
 
-    Date getQna_Reply_ReDate();
+    Date getQna_Reply_RegDate();
 
-    //엔티티의 JoinColumn으로 되어있는 변수 Projection
-    // @Value("#{target.user}")
-    // User getUser_id();
-
-    // @Value("#{target.user.userid")
-    // String getUseruserid();
 }

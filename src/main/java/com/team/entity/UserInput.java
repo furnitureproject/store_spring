@@ -22,6 +22,7 @@ import lombok.ToString;
 public class UserInput {
     
     @Id
+    //시퀀스 추가하기
     @Column(name = "UINPUT_NO")
     private Long uInputNo;
 
