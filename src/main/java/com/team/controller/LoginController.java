@@ -67,9 +67,29 @@ public class LoginController {
             
             map.put("status", 200);
             map.put("token", jwtUserUtil.generateToken(user.getUserId()));
-        } catch (Exception e) {
-            e.printStackTrace();
-            map.put("error", e.hashCode());
+        } 
+        // catch (Exception e) {
+        //     e.printStackTrace();
+        //     map.put("error", e.hashCode());
+        // }
+        catch(DisabledException | LockedException | BadCredentialsException e){
+            if (e.getClass().equals(BadCredentialsException.class)) {
+                e.printStackTrace();
+                map.put("error", e.hashCode());
+                map.put("status", "invalid-password");
+            } else if (e.getClass().equals(DisabledException.class)) {
+                e.printStackTrace();
+                map.put("error", e.hashCode());
+                map.put("status", "disable");
+            } else if (e.getClass().equals(LockedException.class)) {
+                e.printStackTrace();
+                map.put("error", e.hashCode());
+                map.put("status", "locked");
+            } else {
+                e.printStackTrace();
+                map.put("error", e.hashCode());
+                map.put("status", "unknown");
+            }
         }
 
         return map;
