@@ -39,11 +39,14 @@ public class LoginController {
     @Autowired
     SellerService sellerService;
 
-    @Autowired
-    JwtUserUtil jwtUserUtil;
+    // @Autowired
+    // JwtUserUtil jwtUserUtil;
+
+    // @Autowired
+    // JwtSellerUtil jwtSellerUtil;
 
     @Autowired
-    JwtSellerUtil jwtSellerUtil;
+    JwtUtil jwtUtil;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -66,7 +69,8 @@ public class LoginController {
                     .authenticate(new UsernamePasswordAuthenticationToken(user.getUserId(), user.getUserPw(), roles));
             
             map.put("status", 200);
-            map.put("token", jwtUserUtil.generateToken(user.getUserId()));
+            // map.put("token", jwtUserUtil.generateToken(user.getUserId()));
+            map.put("token", jwtUtil.generateToken(user.getUserId()));
         } 
         // catch (Exception e) {
         //     e.printStackTrace();
@@ -122,7 +126,8 @@ public class LoginController {
                     .authenticate(new UsernamePasswordAuthenticationToken(seller.getSellerId(), seller.getSellerPw(), roles));
 
             map.put("status", 200);
-            map.put("token", jwtSellerUtil.generateToken(seller.getSellerId()));
+            // map.put("token", jwtSellerUtil.generateToken(seller.getSellerId()));
+            map.put("token", jwtUtil.generateToken(seller.getSellerId()));
         } 
         // catch (Exception e) {
         //     e.printStackTrace();
