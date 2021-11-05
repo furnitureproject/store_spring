@@ -39,14 +39,10 @@ public class CartController {
     UserService uService;
 
     @GetMapping(value = "/cart", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectCart(
-    // @RequestHeader("token") String token
-    ) {
+    public Map<String, Object> selectCart(@RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
-            // String userid = jwtUtil.extractUsername(token);
-            User user = uService.selectUserOne("s");
-            String userid = user.getUserId();
+            String userid = jwtUtil.extractUsername(token);
 
             map.put("status", 200);
             map.put("obj", cService.selectAllUserCart(userid));
@@ -58,14 +54,11 @@ public class CartController {
     }
 
     @PostMapping(value = "/cart", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> insertCart(@RequestBody Cart cart,
-            // @RequestHeader("token") String token,
+    public Map<String, Object> insertCart(@RequestBody Cart cart, @RequestHeader("token") String token,
             @RequestParam("optioncode") Long code) {
         Map<String, Object> map = new HashMap<>();
         try {
-            User user1 = uService.selectUserOne("s");
-            // String userid = jwtUtil.extractUsername(token);
-            String userid = user1.getUserId();
+            String userid = jwtUtil.extractUsername(token);
             User user = uService.selectUserOne(userid);
             ProductOption productOption = pOService.selectProductOptionOne(code);
             cart.setUser(user);
