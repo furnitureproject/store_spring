@@ -130,6 +130,9 @@ public class QnaController {
         return map;
     }
 
+    //qna 삭제
+    
+
     // 제품 코드 별 제품 조회(sql)
     // 127.0.0.1:8080/ROOT/select_qnalist?code= 물품 코드
     @RequestMapping(value = "/select_qnalist", method = {

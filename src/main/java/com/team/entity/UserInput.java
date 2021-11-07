@@ -2,9 +2,12 @@ package com.team.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -18,11 +21,12 @@ import lombok.ToString;
 @ToString
 
 @Entity
+@SequenceGenerator(name = "SEQ_UINPUT_NUM", sequenceName = "SEQ_UINPUT_NUM", initialValue = 1, allocationSize = 1)
 @Table(name = "USER_INPUT")
 public class UserInput {
     
     @Id
-    //시퀀스 추가하기
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_UINPUT_NUM")
     @Column(name = "UINPUT_NO")
     private Long uInputNo;
 
