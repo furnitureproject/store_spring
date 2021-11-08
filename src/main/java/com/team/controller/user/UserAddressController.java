@@ -6,6 +6,7 @@ import java.util.Map;
 import com.team.entity.User;
 import com.team.entity.UserAddress;
 import com.team.entity.UserAddressProjection;
+import com.team.enums.OrderStatus;
 import com.team.jwt.JwtUtil;
 import com.team.service.UserAddressService;
 import com.team.service.UserService;
@@ -44,7 +45,7 @@ public class UserAddressController {
             User user = uService.selectUserOne(id);
             address.setUser(user);
             uaService.insertUserAddress(address);
-            map.put("status", 200);
+            map.put("status", OrderStatus.COMPLETE.getStatus());
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());

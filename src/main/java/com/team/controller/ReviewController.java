@@ -20,6 +20,7 @@ import com.team.service.ReviewService;
 import com.team.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,6 +34,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
 public class ReviewController {
+
+    @Autowired
+    ResourceLoader resourceLoader;
 
     @Autowired
     JwtUtil jwtUtil;
@@ -155,21 +159,25 @@ public class ReviewController {
     }
 
     // 이미지는 데이터랑 타입만 넘겨주도록
-    // <img src="/review_image?num=16&idx=1">
+    // <img src="/reviewimage?reviewnum=16&idx=1">
     @GetMapping(value = "/reviewimage")
     public ResponseEntity<byte[]> ImageGet(@RequestParam("reviewnum") Long reviewNum, @RequestParam("idx") int idx) {
         List<ReviewImgProjection> list = rIService.selectReviewImgList(reviewNum);
         ReviewImgProjection rImg = list.get(idx);
         HttpHeaders headers = new HttpHeaders();
-        if (rImg.getReviewImgType().equals("image/jpeg")) {
-            headers.setContentType(MediaType.IMAGE_JPEG);
-        } else if (rImg.getReviewImgType().equals("image/png")) {
-            headers.setContentType(MediaType.IMAGE_PNG);
-        } else if (rImg.getReviewImgType().equals("image/gif")) {
-            headers.setContentType(MediaType.IMAGE_GIF);
+        try {
+            if (rImg.getReviewImgType().equals("image/jpeg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else if (rImg.getReviewImgType().equals("image/png")) {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            } else if (rImg.getReviewImgType().equals("image/gif")) {
+                headers.setContentType(MediaType.IMAGE_GIF);
+            }
+            ResponseEntity<byte[]> response = new ResponseEntity<>(rImg.getReviewImgData(), headers, HttpStatus.OK);
+            return response;
+        } catch (Exception e) {
+            return null;
         }
-        ResponseEntity<byte[]> response = new ResponseEntity<>(rImg.getReviewImgData(), headers, HttpStatus.OK);
-        return response;
     }
 
 }

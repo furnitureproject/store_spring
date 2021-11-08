@@ -14,6 +14,8 @@ public interface CartService {
     // return 1
     public int insertCart(Cart cart);
 
+    public int insertListCart(List<Cart> list);
+
     // 카트 수정
     // return 1
     public int updateCart(Cart cart);

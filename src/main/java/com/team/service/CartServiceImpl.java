@@ -23,6 +23,12 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    public int insertListCart(List<Cart> list) {
+        cRepository.saveAll(list);
+        return 0;
+    }
+
+    @Override
     public int updateCart(Cart cart) {
         cRepository.save(cart);
         return 1;
