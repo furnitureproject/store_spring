@@ -73,18 +73,21 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Long codeNext() {
         // 시퀀스 값 받기
-        String seq = pRepository.getNextSeqVal();
+        Long seq = pRepository.getNextSeqVal();
+
+        String seq1 = String.format("%04d", seq);
         // 오늘 시간 값 받기
         Date time = new Date();
         // 받아오는 형태
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         // 받은값을 today에 넣음
         String today = format.format(time);
-        // Long으로 되는지 확인해보기위한 형변환
-        Long numtoday = Long.parseLong(today + seq);
 
+        // Long으로 되는지 확인해보기위한 형변환
+        Long numtoday = Long.parseLong(today + seq1);
         System.out.println(numtoday);
         return numtoday;
+
     }
 
     // 전체물품 검색시

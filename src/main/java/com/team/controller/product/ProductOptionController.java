@@ -26,10 +26,10 @@ public class ProductOptionController {
     ProductOptionService poService;
 
     @GetMapping(value = "/select_one", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectOneGET(@RequestParam long optioncode) {
+    public Map<String, Object> selectOneGET(@RequestParam long optionCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            ProductOption productOption = poService.selectProductOptionOne(optioncode);
+            ProductOption productOption = poService.selectProductOptionOne(optionCode);
             map.put("productOption", productOption);
             map.put("status", 200);
         } catch (Exception e) {
@@ -54,19 +54,19 @@ public class ProductOptionController {
     }
 
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> insertPOST(@RequestBody ProductOption productoption, @RequestParam long productcode,
-            @RequestParam(name = "eventcode", required = false, defaultValue = "0") long eventcode) {
+    public Map<String, Object> insertPOST(@RequestBody ProductOption productOption, @RequestParam long productCode,
+            @RequestParam(name = "eventcode", required = false, defaultValue = "0") long eventCode) {
         Map<String, Object> map = new HashMap<>();
         try {
             Product product = new Product();
-            product.setProductCode(productcode);
-            productoption.setProduct(product);
+            product.setProductCode(productCode);
+            productOption.setProduct(product);
 
             ProductEvent productEvent = new ProductEvent();
-            productEvent.setEventCode(eventcode);
-            productoption.setProductEvent(productEvent);
+            productEvent.setEventCode(eventCode);
+            productOption.setProductEvent(productEvent);
 
-            poService.insertProductOption(productoption);
+            poService.insertProductOption(productOption);
             map.put("status", 200);
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,19 +76,19 @@ public class ProductOptionController {
     }
 
     @PutMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> UpdatePOST(@RequestBody ProductOption productoption, @RequestParam long productcode,
-            @RequestParam long eventcode) {
+    public Map<String, Object> UpdatePOST(@RequestBody ProductOption productOption, @RequestParam long productCode,
+            @RequestParam long eventCode) {
         Map<String, Object> map = new HashMap<>();
         try {
             Product product = new Product();
-            product.setProductCode(productcode);
-            productoption.setProduct(product);
+            product.setProductCode(productCode);
+            productOption.setProduct(product);
 
             ProductEvent productEvent = new ProductEvent();
-            productEvent.setEventCode(eventcode);
-            productoption.setProductEvent(productEvent);
+            productEvent.setEventCode(eventCode);
+            productOption.setProductEvent(productEvent);
 
-            poService.updateProductOption(productoption);
+            poService.updateProductOption(productOption);
             map.put("status", 200);
 
         } catch (Exception e) {
@@ -99,13 +99,13 @@ public class ProductOptionController {
     }
 
     @PutMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> ProductDelete(@RequestParam long optioncode, @RequestParam long productcode) {
+    public Map<String, Object> ProductDelete(@RequestParam long optionCode, @RequestParam long productCode) {
         Map<String, Object> map = new HashMap<>();
         try {
             Product product = new Product();
-            product.setProductCode(productcode);
+            product.setProductCode(productCode);
             ProductOption productOption = new ProductOption();
-            ProductOption productOption1 = poService.selectProductOptionOne(optioncode);
+            ProductOption productOption1 = poService.selectProductOptionOne(optionCode);
             productOption.setProduct(product);
             productOption.setOptionCode(productOption1.getOptionCode());
             poService.updateProductOption(productOption);

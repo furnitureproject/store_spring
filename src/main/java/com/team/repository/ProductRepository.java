@@ -14,7 +14,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
         // 시퀀스를 1 증가시키고 그 값을 받아온다.
         @Query(value = "SELECT SEQ_TEST01.nextval FROM dual", nativeQuery = true)
-        String getNextSeqVal();
+        Long getNextSeqVal();
 
         // 0. 검색
 

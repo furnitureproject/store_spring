@@ -1,5 +1,7 @@
 package com.team.controller.product;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,21 +14,28 @@ import com.team.entity.Product;
 import com.team.entity.ProductDesImage;
 import com.team.entity.ProductSubImage;
 import com.team.entity.Seller;
+import com.team.jwt.JwtUtil;
 import com.team.service.CategoryService;
 import com.team.service.ProductDesImageService;
 import com.team.service.ProductOptionService;
 import com.team.service.ProductService;
 import com.team.service.ProductSubImageService;
+import com.team.service.SellerService;
 import com.team.vo.ProductVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,6 +44,9 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping(value = "/product")
 public class ProductController {
+
+    @Autowired
+    private ResourceLoader resourceLoader;
 
     @Autowired
     ProductService pService;
@@ -50,6 +62,12 @@ public class ProductController {
 
     @Autowired
     ProductSubImageService psService;
+
+    @Autowired
+    SellerService sService;
+
+    @Autowired
+    JwtUtil jwtUtil;
 
     int PAGECNT = 10;
 
@@ -70,10 +88,10 @@ public class ProductController {
     }
 
     @GetMapping(value = "/select_one", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectOneGET(@RequestParam long productcode) {
+    public Map<String, Object> selectOneGET(@RequestParam long productCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            Product product = pService.selectProductOne(productcode);
+            Product product = pService.selectProductOne(productCode);
             map.put("product", product);
             map.put("status", 200);
         } catch (Exception e) {
@@ -85,10 +103,10 @@ public class ProductController {
 
     // 2개만 뽑는거
     @GetMapping(value = "/select_one1", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectOneGET1(@RequestParam long productcode) {
+    public Map<String, Object> selectOneGET1(@RequestParam long productCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            ProductDTO product = pService.selectProductDTOOne(productcode);
+            ProductDTO product = pService.selectProductDTOOne(productCode);
             map.put("product", product);
             map.put("status", 200);
         } catch (Exception e) {
@@ -96,6 +114,37 @@ public class ProductController {
             map.put("status", e.hashCode());
         }
         return map;
+    }
+
+    @GetMapping(value = "/select_image", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<byte[]> selectImage(@RequestParam long productCode) throws IOException {
+        try {
+            Product product = pService.selectProductOne(productCode);
+
+            if (product.getThumImgData().length > 0) {
+                HttpHeaders headers = new HttpHeaders();
+                if (product.getThumImgType().equals("image/jpeg")) {
+                    headers.setContentType(MediaType.IMAGE_JPEG);
+                } else if (product.getThumImgType().equals("image/png")) {
+                    headers.setContentType(MediaType.IMAGE_PNG);
+                } else if (product.getThumImgType().equals("image/gif")) {
+                    headers.setContentType(MediaType.IMAGE_GIF);
+                }
+                ResponseEntity<byte[]> response = new ResponseEntity<>(product.getThumImgData(), headers,
+                        HttpStatus.OK);
+                return response;
+            }
+            return null;
+
+        } catch (Exception e) {
+            InputStream is = resourceLoader.getResource("classpath:/static/images/noimage.jpg").getInputStream();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_JPEG);
+            ResponseEntity<byte[]> response = new ResponseEntity<>(is.readAllBytes(), headers, HttpStatus.OK);
+            return response;
+
+        }
+
     }
 
     // 전체물품 검색
@@ -275,15 +324,16 @@ public class ProductController {
     // 필요 {productTitle, productDesc, category3, seller}
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertPOST(@ModelAttribute Product product, @RequestParam long categoryCode,
-            @RequestParam(name = "file") MultipartFile file) {
+            @RequestParam(name = "file") MultipartFile file, @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
-            Seller seller = new Seller();
-            seller.setSellerId("a");
+            String sellerId = jwtUtil.extractUsername(token);
+            Seller seller = sService.selectSellerOne(sellerId);
             product.setSeller(seller);
 
             Category category = cService.selectCategory(categoryCode);
             product.setCategory(category);
+            product.setProductCode(pService.codeNext());
 
             product.setThumImgData(file.getBytes());
             product.setThumImgName(file.getOriginalFilename());
@@ -319,15 +369,15 @@ public class ProductController {
     }
 
     @PutMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> ProductDelete(@RequestParam long productcode) {
+    public Map<String, Object> ProductDelete(@RequestParam long productCode) {
         Map<String, Object> map = new HashMap<>();
         try {
             Seller seller = new Seller();
             seller.setSellerId("a");
-            Product product1 = pService.selectProductOne(productcode);
+            Product product1 = pService.selectProductOne(productCode);
             Product product = new Product();
             product.setSeller(seller);
-            product.setProductCode(productcode);
+            product.setProductCode(productCode);
             product.setProductTitle(product1.getProductTitle());
 
             pService.updateProduct(product);
@@ -341,12 +391,12 @@ public class ProductController {
     }
 
     @PostMapping(value = "/insert_desimage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> insertdesImagePOST(@RequestParam long productcode,
+    public Map<String, Object> insertdesImagePOST(@RequestParam long productCode,
             @RequestParam(name = "file") MultipartFile[] files) {
         Map<String, Object> map = new HashMap<>();
         try {
             List<ProductDesImage> list = new ArrayList<>();
-            Product product = pService.selectProductOne(productcode);
+            Product product = pService.selectProductOne(productCode);
             for (int i = 0; i < files.length; i++) {
                 ProductDesImage productDesImage = new ProductDesImage();
                 productDesImage.setProduct(product);

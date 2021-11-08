@@ -53,10 +53,10 @@ public class CategoryController {
     }
 
     @DeleteMapping(value = "/delete_category", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> CategoryDelete(@RequestParam long categorycode) {
+    public Map<String, Object> CategoryDelete(@RequestParam long categoryCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            cService.deleteCategory(categorycode);
+            cService.deleteCategory(categoryCode);
             map.put("status", 200);
 
         } catch (Exception e) {

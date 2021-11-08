@@ -38,9 +38,6 @@ public interface ProductService {
     // return Long 날짜 + 증가하는 SEQ
     public Long codeNext();
 
-    // 조회수 기준 정렬
-    // return List<Product>
-
     // 코드 기준 정렬(최신순 정렬)
 
     // 전체 조회시

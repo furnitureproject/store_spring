@@ -26,10 +26,10 @@ public class ProductEventController {
     ProductEventService peService;
 
     @GetMapping(value = "/select_one", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectOneGET(@RequestParam long eventcode) {
+    public Map<String, Object> selectOneGET(@RequestParam long eventCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            ProductEvent productEvent = peService.selectProductEventOne(eventcode);
+            ProductEvent productEvent = peService.selectProductEventOne(eventCode);
             map.put("productEvent", productEvent);
             map.put("status", 200);
         } catch (Exception e) {
@@ -54,10 +54,10 @@ public class ProductEventController {
     }
 
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> insertPOST(@RequestBody ProductEvent productevent) {
+    public Map<String, Object> insertPOST(@RequestBody ProductEvent productEvent) {
         Map<String, Object> map = new HashMap<>();
         try {
-            peService.insertProductEvent(productevent);
+            peService.insertProductEvent(productEvent);
             map.put("status", 200);
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,10 +67,10 @@ public class ProductEventController {
     }
 
     @PutMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> UpdatePOST(@RequestBody ProductEvent productevent) {
+    public Map<String, Object> UpdatePOST(@RequestBody ProductEvent productEvent) {
         Map<String, Object> map = new HashMap<>();
         try {
-            peService.updateProductEvent(productevent);
+            peService.updateProductEvent(productEvent);
             map.put("status", 200);
 
         } catch (Exception e) {
@@ -81,10 +81,10 @@ public class ProductEventController {
     }
 
     @DeleteMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> ProductDelete(@RequestParam long eventcode) {
+    public Map<String, Object> ProductDelete(@RequestParam long eventCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            peService.deleteProductEvent(eventcode);
+            peService.deleteProductEvent(eventCode);
             map.put("status", 200);
 
         } catch (Exception e) {
