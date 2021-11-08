@@ -29,10 +29,22 @@ public class QnaServiceImpl implements QnaService{
         return qna.orElse(null);
     }
 
+    //qna 1개 조회
+    @Override
+    public QnAProjection selectQnaOne(long no) {
+        return qRepository.queryQnaOne(no);
+    }
+
     //qna 수정하기
     @Override
     public void updateQna(QnA qnA) {
         qRepository.save(qnA);
+    }
+
+    //qna 삭제하기
+    @Override
+    public void deleteQna(Long no) {
+        qRepository.deleteById(no);
     }
 
     //qna 물품 코드 별 목록 조회
@@ -46,6 +58,6 @@ public class QnaServiceImpl implements QnaService{
     public List<QnAProjection> selectUserQnaList(String userid) {
         return qRepository.queryListUseridQna(userid);
     }
-    
+
     
 }

@@ -17,6 +17,7 @@ import com.team.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -130,10 +131,52 @@ public class QnaController {
         return map;
     }
 
-    //qna 삭제
-    
+    // qna 삭제
+    // 127.0.0.1:8080/ROOT/qna/delete?qnano=
+    @RequestMapping(value = "/qna/delete", method = {
+        RequestMethod.DELETE }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> productDelete(@RequestBody QnA qnA,
+        @RequestParam(name = "qnano", defaultValue = "0") long no, 
+        @RequestHeader("token") String token) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String userid = jwtUtil.extractUsername(token); // token을 통해 회원정보 찾기
+            String quserid = qService.selectQna(no).getUser().getUserId(); //qna 정보에서 userid 찾기
+            if(userid.equals(quserid)){
+                //System.out.println(qnA.getQnaNum());
+                qService.deleteQna(qnA.getQnaNum());
+                map.put("result", 1L);
+            }
+            else{
+                map.put("result", 0L);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("result", e.hashCode());
+        }
+        return map;
+    }
 
-    // 제품 코드 별 제품 조회(sql)
+    //qna 1개 조회
+    // 127.0.0.1:8080/ROOT/qna/select?qnano= 
+    @RequestMapping(value = "/qna/select", method = {
+        RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> qnaOneGET(
+        @RequestParam(name = "qnano", defaultValue = "0") long no) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            QnAProjection qnA = qService.selectQnaOne(no);
+            System.out.println(qnA.toString());
+            map.put("qna", qnA);
+            map.put("result", 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("result", e.hashCode());
+        }
+        return map;
+    }
+
+    // 제품 코드 별 qna 조회(sql)
     // 127.0.0.1:8080/ROOT/select_qnalist?code= 물품 코드
     @RequestMapping(value = "/select_qnalist", method = {
         RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

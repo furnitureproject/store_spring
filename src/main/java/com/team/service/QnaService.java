@@ -16,8 +16,14 @@ public interface QnaService {
     //qna 정보 가져오기
     public QnA selectQna(long no);
 
+    //qna 1개 조회
+    public QnAProjection selectQnaOne(long no);
+
     //qna 수정하기
     public void updateQna(QnA qnA);
+
+    //qna 삭제하기
+    public void deleteQna(Long no);
 
     //qna 물품 코드 별 목록 조회
     public List<QnAProjection> selectQnaList(Long code);

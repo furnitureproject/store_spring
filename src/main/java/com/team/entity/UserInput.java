@@ -28,22 +28,22 @@ public class UserInput {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_UINPUT_NUM")
     @Column(name = "UINPUT_NO")
-    private Long uInputNo;
+    private Long uinputno;
 
     @Column(name = "UINPUT_ZIPCODE")
-    private String uInputZipCode;
+    private String uinputZipCode;
 
     @Column(name = "UINPUT_ADDRESS")
-    private String uInputAddress;
+    private String uinputAddress;
 
     @Column(name = "UINPUT_ADDRESS_DETAIL")
-    private String uInputAddDetail;
+    private String uinputAddDetail;
 
     @Column(name = "UINPUT_NAME")
-    private String uInputName;
+    private String uinputName;
 
     @Column(name = "UINPUT_REQUIREMENT")
-    private String uInputRequirement;
+    private String uinputRequirement;
 
     @ManyToOne
     @JoinColumn(name = "ORDER_NO")
