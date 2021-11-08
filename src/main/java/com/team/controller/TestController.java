@@ -2,6 +2,7 @@ package com.team.controller;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.team.entity.User;
@@ -25,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/test")
 public class TestController {
 
+    @Autowired
+    UserService uService;
+
 
     @PostMapping(value = "/eee", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> userinsertTest(@RequestBody Object obj) {
@@ -39,8 +43,34 @@ public class TestController {
         return map;
     }
     
-
-
+    @PostMapping(value="/userpw")
+    public Map<String, Object> userpwchecker(@RequestBody Map<String, Object> checkpw) {
+        Map<String, Object> map = new HashMap<>();
+        if(checkpw.get("userPw").equals(checkpw.get("userPw2"))){
+            System.out.println(checkpw);
+            map.put("status", 200);
+        }
+        else{
+            System.out.println(checkpw);
+            map.put("status", 401);
+        }
+        return map;
+    }
+    
+    @PostMapping(value="/userid")
+    public Map<String, Object> useridchecker(@RequestBody Map<String, String> checkid) {
+        
+        Map<String, Object> map = new HashMap<>();
+        System.out.println(checkid);
+        if(uService.selectUserOne(checkid.get("userId")) == null){
+            map.put("status", 401);
+        }
+        else{
+            map.put("status", 200);
+        }
+        return map;
+    }
+    
 
 
 
