@@ -57,6 +57,11 @@ public class UserController {
             if (uService.selectUserOne(user.getUserId()) == null) {
                 BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
                 user.setUserPw(bcpe.encode(user.getUserPw()));
+                // TEST용 추가
+                String phone = user.getUserPhone();
+                String newphone = phone.toString().replaceAll("-", "");
+                user.setUserPhone(newphone);
+
                 uService.insertUser(user);
                 map.put("status", 200);
             } else {
@@ -171,7 +176,7 @@ public class UserController {
                 }
             } else {
                 // User가 서로 같지 않을 경우 오류 반환
-                map.put("status", "잘못된 유저입니다");
+                map.put("status", "적합한 권한을 가지고 있지 않습니다");
             }
         } catch (Exception e) {
             e.printStackTrace();

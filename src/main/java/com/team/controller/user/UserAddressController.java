@@ -81,7 +81,7 @@ public class UserAddressController {
                 map.put("obj", uaService.selectUserAddressOneProjection(no));
             } else {
                 // address를 넣은 User와 같은 유저가 아닐 경우 오류 반환
-                map.put("status", "권한 있는 유저가 아닙니다");
+                map.put("status", "적합한 권한을 가지고 있지 않습니다");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -101,7 +101,7 @@ public class UserAddressController {
                 map.put("status", 200);
             } else {
                 // address를 넣은 User와 같은 유저가 아닐 경우 오류 반환
-                map.put("status", "권한 있는 유저가 아닙니다");
+                map.put("status", "적합한 권한을 가지고 있지 않습니다");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -121,7 +121,7 @@ public class UserAddressController {
                 map.put("status", 200);
             } else {
                 // address를 넣은 User와 같은 유저가 아닐 경우 오류 반환
-                map.put("status", "권한 있는 유저가 아닙니다");
+                map.put("status", "적합한 권한을 가지고 있지 않습니다");
             }
         } catch (Exception e) {
             e.printStackTrace();
