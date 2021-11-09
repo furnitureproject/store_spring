@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.team.entity.Order;
+import com.team.entity.OrderProjection;
 import com.team.repository.OrderRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +47,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> selectOrderUser(String userid) {
+    public List<OrderProjection> selectOrderUser(String userid) {
 
         return oRepository.findByCart_User_UserIdOrderByOrderDateDesc(userid);
+    }
+
+    @Override
+    public OrderProjection selectOrderProjectionOne(Long orderno) {
+
+        return oRepository.findByOrderNo(orderno);
     }
 
 }

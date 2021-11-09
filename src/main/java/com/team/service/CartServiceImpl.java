@@ -47,6 +47,12 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    public CartProjection selectCartProjectionOne(Long cartNo) {
+        CartProjection cart = cRepository.findByCartNo(cartNo);
+        return cart;
+    }
+
+    @Override
     public List<CartProjection> selectAllUserCart(String userId) {
         return cRepository.findByUser_UserIdOrderByCartNoDesc(userId);
     }

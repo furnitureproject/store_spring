@@ -25,8 +25,11 @@ public interface CartService {
     public int deleteCart(Long cartNo);
 
     // 카트 1개 조회
-    // return category
+    // return cart
     public Cart selectCartOne(Long cartNo);
+
+    // 카트 1개 조회(get으로 사용할 거)
+    public CartProjection selectCartProjectionOne(Long cartNo);
 
     // 카트 조회(유저에따른)
     // return List<Cart>

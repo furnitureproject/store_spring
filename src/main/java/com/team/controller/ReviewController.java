@@ -12,6 +12,7 @@ import com.team.entity.Product;
 import com.team.entity.Review;
 import com.team.entity.ReviewImg;
 import com.team.entity.ReviewImgProjection;
+import com.team.entity.ReviewProjection;
 import com.team.entity.User;
 import com.team.jwt.JwtUtil;
 import com.team.service.ProductService;
@@ -57,8 +58,18 @@ public class ReviewController {
     public Map<String, Object> selectProductReview(@RequestParam("productcode") Long productCode) {
         Map<String, Object> map = new HashMap<>();
         try {
+            List<ReviewProjection> list = rService.selectReviewList(productCode);
+            List<Long> list1 = new ArrayList<>();
+            for (int i = 0; i < list.size(); i++) {
+                ReviewProjection review = list.get(i);
+                Long number = review.getReviewNum();
+                list1.add(number);
+            }
             map.put("status", 200);
-            map.put("obj", rService.selectReviewList(productCode));
+            map.put("list", list);
+            map.put("image", "127.0.0.1:8080/ROOT/reviewimage?reviewnum={reviewnum[i]}&idx=[0~2]");
+            map.put("reviewnum", list1);
+            map.put("idx", "0~2");
         } catch (Exception e) {
             map.put("status", e.hashCode());
         }

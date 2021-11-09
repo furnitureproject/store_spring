@@ -11,4 +11,6 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
 
     List<CartProjection> findByUser_UserIdOrderByCartNoDesc(String userId);
 
+    CartProjection findByCartNo(Long cartNo);
+
 }

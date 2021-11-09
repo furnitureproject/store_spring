@@ -43,6 +43,7 @@ public class OrderController {
             String userid = jwtUtil.extractUsername(token);
             map.put("status", 200);
             map.put("list", oService.selectOrderUser(userid));
+            map.put("image", "127.0.0.1:8080/ROOT/product/select_image?productCode={productCode}");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,7 +60,8 @@ public class OrderController {
             User user = uService.selectUserOne(userid);
             if (oService.selectOrderOne(no).getCart().getUser().equals(user)) {
                 map.put("status", 200);
-                map.put("order", oService.selectOrderOne(no));
+                map.put("order", oService.selectOrderProjectionOne(no));
+                map.put("image", "127.0.0.1:8080/ROOT/product/select_image?productCode={productCode}");
             } else {
                 map.put("status", "적합한 권한을 가지고 있지 않습니다");
             }
