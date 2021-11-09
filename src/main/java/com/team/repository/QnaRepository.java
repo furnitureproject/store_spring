@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 public interface QnaRepository extends JpaRepository<QnA, Long>{
 
     //qna 1개 조회
-    //QnAProjection findByQnanum(Long no);
     @Query(value = "SELECT * FROM QNA_TB2 WHERE QNA_NUM =:no", nativeQuery = true)
     public QnAProjection queryQnaOne(@Param("no") Long no);
 
