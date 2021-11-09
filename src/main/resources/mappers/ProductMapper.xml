@@ -51,6 +51,7 @@
         SELECT PRODUCT.PRODUCT_CODE, PRODUCT.SELLER_ID FROM PRODUCT WHERE PRODUCT_CODE = #{productCode}
     </select>
 
+
     <resultMap type="com.team.vo.ProductVO" id="map4">
         <result column="PRODUCT_CODE" property="productCode" />
         <result column="PRODUCT_TITLE" property="productTitle" />
@@ -136,7 +137,5 @@
 	    CATEGORY WHERE CATEGORY.CATE_CODE=A.CATE_CODE) WHERE ROWN2 BETWEEN #{page} AND #{page1}  AND CATE_PARENT=#{categoryParent} ORDER BY OPTION_PRICE ASC;
 
     </select>
-
-    
 
 </mapper>

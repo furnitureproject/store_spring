@@ -7,11 +7,14 @@ import com.team.entity.ProductOption;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface ProductOptionService{
-    
+public interface ProductOptionService {
+
     // 옵션 추가
     // return 1
     public int insertProductOption(ProductOption productOption);
+
+    // 옵션 다수 추가
+    public void insertProductOptionList(List<ProductOption> list);
 
     // 옵션 수정
     // return 1
@@ -28,4 +31,7 @@ public interface ProductOptionService{
     // 전부 조회
     // return List<ProductOption>
     public List<ProductOption> selectProductOptionAll();
+
+    // 상품코드별 옵션조회
+    public List<ProductOption> selectByProductCode(Long productCode);
 }

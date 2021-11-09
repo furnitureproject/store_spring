@@ -12,6 +12,7 @@ import com.team.dto.ProductDTO;
 import com.team.entity.Category;
 import com.team.entity.Product;
 import com.team.entity.ProductDesImage;
+import com.team.entity.ProductOption;
 import com.team.entity.ProductSubImage;
 import com.team.entity.Seller;
 import com.team.jwt.JwtUtil;
@@ -107,6 +108,26 @@ public class ProductController {
         Map<String, Object> map = new HashMap<>();
         try {
             ProductDTO product = pService.selectProductDTOOne(productCode);
+            map.put("product", product);
+            map.put("status", 200);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    @GetMapping(value = "/select_one2", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> selectOneGET2(@RequestParam long productCode) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            Product product = pService.selectProductOne(productCode);
+            List<ProductDesImage> deslist = pdServise.selectByProductCode(productCode);
+            List<ProductSubImage> sublist = psService.selectByProductCode(productCode);
+            List<ProductOption> oplist = poService.selectByProductCode(productCode);
+            map.put("oplist", oplist);
+            map.put("deslist", deslist);
+            map.put("sublist", sublist);
             map.put("product", product);
             map.put("status", 200);
         } catch (Exception e) {
@@ -348,16 +369,25 @@ public class ProductController {
         return map;
     }
 
-    // update 사용자 정보 필요
+    // update 사용자 정보 필요 이름, 설명 변경가능
     @PutMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> UpdatePUT(@RequestBody Product product) {
+    public Map<String, Object> UpdatePUT(@RequestBody Product product, @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
-            Seller seller = new Seller();
-            seller.setSellerId("a");
+            String sellerId = jwtUtil.extractUsername(token);
+            Seller seller = sService.selectSellerOne(sellerId);
             product.setSeller(seller);
+
             Date date = new Date();
             product.setProductEditdate(date);
+            Product product1 = pService.selectProductOne(product.getProductCode());
+            product.setCategory(product1.getCategory());
+            product.setProductHit(product1.getProductHit());
+            product.setThumImgData(product1.getThumImgData());
+            product.setThumImgName(product1.getThumImgName());
+            product.setThumImgSize(product1.getThumImgSize());
+            product.setThumImgType(product1.getThumImgType());
+
             pService.updateProduct(product);
             map.put("status", 200);
 
@@ -369,16 +399,18 @@ public class ProductController {
     }
 
     @PutMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> ProductDelete(@RequestParam long productCode) {
+    public Map<String, Object> ProductDelete(@RequestParam long productCode, @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
-            Seller seller = new Seller();
-            seller.setSellerId("a");
             Product product1 = pService.selectProductOne(productCode);
             Product product = new Product();
+
+            String sellerId = jwtUtil.extractUsername(token);
+            Seller seller = sService.selectSellerOne(sellerId);
             product.setSeller(seller);
             product.setProductCode(productCode);
             product.setProductTitle(product1.getProductTitle());
+            product.setCategory(product1.getCategory());
 
             pService.updateProduct(product);
             map.put("status", 200);

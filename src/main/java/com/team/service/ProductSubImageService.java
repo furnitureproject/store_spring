@@ -33,4 +33,6 @@ public interface ProductSubImageService {
     // return List<ProductDescImage>
     public List<ProductSubImage> selectSubImageAll();
 
+    public List<ProductSubImage> selectByProductCode(Long productCode);
+
 }

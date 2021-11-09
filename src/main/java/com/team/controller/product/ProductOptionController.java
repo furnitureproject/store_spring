@@ -7,7 +7,9 @@ import java.util.Map;
 import com.team.entity.Product;
 import com.team.entity.ProductEvent;
 import com.team.entity.ProductOption;
+import com.team.service.ProductEventService;
 import com.team.service.ProductOptionService;
+import com.team.service.ProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -24,6 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductOptionController {
     @Autowired
     ProductOptionService poService;
+
+    @Autowired
+    ProductService pService;
+
+    @Autowired
+    ProductEventService peService;
 
     @GetMapping(value = "/select_one", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectOneGET(@RequestParam long optionCode) {
@@ -53,17 +61,20 @@ public class ProductOptionController {
         return map;
     }
 
+    // 한개 등록 => 한개를 등록하고 또 등록할경우 코드 겹치는 문제 있음..
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertPOST(@RequestBody ProductOption productOption, @RequestParam long productCode,
-            @RequestParam(name = "eventcode", required = false, defaultValue = "0") long eventCode) {
+            @RequestParam(name = "eventCode", required = false, defaultValue = "0") long eventCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            Product product = new Product();
-            product.setProductCode(productCode);
+            Product product = pService.selectProductOne(productCode);
             productOption.setProduct(product);
 
-            ProductEvent productEvent = new ProductEvent();
-            productEvent.setEventCode(eventCode);
+            String code1 = String.valueOf(productCode);
+            String code2 = String.format("%02d", 1);
+            Long code = Long.parseLong(code1 + code2);
+            productOption.setOptionCode(code);
+            ProductEvent productEvent = peService.selectProductEventOne(eventCode);
             productOption.setProductEvent(productEvent);
 
             poService.insertProductOption(productOption);
@@ -75,18 +86,47 @@ public class ProductOptionController {
         return map;
     }
 
+    // 다수 등록
+    @PostMapping(value = "/insertAll", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> insertPOST(@RequestBody List<ProductOption> list, @RequestParam long productCode,
+            @RequestParam(name = "eventCode", required = false, defaultValue = "0") long eventCode) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+
+            int index = 0;
+            for (ProductOption productOption : list) {
+                index++;
+                Product product = pService.selectProductOne(productCode);
+                productOption.setProduct(product);
+                ProductEvent productEvent = peService.selectProductEventOne(eventCode);
+                productOption.setProductEvent(productEvent);
+                String code1 = String.valueOf(productCode);
+                String code2 = String.format("%02d", index);
+                Long code = Long.parseLong(code1 + code2);
+                productOption.setOptionCode(code);
+            }
+            poService.insertProductOptionList(list);
+            map.put("status", 200);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    // 옵션 이름 ,가격 , 수량 수정, 이벤트 코드 수정가능
     @PutMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> UpdatePOST(@RequestBody ProductOption productOption, @RequestParam long productCode,
             @RequestParam long eventCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            Product product = new Product();
-            product.setProductCode(productCode);
+            Product product = pService.selectProductOne(productCode);
             productOption.setProduct(product);
-
-            ProductEvent productEvent = new ProductEvent();
-            productEvent.setEventCode(eventCode);
+            ProductEvent productEvent = peService.selectProductEventOne(eventCode);
             productOption.setProductEvent(productEvent);
+
+            ProductOption productOption1 = poService.selectProductOptionOne(productOption.getOptionCode());
+            productOption.setOptionCode(productOption1.getOptionCode());
 
             poService.updateProductOption(productOption);
             map.put("status", 200);
@@ -99,14 +139,14 @@ public class ProductOptionController {
     }
 
     @PutMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> ProductDelete(@RequestParam long optionCode, @RequestParam long productCode) {
+    public Map<String, Object> ProductDelete(@RequestParam long optionCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            Product product = new Product();
-            product.setProductCode(productCode);
             ProductOption productOption = new ProductOption();
+
             ProductOption productOption1 = poService.selectProductOptionOne(optionCode);
-            productOption.setProduct(product);
+            productOption.setProductEvent(productOption1.getProductEvent());
+            productOption.setProduct(productOption1.getProduct());
             productOption.setOptionCode(productOption1.getOptionCode());
             poService.updateProductOption(productOption);
             map.put("status", 200);

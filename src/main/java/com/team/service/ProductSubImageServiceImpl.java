@@ -54,4 +54,10 @@ public class ProductSubImageServiceImpl implements ProductSubImageService {
         return pRepository.findAll();
     }
 
+    @Override
+    public List<ProductSubImage> selectByProductCode(Long productCode) {
+
+        return pRepository.findByProduct_ProductCodeOrderBySubImgNumDesc(productCode);
+    }
+
 }

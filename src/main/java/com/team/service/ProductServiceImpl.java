@@ -87,7 +87,6 @@ public class ProductServiceImpl implements ProductService {
         Long numtoday = Long.parseLong(today + seq1);
         System.out.println(numtoday);
         return numtoday;
-
     }
 
     // 전체물품 검색시
