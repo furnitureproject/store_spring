@@ -3,8 +3,10 @@ package com.team.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.team.entity.Cart;
 import com.team.entity.Delivery;
 import com.team.entity.Order;
+import com.team.entity.ProductOption;
 import com.team.entity.UserInput;
 import com.team.jwt.JwtUtil;
 import com.team.service.CartService;
@@ -57,6 +59,8 @@ public class DeliveryController {
             String userid = jwtUtil.extractUsername(token); // token을 통해 회원정보 찾기
             String uinputid = uiSrvice.selectUserInput(no).getOrder().getCart().getUser().getUserId(); //userinput 정보를 통해 userid 찾기
             UserInput userinput = uiSrvice.selectUserInput(no); //userinput no 가져오기
+            long cartquantity = uiSrvice.selectUserInput(no).getOrder().getCart().getCartOptionCount(); //cart 수량
+            long poquantity = uiSrvice.selectUserInput(no).getOrder().getCart().getProductOption().getOptionQuantity(); //product option 수량
             //System.out.println(userid);
             //System.out.println(uinputid);
             if(userid.equals(uinputid)){
@@ -67,6 +71,15 @@ public class DeliveryController {
             else{
                 map.put("result", 0L);
             }
+            //주문이 성공하면 product option quantity에서 cart quantity를 뺀다.
+            // if(poquantity-cartquantity){
+            //     ProductOption productOption = uiSrvice.selectUserInput(no).getOrder().getCart().getProductOption(); //주문한 product option 정보 호출
+            //     Cart cart = uiSrvice.selectUserInput(no).getOrder().getCart();  //주문한 cart 정보 호출
+            //     productOption.getOptionQuantity()-cart.getCartOptionCount();
+            // }
+            // else{
+
+            // }
         }
         catch(Exception e){
             map.put("result", e.hashCode());

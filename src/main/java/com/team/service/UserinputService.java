@@ -1,6 +1,7 @@
 package com.team.service;
 
 import com.team.entity.UserInput;
+import com.team.entity.UserInputProjection;
 
 import org.springframework.stereotype.Service;
 
@@ -18,4 +19,11 @@ public interface UserinputService {
 
     //userinput 수정
     public void updateUserInput(UserInput userInput);
+
+    //userinput 조회
+    public UserInputProjection selectUserInputOne(long no);
+
+    //userinput 1개 조회
+    public UserInputProjection selectUserInput1(long no);
+
 }

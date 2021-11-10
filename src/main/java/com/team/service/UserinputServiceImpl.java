@@ -3,6 +3,7 @@ package com.team.service;
 import java.util.Optional;
 
 import com.team.entity.UserInput;
+import com.team.entity.UserInputProjection;
 import com.team.repository.UserinputRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,18 @@ public class UserinputServiceImpl implements UserinputService{
     @Override
     public void updateUserInput(UserInput userInput) {
         uiRepository.save(userInput);
+    }
+
+    //userinput 조회
+    @Override
+    public UserInputProjection selectUserInputOne(long no) {
+        return uiRepository.queryUserInput(no);
+    }
+
+    //userinput 1개 조회
+    @Override
+    public UserInputProjection selectUserInput1(long no) {
+        return uiRepository.queryUserInputOne(no);
     }
     
 }

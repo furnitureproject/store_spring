@@ -4,9 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.team.entity.Order;
-import com.team.entity.Product;
-import com.team.entity.User;
 import com.team.entity.UserInput;
+import com.team.entity.UserInputProjection;
 import com.team.jwt.JwtUtil;
 import com.team.service.CartService;
 import com.team.service.OrderService;
@@ -16,7 +15,6 @@ import com.team.service.UserinputService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -128,6 +126,25 @@ public class UserinputController {
             else{
                 map.put("result", 0L);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("result", e.hashCode());
+        }
+        return map;
+    }
+
+    //userinput 조회
+    // 127.0.0.1:8080/ROOT/userinput/select?ono=
+    @RequestMapping(value = "/select", method = {
+        RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> uinputOneGET(
+        @RequestParam(name = "ono", defaultValue = "0") long no) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            UserInputProjection userInput = uiService.selectUserInput1(no);
+            //System.out.println(userInput.toString());
+            map.put("userinput", userInput);
+            map.put("result", 1);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("result", e.hashCode());
