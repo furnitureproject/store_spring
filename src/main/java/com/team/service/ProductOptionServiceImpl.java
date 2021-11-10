@@ -22,6 +22,11 @@ public class ProductOptionServiceImpl implements ProductOptionService {
     EntityManagerFactory emf;
 
     @Override
+    public Long countByCode(long productCode) {
+        return poRepository.countByProduct_ProductCode(productCode);
+    }
+
+    @Override
     public int insertProductOption(ProductOption productOption) {
 
         poRepository.save(productOption);
@@ -44,6 +49,7 @@ public class ProductOptionServiceImpl implements ProductOptionService {
                     .setParameter("optionPrice", productOption.getOptionPrice())
                     .setParameter("product", productOption.getProduct().getProductCode())
                     .setParameter("productEvent", productOption.getProductEvent().getEventCode()).executeUpdate();
+
         }
         em.getTransaction().commit();
     }

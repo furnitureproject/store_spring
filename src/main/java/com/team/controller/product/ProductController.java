@@ -10,9 +10,9 @@ import java.util.Map;
 
 import com.team.dto.ProductDTO;
 import com.team.entity.Category;
+import com.team.entity.DesProjection;
 import com.team.entity.Product;
 import com.team.entity.ProductDesImage;
-import com.team.entity.ProductOption;
 import com.team.entity.ProductSubImage;
 import com.team.entity.Seller;
 import com.team.jwt.JwtUtil;
@@ -73,12 +73,12 @@ public class ProductController {
     int PAGECNT = 10;
 
     @GetMapping(value = "/test")
-    public Map<String, Object> testproduct() {
+    public Map<String, Object> testproduct(@RequestParam long productCode) {
 
         Map<String, Object> map = new HashMap<>();
         try {
-            pService.codeNext();
-            System.out.println(pService.codeNext());
+            List<DesProjection> list = pdServise.DesImgNumList(productCode);
+            System.out.println(list.size());
             map.put("200", null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,6 +93,7 @@ public class ProductController {
         Map<String, Object> map = new HashMap<>();
         try {
             Product product = pService.selectProductOne(productCode);
+
             map.put("product", product);
             map.put("status", 200);
         } catch (Exception e) {
@@ -122,12 +123,9 @@ public class ProductController {
         Map<String, Object> map = new HashMap<>();
         try {
             Product product = pService.selectProductOne(productCode);
-            List<ProductDesImage> deslist = pdServise.selectByProductCode(productCode);
-            List<ProductSubImage> sublist = psService.selectByProductCode(productCode);
-            List<ProductOption> oplist = poService.selectByProductCode(productCode);
-            map.put("oplist", oplist);
-            map.put("deslist", deslist);
-            map.put("sublist", sublist);
+
+            List<DesProjection> list = pdServise.DesImgNumList(productCode);
+            map.put("list", list);
             map.put("product", product);
             map.put("status", 200);
         } catch (Exception e) {
@@ -472,6 +470,64 @@ public class ProductController {
             map.put("status", e.hashCode());
         }
         return map;
+    }
+
+    @GetMapping(value = "/select_desimage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<byte[]> selectDesImage(@RequestParam long desImgNum) throws IOException {
+        try {
+            ProductDesImage productDesImage = pdServise.selectDesImageOne(desImgNum);
+
+            if (productDesImage.getDesImgData().length > 0) {
+                HttpHeaders headers = new HttpHeaders();
+                if (productDesImage.getDesImgType().equals("image/jpeg")) {
+                    headers.setContentType(MediaType.IMAGE_JPEG);
+                } else if (productDesImage.getDesImgType().equals("image/png")) {
+                    headers.setContentType(MediaType.IMAGE_PNG);
+                } else if (productDesImage.getDesImgType().equals("image/gif")) {
+                    headers.setContentType(MediaType.IMAGE_GIF);
+                }
+                ResponseEntity<byte[]> response = new ResponseEntity<>(productDesImage.getDesImgData(), headers,
+                        HttpStatus.OK);
+                return response;
+            }
+            return null;
+
+        } catch (Exception e) {
+            InputStream is = resourceLoader.getResource("classpath:/static/images/noimage.jpg").getInputStream();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_JPEG);
+            ResponseEntity<byte[]> response = new ResponseEntity<>(is.readAllBytes(), headers, HttpStatus.OK);
+            return response;
+        }
+    }
+
+    @GetMapping(value = "/select_subimage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<byte[]> selectSubImage(@RequestParam long subImgNum) throws IOException {
+        try {
+            ProductSubImage productSubImage = psService.selectSubImageOne(subImgNum);
+
+            if (productSubImage.getSubImgdata().length > 0) {
+                HttpHeaders headers = new HttpHeaders();
+                if (productSubImage.getSubImgType().equals("image/jpeg")) {
+                    headers.setContentType(MediaType.IMAGE_JPEG);
+                } else if (productSubImage.getSubImgType().equals("image/png")) {
+                    headers.setContentType(MediaType.IMAGE_PNG);
+                } else if (productSubImage.getSubImgType().equals("image/gif")) {
+                    headers.setContentType(MediaType.IMAGE_GIF);
+                }
+                ResponseEntity<byte[]> response = new ResponseEntity<>(productSubImage.getSubImgdata(), headers,
+                        HttpStatus.OK);
+                return response;
+            }
+            return null;
+
+        } catch (Exception e) {
+            InputStream is = resourceLoader.getResource("classpath:/static/images/noimage.jpg").getInputStream();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_JPEG);
+            ResponseEntity<byte[]> response = new ResponseEntity<>(is.readAllBytes(), headers, HttpStatus.OK);
+            return response;
+        }
     }
 
 }

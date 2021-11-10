@@ -12,4 +12,6 @@ public interface ProductOptionRepository extends JpaRepository<ProductOption, Lo
 
     List<ProductOption> findByProduct_ProductCodeOrderByOptionCodeDesc(Long productCode);
 
+    Long countByProduct_ProductCode(long productCode);
+
 }

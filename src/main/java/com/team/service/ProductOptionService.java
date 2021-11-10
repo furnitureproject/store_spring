@@ -34,4 +34,6 @@ public interface ProductOptionService {
 
     // 상품코드별 옵션조회
     public List<ProductOption> selectByProductCode(Long productCode);
+
+    Long countByCode(long productCode);
 }

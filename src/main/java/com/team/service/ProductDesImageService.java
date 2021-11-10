@@ -2,6 +2,8 @@ package com.team.service;
 
 import java.util.List;
 
+import com.team.dto.DesDTO;
+import com.team.entity.DesProjection;
 import com.team.entity.ProductDesImage;
 
 import org.springframework.stereotype.Service;
@@ -35,5 +37,7 @@ public interface ProductDesImageService {
 
     // 상세이미지 제품코드로 조회
     // return List<ProductDescImage>
-    public List<ProductDesImage> selectByProductCode(Long productCode);
+    // public List<ProductDesImage> selectByProductCode(Long productCode);
+
+    public List<DesProjection> DesImgNumList(Long productCode);
 }

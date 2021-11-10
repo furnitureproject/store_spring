@@ -47,11 +47,12 @@ public class ProductOptionController {
         return map;
     }
 
+    // 상품에 따른 옵션리스트
     @GetMapping(value = "/select_list", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectListGET() {
+    public Map<String, Object> selectListGET(@RequestParam long productCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            List<ProductOption> list = poService.selectProductOptionAll();
+            List<ProductOption> list = poService.selectByProductCode(productCode);
             map.put("list", list);
             map.put("status", 200);
         } catch (Exception e) {
@@ -61,17 +62,19 @@ public class ProductOptionController {
         return map;
     }
 
-    // 한개 등록 => 한개를 등록하고 또 등록할경우 코드 겹치는 문제 있음..
+    // 한개 등록
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertPOST(@RequestBody ProductOption productOption, @RequestParam long productCode,
             @RequestParam(name = "eventCode", required = false, defaultValue = "0") long eventCode) {
         Map<String, Object> map = new HashMap<>();
         try {
+            long count = poService.countByCode(productCode);
+            System.out.println(count);
             Product product = pService.selectProductOne(productCode);
             productOption.setProduct(product);
 
             String code1 = String.valueOf(productCode);
-            String code2 = String.format("%02d", 1);
+            String code2 = String.format("%02d", count + 1);
             Long code = Long.parseLong(code1 + code2);
             productOption.setOptionCode(code);
             ProductEvent productEvent = peService.selectProductEventOne(eventCode);
@@ -92,8 +95,9 @@ public class ProductOptionController {
             @RequestParam(name = "eventCode", required = false, defaultValue = "0") long eventCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-
-            int index = 0;
+            long count = poService.countByCode(productCode);
+            System.out.println(count);
+            long index = count;
             for (ProductOption productOption : list) {
                 index++;
                 Product product = pService.selectProductOne(productCode);
