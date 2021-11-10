@@ -37,10 +37,10 @@ public class SecurityUserDetailServiceimpl implements UserDetailsService {
         Optional<Seller> oSeller = sRepository.findById(username);
 
 
-        System.out.println(oUser);
-        System.out.println(oSeller);
-        System.out.println(oUser.getClass().getName());
-        System.out.println(oSeller.getClass().getName());
+        System.out.println("1."+oUser);
+        System.out.println("2."+oSeller);
+        System.out.println("3."+oUser.getClass().getName());
+        System.out.println("4."+oSeller.getClass().getName());
 
         if (oSeller.isEmpty()) {
             String[] role = { oUser.get().getRole() };

@@ -27,6 +27,7 @@ public class SellerDetailService implements UserDetailsService{
         Optional<Seller> oSeller = sRepository.findById(username);
 
         String[] role = { oSeller.get().getRole() };
+        // String role = oSeller.get().getRole();
         Collection<GrantedAuthority> roles = AuthorityUtils.createAuthorityList(role);
 
         org.springframework.security.core.userdetails.User seller = new org.springframework.security.core.userdetails.User(

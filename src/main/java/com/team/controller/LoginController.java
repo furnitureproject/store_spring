@@ -62,6 +62,7 @@ public class LoginController {
 
         Map<String, Object> map = new HashMap<String, Object>();
         try {
+            System.out.println("userlogin입니다");
             String[] userRoles = { user.getRole() };
             Collection<GrantedAuthority> roles = AuthorityUtils.createAuthorityList(userRoles);
 
@@ -69,8 +70,8 @@ public class LoginController {
                     .authenticate(new UsernamePasswordAuthenticationToken(user.getUserId(), user.getUserPw(), roles));
             
             map.put("status", 200);
-            // map.put("token", jwtUserUtil.generateToken(user.getUserId()));
             map.put("token", jwtUtil.generateToken(user.getUserId()));
+            // map.put("token", jwtUtil.generateToken(user.getUserId(), user.getRole()));
         } 
         // catch (Exception e) {
         //     e.printStackTrace();
@@ -119,6 +120,7 @@ public class LoginController {
 
         Map<String, Object> map = new HashMap<String, Object>();
         try {
+            System.out.println("sellerlogin입니다");
             String[] userRoles = { seller.getRole() };
             Collection<GrantedAuthority> roles = AuthorityUtils.createAuthorityList(userRoles);
 
@@ -126,8 +128,8 @@ public class LoginController {
                     .authenticate(new UsernamePasswordAuthenticationToken(seller.getSellerId(), seller.getSellerPw(), roles));
 
             map.put("status", 200);
-            // map.put("token", jwtSellerUtil.generateToken(seller.getSellerId()));
             map.put("token", jwtUtil.generateToken(seller.getSellerId()));
+            // map.put("token", jwtUtil.generateToken(seller.getSellerId(), seller.getRole()));
         } 
         // catch (Exception e) {
         //     e.printStackTrace();

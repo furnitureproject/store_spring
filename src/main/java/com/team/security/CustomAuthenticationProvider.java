@@ -23,12 +23,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider{
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         
-        System.out.println("CustomAuthenticationProvider");
+        System.out.println("--------CustomAuthenticationProvider---------");
 		String username = authentication.getPrincipal().toString();
 		String password = authentication.getCredentials().toString();
-		System.out.println(username);
-        System.out.println(password);
-		System.out.println(authentication.toString());
+		System.out.println("----------CUSTOM ID--------" + username);
+        System.out.println("----------CUSTOM PASSWORD--------" + password);
+		System.out.println("----------CUSTOM AUTH--------" + authentication.toString());
 
 		String roles = authentication.getAuthorities().iterator().next().toString();
         if(roles.equals("SELLER")){

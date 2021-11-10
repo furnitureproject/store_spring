@@ -5,22 +5,34 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.team.entity.Category;
+import com.team.entity.Product;
+import com.team.entity.Seller;
 import com.team.entity.User;
+import com.team.entity.UserAddress;
+import com.team.jwt.JwtSellerUtil;
+import com.team.jwt.JwtUtil;
+import com.team.service.CategoryService;
+import com.team.service.ProductService;
 import com.team.service.SecurityUserDetailServiceimpl;
+import com.team.service.SellerService;
 import com.team.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/test")
@@ -28,6 +40,21 @@ public class TestController {
 
     @Autowired
     UserService uService;
+
+    @Autowired
+    UserinputController uController;
+
+    @Autowired
+    ProductService pService;
+
+    @Autowired
+    SellerService sService;
+
+    @Autowired
+    JwtUtil jwtUtil;
+
+    @Autowired
+    CategoryService cService;
 
 
     @PostMapping(value = "/eee", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -70,11 +97,39 @@ public class TestController {
         }
         return map;
     }
-    
 
+    // 상품등록
+    // <POST> 127.0.0.1:8080/ROOT/product/insert
+    // 필요 {productTitle, productDesc, category3, seller}
+    @PostMapping(value = "/productregist", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> insertProduct(@RequestBody Product product, @RequestParam long categoryCode,
+            @RequestParam(name = "file") MultipartFile file, @RequestHeader("token") String token) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            System.out.println("------------productController Run-------------");
+            String sellerId = jwtUtil.extractUsername(token);
+            System.out.println("---productC id" + sellerId);
+            // String role = jwtUtil.extractUserRole(token);
+            // System.out.println("---productC role" + role);
+            Seller seller = sService.selectSellerOne(sellerId);
+            product.setSeller(seller);
 
+            Category category = cService.selectCategory(categoryCode);
+            product.setCategory(category);
+            product.setProductCode(pService.codeNext());
 
-
+            product.setThumImgData(file.getBytes());
+            product.setThumImgName(file.getOriginalFilename());
+            product.setThumImgSize(file.getSize());
+            product.setThumImgType(file.getContentType());
+            pService.insertProduct(product);
+            map.put("status", 200);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
 // @Autowired
 // UserService uService;
 
