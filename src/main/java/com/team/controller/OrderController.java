@@ -3,6 +3,7 @@ package com.team.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.team.entity.Order;
@@ -10,7 +11,9 @@ import com.team.entity.User;
 import com.team.jwt.JwtUtil;
 import com.team.service.CartService;
 import com.team.service.OrderService;
+import com.team.service.ProductOptionService;
 import com.team.service.UserService;
+import com.team.vo.OrderVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,6 +37,9 @@ public class OrderController {
     CartService cService;
 
     @Autowired
+    ProductOptionService pOService;
+
+    @Autowired
     JwtUtil jwtUtil;
 
     @GetMapping(value = "/order")
@@ -41,11 +47,17 @@ public class OrderController {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token);
-
+            Map<String, Object> map1 = new HashMap<>();
+            map1.put("userid", userid);
+            List<OrderVO> sum = oService.selectQueryUserOrder(map1);
             map.put("status", 200);
             map.put("list", oService.selectOrderUser(userid));
-            map.put("image", "127.0.0.1:8080/ROOT/product/select_image?productCode={productCode}");
-
+            map.put("sum", sum);
+            for (int i = 0; i < sum.size(); i++) {
+                Long optioncode = sum.get(i).getOptionCode();
+                Long productcode = pOService.selectProductOptionOne(optioncode).getProduct().getProductCode();
+                map.put("image" + i, "127.0.0.1:8080/ROOT/product/select_image?productCode=" + productcode);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());

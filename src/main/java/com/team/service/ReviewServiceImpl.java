@@ -45,4 +45,15 @@ public class ReviewServiceImpl implements ReviewService {
         return review.orElse(null);
     }
 
+    @Override
+    public int querySelectProductReviewCount(Long no) {
+        return rRepository.querySelectProductReviewCount(no);
+    }
+
+    @Override
+    public int querySelectProductReviewAvgStar(Long no) {
+
+        return rRepository.querySelectProductReviewAvgStar(no);
+    }
+
 }

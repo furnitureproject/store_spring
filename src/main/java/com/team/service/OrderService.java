@@ -1,9 +1,11 @@
 package com.team.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.team.entity.Order;
 import com.team.entity.OrderProjection;
+import com.team.vo.OrderVO;
 
 import org.springframework.stereotype.Service;
 
@@ -30,5 +32,8 @@ public interface OrderService {
 
     // 주문 찾기(유저)
     public List<OrderProjection> selectOrderUser(String userid);
+
+    // 유저에 따른 주문(같은 옵션인 경우 수량 그룹화로 통합)
+    public List<OrderVO> selectQueryUserOrder(Map<String, Object> map);
 
 }

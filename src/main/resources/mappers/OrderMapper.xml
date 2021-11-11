@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Order">
+
+
+    <resultMap type="com.team.vo.OrderVO" id="map1">
+        <result column="OPTION_CODE" property="optionCode" />
+        <result column="SUM(CART_QUANTITY)" property="cartOptionCount" />
+        <result column="SUM(OPTION_PRICE)" property="optionPrice" />
+    </resultMap>
+
+    <select id="select_user_productoption_list" parameterType="map" resultMap="map1">
+        SELECT  OPTION_CODE, SUM(CART_QUANTITY), SUM(OPTION_PRICE) FROM(SELECT ORDER_NO, 
+        ORDER_DATE,ORDER_STATUS, CART_NO,CART_QUANTITY, USER_ID, OPTION_CODE, OPTION_NAME, 
+        OPTION_PRICE, SECOND.PRODUCT_CODE, PRODUCT_TITLE FROM (SELECT ORDER_NO, 
+        ORDER_DATE,ORDER_STATUS, CART_NO,CART_QUANTITY, USER_ID, 
+        FIRST.OPTION_CODE, OPTION_NAME, OPTION_PRICE, PRODUCT_CODE FROM (SELECT 
+        ORDER_NO, ORDER_DATE, ORDER_STATUS, CART.CART_NO, CART_QUANTITY, 
+        USER_ID, OPTION_CODE FROM ORDER_TB,CART WHERE ORDER_TB.CART_NO = CART.CART_NO)
+        FIRST, PRODUCT_OPTION WHERE FIRST.OPTION_CODE = 
+        PRODUCT_OPTION.OPTION_CODE)SECOND, PRODUCT WHERE SECOND.PRODUCT_CODE = 
+        PRODUCT.PRODUCT_CODE)THR WHERE USER_ID = #{userid} GROUP BY OPTION_CODE
+    </select>
+
+</mapper>

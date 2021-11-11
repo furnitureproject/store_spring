@@ -101,7 +101,7 @@ public class ReviewController {
                 map.put("status", 200);
             } else {
                 // 유저가 없거나 제품이 없을 경우 오류로 반환
-                map.put("status", "제품이 없거나 잘못된 유저입니다");
+                map.put("status", "제품이 없거나 권한을 가지고 있지 않습니다");
             }
         } catch (Exception e) {
             map.put("status", e.hashCode());
@@ -126,7 +126,7 @@ public class ReviewController {
                 map.put("status", 200);
             } else {
                 // review를 작성한 유저와 delete하려는 user가 다를 때 반환
-                map.put("status", "올바른 유저가 아닙니다");
+                map.put("status", "적합한 권한을 가지고 있지 않습니다");
             }
         } catch (Exception e) {
             map.put("status", e.hashCode());
@@ -161,7 +161,7 @@ public class ReviewController {
                 }
             } else {
                 // 리뷰한 아이디와 이미지 넣는 아이디가 다를 경우
-                map.put("status", "권한 있는 유저가 아닙니다");
+                map.put("status", "적합한 권한을 가지고 있지 않습니다");
             }
         } catch (Exception e) {
             map.put("status", e.hashCode());
@@ -189,6 +189,15 @@ public class ReviewController {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    // 제품별 리뷰 갯수
+    @GetMapping(value = "/count")
+    public Map<String, Object> reviewCountGet(@RequestParam("productcode") long no) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", rService.querySelectProductReviewCount(no));
+        map.put("star", rService.querySelectProductReviewAvgStar(no));
+        return map;
     }
 
 }

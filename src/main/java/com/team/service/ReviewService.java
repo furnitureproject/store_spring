@@ -25,4 +25,10 @@ public interface ReviewService {
     // 리뷰 하나
     public Review selectReview(Long reviewNum);
 
+    // 리뷰 갯수(제품 별)
+    public int querySelectProductReviewCount(Long no);
+
+    // 제품 별 리뷰 점수
+    public int querySelectProductReviewAvgStar(Long no);
+
 }
