@@ -3,6 +3,7 @@ package com.team.service;
 import java.util.List;
 
 import com.team.entity.ProductSubImage;
+import com.team.entity.SubProjection;
 
 import org.springframework.stereotype.Service;
 
@@ -34,5 +35,7 @@ public interface ProductSubImageService {
     public List<ProductSubImage> selectSubImageAll();
 
     public List<ProductSubImage> selectByProductCode(Long productCode);
+
+    public List<SubProjection> SubImgNumList(Long productCode);
 
 }

@@ -2,6 +2,7 @@ package com.team.service;
 
 import java.util.List;
 
+import com.team.entity.OptionProjection;
 import com.team.entity.ProductOption;
 
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public interface ProductOptionService {
     public List<ProductOption> selectProductOptionAll();
 
     // 상품코드별 옵션조회
-    public List<ProductOption> selectByProductCode(Long productCode);
+    public List<OptionProjection> selectByProductCode(Long productCode);
 
     Long countByCode(long productCode);
 }

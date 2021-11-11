@@ -38,7 +38,7 @@ public class Product {
     private String productDesc = null;
 
     @Column(name = "PRODUCT_HIT")
-    private int productHit = 0;
+    private int productHit = 1;
 
     @CreationTimestamp
     @Column(name = "PRODUCT_REGDATE", updatable = false)

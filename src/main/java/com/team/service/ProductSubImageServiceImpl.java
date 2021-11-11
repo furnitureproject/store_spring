@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.team.entity.ProductSubImage;
+import com.team.entity.SubProjection;
 import com.team.repository.ProductSubImageRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,11 @@ public class ProductSubImageServiceImpl implements ProductSubImageService {
     public List<ProductSubImage> selectByProductCode(Long productCode) {
 
         return pRepository.findByProduct_ProductCodeOrderBySubImgNumDesc(productCode);
+    }
+
+    @Override
+    public List<SubProjection> SubImgNumList(Long productCode) {
+        return pRepository.findByProduct_ProductCodeOrderBySubImgNumAsc(productCode);
     }
 
 }

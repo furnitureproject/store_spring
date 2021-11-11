@@ -5,9 +5,9 @@ import java.util.Map;
 
 import com.team.dto.ProductDTO;
 import com.team.entity.Product;
+import com.team.entity.ProductProjection;
 import com.team.vo.ProductVO;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,6 +28,8 @@ public interface ProductService {
     // return product 혹은 null
     public Product selectProductOne(Long productCode);
 
+    public ProductProjection selectProductProjection(Long productCode);
+
     public ProductDTO selectProductDTOOne(Long productCode);
 
     // 제품 전체 조회
@@ -42,10 +44,10 @@ public interface ProductService {
 
     // 전체 조회시
     // 최신 등록순
-    public List<Product> selectCodeList(String Title, Pageable pageable);
+    public List<ProductVO> selectCodeList(Map<String, Object> map);
 
     // 조회수 높은순
-    public List<Product> selectHitList(String Title, Pageable pageable);
+    public List<ProductVO> selectHitList(Map<String, Object> map);
 
     // 가격 높은순
     public List<ProductVO> selectPriceHigh(Map<String, Object> map);
@@ -58,10 +60,10 @@ public interface ProductService {
 
     // 소분류
     // 최신 등록순
-    public List<Product> categoryCodeSelect1(long categoryCode, Pageable pageable);
+    public List<ProductVO> categoryCodeSelect1(Map<String, Object> map);
 
     // 조회수 높은순
-    public List<Product> categoryHitSelect1(long categoryCode, Pageable pageable);
+    public List<ProductVO> categoryHitSelect1(Map<String, Object> map);
 
     // 가격 높은순
     public List<ProductVO> selectPriceHigh1(Map<String, Object> map);
@@ -74,10 +76,10 @@ public interface ProductService {
 
     // 중분류
     // 최신 등록순
-    public List<Product> categoryCodeSelect2(long categoryParent, Pageable pageable);
+    public List<ProductVO> categoryCodeSelect2(Map<String, Object> map);
 
     // 조회수 높은순
-    public List<Product> categoryHitSelect2(long categoryParent, Pageable pageable);
+    public List<ProductVO> categoryHitSelect2(Map<String, Object> map);
 
     // 가격 높은순
     public List<ProductVO> selectPriceHigh2(Map<String, Object> map);

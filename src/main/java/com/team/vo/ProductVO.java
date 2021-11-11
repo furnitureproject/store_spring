@@ -19,13 +19,9 @@ public class ProductVO {
 
     private String productDesc;
 
-    private Long productHit;
+    private Integer productHit;
 
     private Long categoryCode;
-
-    private byte[] thumImgData;
-
-    private String thumImgType;
 
     private Long optionPrice;
 

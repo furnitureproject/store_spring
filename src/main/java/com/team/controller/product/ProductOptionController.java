@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.team.entity.OptionProjection;
 import com.team.entity.Product;
 import com.team.entity.ProductEvent;
 import com.team.entity.ProductOption;
@@ -52,7 +53,7 @@ public class ProductOptionController {
     public Map<String, Object> selectListGET(@RequestParam long productCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            List<ProductOption> list = poService.selectByProductCode(productCode);
+            List<OptionProjection> list = poService.selectByProductCode(productCode);
             map.put("list", list);
             map.put("status", 200);
         } catch (Exception e) {

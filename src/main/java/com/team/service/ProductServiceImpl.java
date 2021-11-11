@@ -8,13 +8,13 @@ import java.util.Optional;
 
 import com.team.dto.ProductDTO;
 import com.team.entity.Product;
+import com.team.entity.ProductProjection;
 import com.team.repository.ProductRepository;
 import com.team.vo.ProductVO;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -56,6 +56,12 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> product = pRepository.findById(productCode);
 
         return product.orElse(null);
+    }
+
+    @Override
+    public ProductProjection selectProductProjection(Long productCode) {
+
+        return pRepository.findByProductCode(productCode);
     }
 
     @Override
@@ -104,14 +110,14 @@ public class ProductServiceImpl implements ProductService {
 
     // 최신순
     @Override
-    public List<Product> selectCodeList(String Title, Pageable pageable) {
-        return pRepository.findByProductTitleIgnoreCaseContainingOrderByProductCodeDesc(Title, pageable);
+    public List<ProductVO> selectCodeList(Map<String, Object> map) {
+        return sqlFactory.openSession().selectList("select_product_code_list", map);
     }
 
     // 조회수순
     @Override
-    public List<Product> selectHitList(String Title, Pageable pageable) {
-        return pRepository.findByProductTitleIgnoreCaseContainingOrderByProductHitDesc(Title, pageable);
+    public List<ProductVO> selectHitList(Map<String, Object> map) {
+        return sqlFactory.openSession().selectList("select_product_Hit_list", map);
     }
 
     // 총개수
@@ -123,15 +129,15 @@ public class ProductServiceImpl implements ProductService {
     // 소분류
     // 최신순
     @Override
-    public List<Product> categoryCodeSelect1(long categoryCode, Pageable pageable) {
+    public List<ProductVO> categoryCodeSelect1(Map<String, Object> map) {
 
-        return pRepository.findByCategory_CategoryCodeOrderByProductCodeDesc(categoryCode, pageable);
+        return sqlFactory.openSession().selectList("select_product_code_list1", map);
     }
 
     // 조회수순
     @Override
-    public List<Product> categoryHitSelect1(long categoryCode, Pageable pageable) {
-        return pRepository.findByCategory_CategoryCodeOrderByProductHitDesc(categoryCode, pageable);
+    public List<ProductVO> categoryHitSelect1(Map<String, Object> map) {
+        return sqlFactory.openSession().selectList("select_product_hit_list1", map);
     }
 
     // 가격 높은순
@@ -156,14 +162,14 @@ public class ProductServiceImpl implements ProductService {
 
     // 최신순
     @Override
-    public List<Product> categoryCodeSelect2(long categoryParent, Pageable pageable) {
-        return pRepository.findByCategory_CategoryParentOrderByProductCodeDesc(categoryParent, pageable);
+    public List<ProductVO> categoryCodeSelect2(Map<String, Object> map) {
+        return sqlFactory.openSession().selectList("select_product_code_list2", map);
     }
 
     // 조회수순
     @Override
-    public List<Product> categoryHitSelect2(long categoryParent, Pageable pageable) {
-        return pRepository.findByCategory_CategoryParentOrderByProductHitDesc(categoryParent, pageable);
+    public List<ProductVO> categoryHitSelect2(Map<String, Object> map) {
+        return sqlFactory.openSession().selectList("select_product_hit_list2", map);
     }
 
     // 가격 높은순

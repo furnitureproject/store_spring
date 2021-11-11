@@ -3,139 +3,253 @@
 
 <mapper namespace="Product">
 
+     <!-- 1-1. 전체 검색시 가격 높은순 -->
     <resultMap type="com.team.vo.ProductVO" id="map1">
         <result column="PRODUCT_CODE" property="productCode" />
         <result column="PRODUCT_TITLE" property="productTitle" />
         <result column="PRODUCT_DESC" property="productDesc"/>
         <result column="PRODUCT_HIT" property="productHit" />
         <result column="CATE_CODE" property="categoryCode" />
-        <result column="PRODUCT_IMG_DATA" property="thumImgData" jdbcType="BLOB" />
-        <result column="PRODUCT_IMG_TYPE" property="thumImgType" />
         <result column="OPTION_PRICE" property="optionPrice" />
     </resultMap>
-
+   
     <select id="select_product_price_high_list" parameterType="map" resultMap="map1">
-        SELECT * FROM (SELECT PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT,  PRODUCT_IMG_DATA, PRODUCT_IMG_TYPE, 
-	    OPTION_PRICE,  ROW_NUMBER() OVER( ORDER BY OPTION_PRICE DESC)ROWN2 FROM (SELECT PRODUCT.PRODUCT_CODE,PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, 
-        PRODUCT.PRODUCT_HIT, PRODUCT.CATE_CODE, PRODUCT.PRODUCT_IMG_DATA, PRODUCT.PRODUCT_IMG_TYPE,PRODUCT_OPTION.OPTION_PRICE, 
+        SELECT * FROM (SELECT PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT, 
+	    OPTION_PRICE, CATE_CODE, ROW_NUMBER() OVER( ORDER BY OPTION_PRICE DESC)ROWN2 FROM (SELECT PRODUCT.PRODUCT_CODE,PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, 
+        PRODUCT.PRODUCT_HIT, PRODUCT.CATE_CODE, PRODUCT_OPTION.OPTION_PRICE,
         ROW_NUMBER() OVER(PARTITION BY PRODUCT.PRODUCT_CODE ORDER BY PRODUCT_OPTION.OPTION_PRICE ASC) ROWN FROM PRODUCT, PRODUCT_OPTION 
-        WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE)WHERE ROWN=1) WHERE  PRODUCT_TITLE LIKE '%' || #{title} || '%' AND   ROWN2 BETWEEN #{page} AND #{page1} ORDER BY OPTION_PRICE DESC;
+        WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE)WHERE ROWN=1) WHERE  PRODUCT_TITLE LIKE '%' || #{title} || '%' AND   ROWN2 BETWEEN #{spage} AND #{epage} ORDER BY OPTION_PRICE DESC;
     </select>
 
+    <!--1-2. 전체 검색시 가격 낮은순 -->
     <resultMap type="com.team.vo.ProductVO" id="map2">
         <result column="PRODUCT_CODE" property="productCode" />
         <result column="PRODUCT_TITLE" property="productTitle" />
         <result column="PRODUCT_DESC" property="productDesc"/>
         <result column="PRODUCT_HIT" property="productHit" />
         <result column="CATE_CODE" property="categoryCode" />
-        <result column="PRODUCT_IMG_DATA" property="thumImgData" jdbcType="BLOB" />
-        <result column="PRODUCT_IMG_TYPE" property="thumImgType" />
         <result column="OPTION_PRICE" property="optionPrice" />
     </resultMap>
+        
 
     <select id="select_product_price_low_list" parameterType="map" resultMap="map2">
-        SELECT * FROM (SELECT PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT,  PRODUCT_IMG_DATA, PRODUCT_IMG_TYPE, 
+        SELECT * FROM (SELECT PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT, CATE_CODE,
 	    OPTION_PRICE,  ROW_NUMBER() OVER( ORDER BY OPTION_PRICE ASC)ROWN2 FROM (SELECT PRODUCT.PRODUCT_CODE,PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, 
-        PRODUCT.PRODUCT_HIT, PRODUCT.CATE_CODE, PRODUCT.PRODUCT_IMG_DATA, PRODUCT.PRODUCT_IMG_TYPE,PRODUCT_OPTION.OPTION_PRICE, 
+        PRODUCT.PRODUCT_HIT, PRODUCT.CATE_CODE, PRODUCT_OPTION.OPTION_PRICE, 
         ROW_NUMBER() OVER(PARTITION BY PRODUCT.PRODUCT_CODE ORDER BY PRODUCT_OPTION.OPTION_PRICE ASC) ROWN FROM PRODUCT, PRODUCT_OPTION 
-        WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE)WHERE ROWN=1) WHERE  PRODUCT_TITLE LIKE '%' || #{title} || '%' AND   ROWN2 BETWEEN #{page} AND #{page1} ORDER BY OPTION_PRICE ASC;
+        WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE)WHERE ROWN=1) WHERE  PRODUCT_TITLE LIKE '%' || #{title} || '%' AND   ROWN2 BETWEEN #{spage} AND #{epage} ORDER BY OPTION_PRICE ASC;
 
     </select>
 
-    
-    <resultMap type="com.team.dto.ProductDTO" id="map3">
+     <!--1-3. 전체 검색시 최신순 -->
+    <resultMap type="com.team.vo.ProductVO" id="map3">
         <result column="PRODUCT_CODE" property="productCode" />
-        <result column="SELLER_ID" property="sellerId" />
+        <result column="PRODUCT_TITLE" property="productTitle" />
+        <result column="PRODUCT_DESC" property="productDesc"/>
+        <result column="PRODUCT_HIT" property="productHit" />
+        <result column="CATE_CODE" property="categoryCode" />
+        <result column="OPTION_PRICE" property="optionPrice" />
     </resultMap>
-    <select id="select_product" parameterType="Long" resultMap="map3">
-        SELECT PRODUCT.PRODUCT_CODE, PRODUCT.SELLER_ID FROM PRODUCT WHERE PRODUCT_CODE = #{productCode}
+        
+
+    <select id="select_product_code_list" parameterType="map" resultMap="map3">
+        SELECT *FROM (SELECT PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT, CATE_CODE,
+	    OPTION_PRICE  , ROW_NUMBER() OVER(ORDER BY PRODUCT_CODE DESC)ROWN2  FROM (SELECT PRODUCT.PRODUCT_CODE,
+        PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, PRODUCT.PRODUCT_HIT, PRODUCT.CATE_CODE, PRODUCT_OPTION.OPTION_PRICE, 
+        ROW_NUMBER() OVER(PARTITION BY PRODUCT.PRODUCT_CODE ORDER BY PRODUCT_OPTION.OPTION_PRICE ASC)ROWN
+        FROM PRODUCT, PRODUCT_OPTION WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE) WHERE ROWN=1  )  
+        WHERE PRODUCT_TITLE LIKE '%' || #{title} || '%' AND  ROWN2 BETWEEN #{spage} AND #{epage} ORDER BY PRODUCT_CODE DESC; 
     </select>
 
-
+    <!--1-4. 전체 검색시 조회순 -->
     <resultMap type="com.team.vo.ProductVO" id="map4">
         <result column="PRODUCT_CODE" property="productCode" />
         <result column="PRODUCT_TITLE" property="productTitle" />
         <result column="PRODUCT_DESC" property="productDesc"/>
         <result column="PRODUCT_HIT" property="productHit" />
         <result column="CATE_CODE" property="categoryCode" />
-        <result column="PRODUCT_IMG_DATA" property="thumImgData" jdbcType="BLOB" />
-        <result column="PRODUCT_IMG_TYPE" property="thumImgType" />
         <result column="OPTION_PRICE" property="optionPrice" />
     </resultMap>
+        
 
-    <select id="select_product_price_high_list1" parameterType="map" resultMap="map4">
-        SELECT * FROM (SELECT PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT, A.CATE_CODE, PRODUCT_IMG_DATA, PRODUCT_IMG_TYPE, 
-	    OPTION_PRICE, CATE_PARENT,  ROW_NUMBER() OVER( ORDER BY OPTION_PRICE DESC)ROWN2 FROM 
-	    (SELECT * FROM(SELECT PRODUCT.PRODUCT_CODE,PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, 
-        PRODUCT.PRODUCT_HIT, PRODUCT.CATE_CODE,PRODUCT.PRODUCT_IMG_DATA, PRODUCT.PRODUCT_IMG_TYPE,PRODUCT_OPTION.OPTION_PRICE, 
-        ROW_NUMBER() OVER(PARTITION BY PRODUCT.PRODUCT_CODE ORDER BY PRODUCT_OPTION.OPTION_PRICE ASC) ROWN
-        FROM PRODUCT, PRODUCT_OPTION  WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE) WHERE ROWN=1) A, 
-	    CATEGORY WHERE CATEGORY.CATE_CODE=A.CATE_CODE) WHERE ROWN2 BETWEEN #{page} AND #{page1}  AND CATE_CODE=#{categoryCode} ORDER BY OPTION_PRICE DESC;
+    <select id="select_product_Hit_list" parameterType="map" resultMap="map4">
+        SELECT * FROM (SELECT PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT, CATE_CODE,
+	    OPTION_PRICE  , ROW_NUMBER() OVER(ORDER BY PRODUCT_HIT DESC)ROWN2  FROM (SELECT PRODUCT.PRODUCT_CODE,
+        PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, PRODUCT.PRODUCT_HIT, PRODUCT.CATE_CODE, PRODUCT_OPTION.OPTION_PRICE, 
+        ROW_NUMBER() OVER(PARTITION BY PRODUCT.PRODUCT_CODE ORDER BY PRODUCT_OPTION.OPTION_PRICE ASC)ROWN
+        FROM PRODUCT, PRODUCT_OPTION WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE) WHERE ROWN=1)  
+        WHERE PRODUCT_TITLE LIKE '%' || #{title} || '%' AND ROWN2 BETWEEN #{spage} AND #{epage} ORDER BY PRODUCT_HIT DESC;  
     </select>
 
+  
+    <!-- 2-1 소분류 가격 높은순  -->
     <resultMap type="com.team.vo.ProductVO" id="map5">
         <result column="PRODUCT_CODE" property="productCode" />
         <result column="PRODUCT_TITLE" property="productTitle" />
         <result column="PRODUCT_DESC" property="productDesc"/>
         <result column="PRODUCT_HIT" property="productHit" />
         <result column="CATE_CODE" property="categoryCode" />
-        <result column="PRODUCT_IMG_DATA" property="thumImgData" jdbcType="BLOB" />
-        <result column="PRODUCT_IMG_TYPE" property="thumImgType" />
         <result column="OPTION_PRICE" property="optionPrice" />
     </resultMap>
 
-    <select id="select_product_price_row_list1" parameterType="map" resultMap="map5">
+    <select id="select_product_price_high_list1" parameterType="map" resultMap="map5">
+        SELECT *FROM (SELECT PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT, CATE_CODE, 
+	    OPTION_PRICE, ROW_NUMBER() OVER( ORDER BY OPTION_PRICE DESC)ROWN2   FROM (SELECT PRODUCT.PRODUCT_CODE,PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, 
+        PRODUCT.PRODUCT_HIT, PRODUCT.CATE_CODE,PRODUCT_OPTION.OPTION_PRICE, 
+        ROW_NUMBER() OVER(PARTITION BY PRODUCT.PRODUCT_CODE ORDER BY PRODUCT_OPTION.OPTION_PRICE ASC)ROWN
+        FROM PRODUCT, PRODUCT_OPTION  WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE) WHERE ROWN=1 AND CATE_CODE=${categoryCode}) WHERE ROWN2 BETWEEN #{spage} AND #{epage} ORDER BY OPTION_PRICE DESC;
 
-        SELECT * FROM (SELECT PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT, A.CATE_CODE, PRODUCT_IMG_DATA, PRODUCT_IMG_TYPE, 
-	    OPTION_PRICE, CATE_PARENT,  ROW_NUMBER() OVER( ORDER BY OPTION_PRICE ASC)ROWN2 FROM 
-	    (SELECT * FROM(SELECT PRODUCT.PRODUCT_CODE,PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, 
-        PRODUCT.PRODUCT_HIT, PRODUCT.CATE_CODE,PRODUCT.PRODUCT_IMG_DATA, PRODUCT.PRODUCT_IMG_TYPE,PRODUCT_OPTION.OPTION_PRICE, 
-        ROW_NUMBER() OVER(PARTITION BY PRODUCT.PRODUCT_CODE ORDER BY PRODUCT_OPTION.OPTION_PRICE ASC) ROWN
-        FROM PRODUCT, PRODUCT_OPTION  WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE) WHERE ROWN=1) A, 
-	    CATEGORY WHERE CATEGORY.CATE_CODE=A.CATE_CODE) WHERE ROWN2 BETWEEN #{page} AND #{page1}  AND CATE_CODE=#{categoryCode} ORDER BY OPTION_PRICE ASC;
     </select>
 
+    <!-- 2-2 소분류 가격 낮은순 -->
     <resultMap type="com.team.vo.ProductVO" id="map6">
         <result column="PRODUCT_CODE" property="productCode" />
         <result column="PRODUCT_TITLE" property="productTitle" />
         <result column="PRODUCT_DESC" property="productDesc"/>
         <result column="PRODUCT_HIT" property="productHit" />
         <result column="CATE_CODE" property="categoryCode" />
-        <result column="PRODUCT_IMG_DATA" property="thumImgData" jdbcType="BLOB" />
-        <result column="PRODUCT_IMG_TYPE" property="thumImgType" />
         <result column="OPTION_PRICE" property="optionPrice" />
     </resultMap>
 
-    <select id="select_product_price_high_list2" parameterType="map" resultMap="map6">
-         SELECT * FROM (SELECT PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT, A.CATE_CODE, PRODUCT_IMG_DATA, PRODUCT_IMG_TYPE, 
-	    OPTION_PRICE, CATE_PARENT,  ROW_NUMBER() OVER( ORDER BY OPTION_PRICE DESC)ROWN2 FROM 
-	    (SELECT * FROM(SELECT PRODUCT.PRODUCT_CODE,PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, 
-        PRODUCT.PRODUCT_HIT, PRODUCT.CATE_CODE,PRODUCT.PRODUCT_IMG_DATA, PRODUCT.PRODUCT_IMG_TYPE,PRODUCT_OPTION.OPTION_PRICE, 
-        ROW_NUMBER() OVER(PARTITION BY PRODUCT.PRODUCT_CODE ORDER BY PRODUCT_OPTION.OPTION_PRICE ASC) ROWN
-        FROM PRODUCT, PRODUCT_OPTION  WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE) WHERE ROWN=1) A, 
-	    CATEGORY WHERE CATEGORY.CATE_CODE=A.CATE_CODE) WHERE ROWN2 BETWEEN #{page} AND #{page1}  AND CATE_PARENT=#{categoryParent} ORDER BY OPTION_PRICE DESC;
+    <select id="select_product_price_row_list1" parameterType="map" resultMap="map6">
+        SELECT *FROM (SELECT PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT, CATE_CODE, 
+	    OPTION_PRICE, ROW_NUMBER() OVER( ORDER BY OPTION_PRICE ASC)ROWN2   FROM (SELECT PRODUCT.PRODUCT_CODE,PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, 
+        PRODUCT.PRODUCT_HIT, PRODUCT.CATE_CODE,PRODUCT_OPTION.OPTION_PRICE, 
+        ROW_NUMBER() OVER(PARTITION BY PRODUCT.PRODUCT_CODE ORDER BY PRODUCT_OPTION.OPTION_PRICE ASC)ROWN
+        FROM PRODUCT, PRODUCT_OPTION  WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE) WHERE ROWN=1 AND CATE_CODE=${categoryCode}) WHERE ROWN2 BETWEEN #{spage} AND #{epage} ORDER BY OPTION_PRICE ASC;
     </select>
 
-    <resultMap type="com.team.vo.ProductVO" id="map7">
+    <!-- 2-3 소분류 최신순  -->
+     <resultMap type="com.team.vo.ProductVO" id="map7">
         <result column="PRODUCT_CODE" property="productCode" />
         <result column="PRODUCT_TITLE" property="productTitle" />
         <result column="PRODUCT_DESC" property="productDesc"/>
         <result column="PRODUCT_HIT" property="productHit" />
         <result column="CATE_CODE" property="categoryCode" />
-        <result column="PRODUCT_IMG_DATA" property="thumImgData" jdbcType="BLOB" />
-        <result column="PRODUCT_IMG_TYPE" property="thumImgType" />
         <result column="OPTION_PRICE" property="optionPrice" />
     </resultMap>
 
-    <select id="select_product_price_low_list2" parameterType="map" resultMap="map7">
-        SELECT * FROM (SELECT PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT, A.CATE_CODE, PRODUCT_IMG_DATA, PRODUCT_IMG_TYPE, 
-	    OPTION_PRICE, CATE_PARENT,  ROW_NUMBER() OVER( ORDER BY OPTION_PRICE ASC)ROWN2 FROM 
-	    (SELECT * FROM(SELECT PRODUCT.PRODUCT_CODE,PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, 
-        PRODUCT.PRODUCT_HIT, PRODUCT.CATE_CODE,PRODUCT.PRODUCT_IMG_DATA, PRODUCT.PRODUCT_IMG_TYPE,PRODUCT_OPTION.OPTION_PRICE, 
-        ROW_NUMBER() OVER(PARTITION BY PRODUCT.PRODUCT_CODE ORDER BY PRODUCT_OPTION.OPTION_PRICE ASC) ROWN
-        FROM PRODUCT, PRODUCT_OPTION  WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE) WHERE ROWN=1) A, 
-	    CATEGORY WHERE CATEGORY.CATE_CODE=A.CATE_CODE) WHERE ROWN2 BETWEEN #{page} AND #{page1}  AND CATE_PARENT=#{categoryParent} ORDER BY OPTION_PRICE ASC;
+    <select id="select_product_code_list1" parameterType="map" resultMap="map7">
+        SELECT *FROM (SELECT PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT, CATE_CODE, 
+	    OPTION_PRICE, ROW_NUMBER() OVER( ORDER BY PRODUCT_CODE DESC)ROWN2   FROM (SELECT PRODUCT.PRODUCT_CODE,PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, 
+        PRODUCT.PRODUCT_HIT, PRODUCT.CATE_CODE,PRODUCT_OPTION.OPTION_PRICE, 
+        ROW_NUMBER() OVER(PARTITION BY PRODUCT.PRODUCT_CODE ORDER BY PRODUCT_OPTION.OPTION_PRICE ASC)ROWN
+        FROM PRODUCT, PRODUCT_OPTION  WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE) WHERE ROWN=1 AND CATE_CODE=${categoryCode}) WHERE ROWN2 BETWEEN #{spage} AND #{epage} ORDER BY PRODUCT_CODE DESC;
+    </select>
+
+     <!-- 2-4 소분류 조회수순  -->
+     <resultMap type="com.team.vo.ProductVO" id="map8">
+        <result column="PRODUCT_CODE" property="productCode" />
+        <result column="PRODUCT_TITLE" property="productTitle" />
+        <result column="PRODUCT_DESC" property="productDesc"/>
+        <result column="PRODUCT_HIT" property="productHit" />
+        <result column="CATE_CODE" property="categoryCode" />
+        <result column="OPTION_PRICE" property="optionPrice" />
+    </resultMap>
+
+    <select id="select_product_hit_list1" parameterType="map" resultMap="map8">
+        SELECT *FROM (SELECT PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT, CATE_CODE, 
+	    OPTION_PRICE, ROW_NUMBER() OVER( ORDER BY PRODUCT_HIT DESC)ROWN2   FROM (SELECT PRODUCT.PRODUCT_CODE,PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, 
+        PRODUCT.PRODUCT_HIT, PRODUCT.CATE_CODE,PRODUCT_OPTION.OPTION_PRICE, 
+        ROW_NUMBER() OVER(PARTITION BY PRODUCT.PRODUCT_CODE ORDER BY PRODUCT_OPTION.OPTION_PRICE ASC)ROWN
+        FROM PRODUCT, PRODUCT_OPTION  WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE) WHERE ROWN=1 AND CATE_CODE=${categoryCode}) WHERE ROWN2 BETWEEN #{spage} AND #{epage} ORDER BY PRODUCT_HIT DESC;
 
     </select>
+
+
+    <!--  3-1 중분류 가격 높은순 -->
+    <resultMap type="com.team.vo.ProductVO" id="map9">
+        <result column="PRODUCT_CODE" property="productCode" />
+        <result column="PRODUCT_TITLE" property="productTitle" />
+        <result column="PRODUCT_DESC" property="productDesc"/>
+        <result column="PRODUCT_HIT" property="productHit" />
+        <result column="CATE_CODE" property="categoryCode" />
+        <result column="OPTION_PRICE" property="optionPrice" />
+    </resultMap>
+
+    <select id="select_product_price_high_list2" parameterType="map" resultMap="map9">
+         SELECT * FROM (SELECT PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT, A.CATE_CODE,  
+	    OPTION_PRICE, CATE_PARENT,  ROW_NUMBER() OVER( ORDER BY OPTION_PRICE DESC)ROWN2 FROM 
+	    (SELECT * FROM(SELECT PRODUCT.PRODUCT_CODE,PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, 
+        PRODUCT.PRODUCT_HIT, PRODUCT.CATE_CODE,PRODUCT_OPTION.OPTION_PRICE, 
+        ROW_NUMBER() OVER(PARTITION BY PRODUCT.PRODUCT_CODE ORDER BY PRODUCT_OPTION.OPTION_PRICE ASC)ROWN
+        FROM PRODUCT, PRODUCT_OPTION  WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE) WHERE ROWN=1)A, 
+	    CATEGORY WHERE CATEGORY.CATE_CODE=A.CATE_CODE) WHERE ROWN2 BETWEEN #{spage} AND #{epage}  AND CATE_PARENT=#{categoryParent} ORDER BY OPTION_PRICE DESC;
+    </select>
+
+    <!-- 3-2 중분류 가격 낮은순 -->
+    <resultMap type="com.team.vo.ProductVO" id="map10">
+        <result column="PRODUCT_CODE" property="productCode" />
+        <result column="PRODUCT_TITLE" property="productTitle" />
+        <result column="PRODUCT_DESC" property="productDesc"/>
+        <result column="PRODUCT_HIT" property="productHit" />
+        <result column="CATE_CODE" property="categoryCode" />
+        <result column="OPTION_PRICE" property="optionPrice" />
+    </resultMap>
+
+    <select id="select_product_price_low_list2" parameterType="map" resultMap="map10">
+        SELECT * FROM (SELECT PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT, A.CATE_CODE,  
+	    OPTION_PRICE, CATE_PARENT,  ROW_NUMBER() OVER( ORDER BY OPTION_PRICE ASC)ROWN2 FROM 
+	    (SELECT * FROM(SELECT PRODUCT.PRODUCT_CODE,PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, 
+        PRODUCT.PRODUCT_HIT, PRODUCT.CATE_CODE,PRODUCT_OPTION.OPTION_PRICE, 
+        ROW_NUMBER() OVER(PARTITION BY PRODUCT.PRODUCT_CODE ORDER BY PRODUCT_OPTION.OPTION_PRICE ASC)ROWN
+        FROM PRODUCT, PRODUCT_OPTION  WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE) WHERE ROWN=1)A, 
+	    CATEGORY WHERE CATEGORY.CATE_CODE=A.CATE_CODE) WHERE ROWN2 BETWEEN #{spage} AND #{epage}  AND CATE_PARENT=#{categoryParent} ORDER BY OPTION_PRICE ASC;
+
+    </select>
+
+    <!-- 3-3 중분류 최신순 -->
+    <resultMap type="com.team.vo.ProductVO" id="map11">
+        <result column="PRODUCT_CODE" property="productCode" />
+        <result column="PRODUCT_TITLE" property="productTitle" />
+        <result column="PRODUCT_DESC" property="productDesc"/>
+        <result column="PRODUCT_HIT" property="productHit" />
+        <result column="CATE_CODE" property="categoryCode" />
+        <result column="OPTION_PRICE" property="optionPrice" />
+    </resultMap>
+
+    <select id="select_product_code_list2" parameterType="map" resultMap="map11">
+        SELECT * FROM (SELECT PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT, A.CATE_CODE,  
+	    OPTION_PRICE, CATE_PARENT,  ROW_NUMBER() OVER( ORDER BY PRODUCT_CODE DESC)ROWN2 FROM 
+	    (SELECT * FROM(SELECT PRODUCT.PRODUCT_CODE,PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, 
+        PRODUCT.PRODUCT_HIT, PRODUCT.CATE_CODE,PRODUCT_OPTION.OPTION_PRICE, 
+        ROW_NUMBER() OVER(PARTITION BY PRODUCT.PRODUCT_CODE ORDER BY PRODUCT_OPTION.OPTION_PRICE ASC)ROWN
+        FROM PRODUCT, PRODUCT_OPTION  WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE) WHERE ROWN=1)A, 
+	    CATEGORY WHERE CATEGORY.CATE_CODE=A.CATE_CODE) WHERE ROWN2 BETWEEN #{spage} AND #{epage} AND CATE_PARENT=#{categoryParent} ORDER BY PRODUCT_CODE DESC;
+
+    </select>
+
+    <!-- 3-4 중분류 조회수순 -->
+    <resultMap type="com.team.vo.ProductVO" id="map12">
+        <result column="PRODUCT_CODE" property="productCode" />
+        <result column="PRODUCT_TITLE" property="productTitle" />
+        <result column="PRODUCT_DESC" property="productDesc"/>
+        <result column="PRODUCT_HIT" property="productHit" />
+        <result column="CATE_CODE" property="categoryCode" />
+        <result column="OPTION_PRICE" property="optionPrice" />
+    </resultMap>
+
+    <select id="select_product_hit_list2" parameterType="map" resultMap="map12">
+        SELECT * FROM (SELECT PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT, A.CATE_CODE,  
+	    OPTION_PRICE, CATE_PARENT,  ROW_NUMBER() OVER( ORDER BY PRODUCT_HIT DESC)ROWN2 FROM 
+	    (SELECT * FROM(SELECT PRODUCT.PRODUCT_CODE,PRODUCT.PRODUCT_TITLE, PRODUCT.PRODUCT_DESC, 
+        PRODUCT.PRODUCT_HIT, PRODUCT.CATE_CODE,PRODUCT_OPTION.OPTION_PRICE, 
+        ROW_NUMBER() OVER(PARTITION BY PRODUCT.PRODUCT_CODE ORDER BY PRODUCT_OPTION.OPTION_PRICE ASC)ROWN
+        FROM PRODUCT, PRODUCT_OPTION  WHERE PRODUCT.PRODUCT_CODE= PRODUCT_OPTION.PRODUCT_CODE) WHERE ROWN=1)A, 
+	    CATEGORY WHERE CATEGORY.CATE_CODE=A.CATE_CODE) WHERE ROWN2 BETWEEN #{spage} AND #{epage} AND CATE_PARENT=#{categoryParent} ORDER BY PRODUCT_HIT DESC;
+
+    </select>
+
+
+    
+    <!-- 물품코드와 판매자만 조회 -->
+    <resultMap type="com.team.dto.ProductDTO" id="map13">
+        <result column="PRODUCT_CODE" property="productCode" />
+        <result column="SELLER_ID" property="sellerId" />
+    </resultMap>
+    <select id="select_product" parameterType="Long" resultMap="map13">
+        SELECT PRODUCT.PRODUCT_CODE, PRODUCT.SELLER_ID FROM PRODUCT WHERE PRODUCT_CODE = #{productCode}
+    </select>
+
 
 </mapper>

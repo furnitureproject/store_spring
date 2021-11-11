@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.persistence.EntityManagerFactory;
 
-import com.team.dto.DesDTO;
 import com.team.entity.DesProjection;
 import com.team.entity.ProductDesImage;
 import com.team.repository.ProductDesImageRepository;

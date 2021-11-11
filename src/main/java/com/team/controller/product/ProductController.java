@@ -13,8 +13,10 @@ import com.team.entity.Category;
 import com.team.entity.DesProjection;
 import com.team.entity.Product;
 import com.team.entity.ProductDesImage;
+import com.team.entity.ProductProjection;
 import com.team.entity.ProductSubImage;
 import com.team.entity.Seller;
+import com.team.entity.SubProjection;
 import com.team.jwt.JwtUtil;
 import com.team.service.CategoryService;
 import com.team.service.ProductDesImageService;
@@ -25,7 +27,6 @@ import com.team.service.SellerService;
 import com.team.vo.ProductVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -92,7 +93,7 @@ public class ProductController {
     public Map<String, Object> selectOneGET(@RequestParam long productCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            Product product = pService.selectProductOne(productCode);
+            ProductProjection product = pService.selectProductProjection(productCode);
 
             map.put("product", product);
             map.put("status", 200);
@@ -118,15 +119,38 @@ public class ProductController {
         return map;
     }
 
-    @GetMapping(value = "/select_one2", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectOneGET2(@RequestParam long productCode) {
+    @GetMapping(value = "/select_desimglist", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> selectDesGET(@RequestParam long productCode) {
         Map<String, Object> map = new HashMap<>();
         try {
-            Product product = pService.selectProductOne(productCode);
-
             List<DesProjection> list = pdServise.DesImgNumList(productCode);
-            map.put("list", list);
-            map.put("product", product);
+            int index = 0;
+            for (DesProjection desProjection : list) {
+                index++;
+                map.put("image" + index,
+                        "http://127.0.0.1:8080/ROOT/product/select_desimage?desImgNum=" + desProjection.getdesImgNum());
+            }
+            map.put("status", 200);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    @GetMapping(value = "/select_subimglist", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> selectSubGET(@RequestParam long productCode) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<SubProjection> list = psService.SubImgNumList(productCode);
+
+            int index = 0;
+            for (SubProjection subProjection : list) {
+                index++;
+                map.put("image" + index,
+                        "http://127.0.0.1:8080/ROOT/product/select_subimage?subImgNum=" + subProjection.getsubImgNum());
+            }
+
             map.put("status", 200);
         } catch (Exception e) {
             e.printStackTrace();
@@ -177,43 +201,55 @@ public class ProductController {
             // 최신순
             long cnt = pService.countByProduct1(title);
             if (sort == 1) {
-                PageRequest pageRequest = PageRequest.of(page - 1, PAGECNT);
-                List<Product> list = pService.selectCodeList(title, pageRequest);
+                Map<String, Object> map1 = new HashMap<>();
+                int epage = page * PAGECNT;
+                int spage = epage - (PAGECNT - 1);
+
+                map1.put("spage", spage);
+                map1.put("epage", epage);
+                map1.put("title", title);
+                List<ProductVO> list = pService.selectCodeList(map1);
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
 
                 // 조회수순
             } else if (sort == 2) {
-                PageRequest pageRequest = PageRequest.of(page - 1, PAGECNT);
-                List<Product> list = pService.selectHitList(title, pageRequest);
+                Map<String, Object> map2 = new HashMap<>();
+                int epage = page * PAGECNT;
+                int spage = epage - (PAGECNT - 1);
+
+                map2.put("spage", spage);
+                map2.put("epage", epage);
+                map2.put("title", title);
+                List<ProductVO> list = pService.selectHitList(map2);
 
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
                 // 가격 높은순
             } else if (sort == 3) {
-                Map<String, Object> map1 = new HashMap<>();
-                int rpage1 = page * PAGECNT;
-                int rpage = rpage1 - (PAGECNT - 1);
+                Map<String, Object> map3 = new HashMap<>();
+                int epage = page * PAGECNT;
+                int spage = epage - (PAGECNT - 1);
 
-                map1.put("page", rpage);
-                map1.put("page1", rpage1);
-                map1.put("title", title);
-                List<ProductVO> list = pService.selectPriceHigh(map1);
+                map3.put("spage", spage);
+                map3.put("epage", epage);
+                map3.put("title", title);
+                List<ProductVO> list = pService.selectPriceHigh(map3);
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
                 // 가격 낮은순
             } else if (sort == 4) {
-                Map<String, Object> map2 = new HashMap<>();
-                int rpage1 = page * PAGECNT;
-                int rpage = rpage1 - (PAGECNT - 1);
+                Map<String, Object> map4 = new HashMap<>();
+                int epage = page * PAGECNT;
+                int spage = epage - (PAGECNT - 1);
 
-                map2.put("page", rpage);
-                map2.put("page1", rpage1);
-                map2.put("title", title);
-                List<ProductVO> list = pService.selectPriceLow(map2);
+                map4.put("spage", spage);
+                map4.put("epage", epage);
+                map4.put("title", title);
+                List<ProductVO> list = pService.selectPriceLow(map4);
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
@@ -237,42 +273,54 @@ public class ProductController {
             // 최신순
             long cnt = pService.countByProduct2(categoryCode);
             if (sort == 1) {
-                PageRequest pageRequest = PageRequest.of(page - 1, PAGECNT);
-                List<Product> list = pService.categoryCodeSelect1(categoryCode, pageRequest);
+                Map<String, Object> map1 = new HashMap<>();
+                int epage = page * PAGECNT;
+                int spage = epage - (PAGECNT - 1);
+
+                map1.put("spage", spage);
+                map1.put("epage", epage);
+                map1.put("categoryCode", categoryCode);
+                List<ProductVO> list = pService.categoryCodeSelect1(map1);
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
 
                 // 조회수순
             } else if (sort == 2) {
-                PageRequest pageRequest = PageRequest.of(page - 1, PAGECNT);
-                List<Product> list = pService.categoryHitSelect1(categoryCode, pageRequest);
+                Map<String, Object> map2 = new HashMap<>();
+                int epage = page * PAGECNT;
+                int spage = epage - (PAGECNT - 1);
+
+                map2.put("spage", spage);
+                map2.put("epage", epage);
+                map2.put("categoryCode", categoryCode);
+                List<ProductVO> list = pService.categoryHitSelect1(map2);
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
                 // 가격 높은순
             } else if (sort == 3) {
-                Map<String, Object> map1 = new HashMap<>();
-                int rpage1 = page * PAGECNT;
-                int rpage = rpage1 - (PAGECNT - 1);
+                Map<String, Object> map3 = new HashMap<>();
+                int epage = page * PAGECNT;
+                int spage = epage - (PAGECNT - 1);
 
-                map1.put("page", rpage);
-                map1.put("page1", rpage1);
-                map1.put("categoryCode", categoryCode);
-                List<ProductVO> list = pService.selectPriceHigh1(map1);
+                map3.put("spage", spage);
+                map3.put("epage", epage);
+                map3.put("categoryCode", categoryCode);
+                List<ProductVO> list = pService.selectPriceHigh1(map3);
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
                 // 가격 낮은순
             } else if (sort == 4) {
-                Map<String, Object> map2 = new HashMap<>();
-                int rpage1 = page * PAGECNT;
-                int rpage = rpage1 - (PAGECNT - 1);
+                Map<String, Object> map4 = new HashMap<>();
+                int epage = page * PAGECNT;
+                int spage = epage - (PAGECNT - 1);
 
-                map2.put("page", rpage);
-                map2.put("page1", rpage1);
-                map2.put("categoryCode", categoryCode);
-                List<ProductVO> list = pService.selectPriceLow1(map2);
+                map4.put("spage", spage);
+                map4.put("epage", epage);
+                map4.put("categoryCode", categoryCode);
+                List<ProductVO> list = pService.selectPriceLow1(map4);
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
@@ -293,40 +341,50 @@ public class ProductController {
         try {
             // 최신순
             if (sort == 1) {
-                PageRequest pageRequest = PageRequest.of(page - 1, PAGECNT);
-                List<Product> list = pService.categoryCodeSelect2(categoryParent, pageRequest);
+                Map<String, Object> map1 = new HashMap<>();
+                int epage = page * PAGECNT;
+                int spage = epage - (PAGECNT - 1);
+                map1.put("spage", spage);
+                map1.put("epage", epage);
+                map1.put("categoryParent", categoryParent);
+                List<ProductVO> list = pService.categoryCodeSelect2(map1);
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
 
                 // 조회수순
             } else if (sort == 2) {
-                PageRequest pageRequest = PageRequest.of(page - 1, PAGECNT);
-                List<Product> list = pService.categoryHitSelect2(categoryParent, pageRequest);
+                Map<String, Object> map2 = new HashMap<>();
+                int epage = page * PAGECNT;
+                int spage = epage - (PAGECNT - 1);
+                map2.put("spage", spage);
+                map2.put("epage", epage);
+                map2.put("categoryParent", categoryParent);
+                List<ProductVO> list = pService.categoryHitSelect2(map2);
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
                 // 가격 높은순
             } else if (sort == 3) {
-                Map<String, Object> map1 = new HashMap<>();
-                int rpage1 = page * PAGECNT;
-                int rpage = rpage1 - (PAGECNT - 1);
-                map1.put("page", rpage);
-                map1.put("page1", rpage1);
-                map1.put("categoryParent", categoryParent);
-                List<ProductVO> list = pService.selectPriceHigh2(map1);
+                Map<String, Object> map3 = new HashMap<>();
+                int epage = page * PAGECNT;
+                int spage = epage - (PAGECNT - 1);
+                map3.put("spage", spage);
+                map3.put("epage", epage);
+                map3.put("categoryParent", categoryParent);
+                List<ProductVO> list = pService.selectPriceHigh2(map3);
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
                 // 가격 낮은순
             } else if (sort == 4) {
-                Map<String, Object> map2 = new HashMap<>();
-                int rpage1 = page * PAGECNT;
-                int rpage = rpage1 - (PAGECNT - 1);
-                map2.put("page", rpage);
-                map2.put("page1", rpage1);
-                map2.put("categoryParent", categoryParent);
-                List<ProductVO> list = pService.selectPriceLow2(map2);
+                Map<String, Object> map4 = new HashMap<>();
+                int epage = page * PAGECNT;
+                int spage = epage - (PAGECNT - 1);
+                map4.put("spage", spage);
+                map4.put("epage", epage);
+                map4.put("categoryParent", categoryParent);
+                List<ProductVO> list = pService.selectPriceLow2(map4);
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);

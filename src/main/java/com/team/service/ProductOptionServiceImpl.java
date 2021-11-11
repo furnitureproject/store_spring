@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import com.team.entity.OptionProjection;
 import com.team.entity.ProductOption;
 import com.team.repository.ProductOptionRepository;
 
@@ -85,8 +86,8 @@ public class ProductOptionServiceImpl implements ProductOptionService {
     }
 
     @Override
-    public List<ProductOption> selectByProductCode(Long productCode) {
-        return poRepository.findByProduct_ProductCodeOrderByOptionCodeDesc(productCode);
+    public List<OptionProjection> selectByProductCode(Long productCode) {
+        return poRepository.findByProduct_ProductCodeOrderByOptionCodeAsc(productCode);
     }
 
 }
