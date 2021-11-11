@@ -31,7 +31,7 @@ public class Delivery {
     private Long deliveryNo;
 
     @Column(name = "DELIVERY_CODE")
-    private Long deliveryCode;
+    private Long deliveryCode=0L;
 
     @ManyToOne
     @JoinColumn(name = "UINPUT_NO")

@@ -12,6 +12,7 @@ import com.team.jwt.JwtUtil;
 import com.team.service.CartService;
 import com.team.service.DeliveryService;
 import com.team.service.OrderService;
+import com.team.service.ProductOptionService;
 import com.team.service.UserService;
 import com.team.service.UserinputService;
 
@@ -46,6 +47,9 @@ public class DeliveryController {
     @Autowired
     OrderService oService;
 
+    @Autowired
+    ProductOptionService poService;
+
     // delivery 등록
     // 127.0.0.1:8080/ROOT/delivery/insert?uno=
     @RequestMapping(value = "/insert", method = {
@@ -71,15 +75,19 @@ public class DeliveryController {
             else{
                 map.put("result", 0L);
             }
+            System.out.println(delivery.getDeliveryNo());
+            System.out.println(cartquantity);
+            System.out.println(poquantity);
             //주문이 성공하면 product option quantity에서 cart quantity를 뺀다.
-            // if(poquantity-cartquantity){
-            //     ProductOption productOption = uiSrvice.selectUserInput(no).getOrder().getCart().getProductOption(); //주문한 product option 정보 호출
-            //     Cart cart = uiSrvice.selectUserInput(no).getOrder().getCart();  //주문한 cart 정보 호출
-            //     productOption.getOptionQuantity()-cart.getCartOptionCount();
-            // }
-            // else{
+            if(delivery.getDeliveryNo() != null){
+                ProductOption productOption = uiSrvice.selectUserInput(no).getOrder().getCart().getProductOption(); //주문한 product option 정보 호출
+                int cart = uiSrvice.selectUserInput(no).getOrder().getCart().getCartOptionCount();  //주문한 cart 수량 호출
+                productOption.setOptionQuantity(productOption.getOptionQuantity() - cart);
+                poService.updateProductOption(productOption);
+            }
+            else{
 
-            // }
+            }
         }
         catch(Exception e){
             map.put("result", e.hashCode());

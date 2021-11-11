@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QnA">
+
+    <!-- 물품 코드 별 qna 조회 -->
+    <resultMap type="com.team.entity.QnAProjection" id="map1">
+        <result column="QNA_NUM" property="qnaNum" />
+        <result column="QNA_TITLE" property="qnaTitle" />
+        <result column="QNA_CONTENT" property="qnaContent" />
+        <result column="QNA_REGDATE" property="qnaRegdate" />
+        <result column="QNA_REPLY" property="qnaReply" />
+        <result column="QNA_REPLY_REGDATE" property="qnaReplyRegdate" />
+        <result column="PRODUCT_CODE" property="product" />
+    </resultMap>
+    
+    <select id="select_product_code_qna_list" parameterType="map" resultMap="map1">
+    SELECT * FROM (SELECT QNA_NUM, QNA_TITLE, QNA_CONTENT, QNA_REGDATE, 
+    PRODUCT_CODE, ROW_NUMBER() OVER (ORDER BY PRODUCT_CODE DESC) ROWN 
+    FROM QNA_TB2) WHERE PRODUCT_CODE =#{code} AND ROWN BETWEEN #{page} AND #{page}+9;
+    </select>
+</mapper>
+

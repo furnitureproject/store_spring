@@ -16,6 +16,7 @@ import com.team.service.SellerService;
 import com.team.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -177,14 +178,23 @@ public class QnaController {
     }
 
     // 제품 코드 별 qna 조회(sql)
-    // 127.0.0.1:8080/ROOT/select_qnalist?code= 물품 코드
+    // 127.0.0.1:8080/ROOT/select_qnalist?code= 물품 코드&page=
     @RequestMapping(value = "/select_qnalist", method = {
         RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectPcodeQnaGET(
-    @RequestParam("code") Long code) {
+        @RequestParam("code") Long code,
+        @RequestParam(value = "page", defaultValue = "1")int page) {
+        //페이지 네이션 처리
+        //PageRequest pageable = PageRequest.of(page-1,10);
         Map<String, Object> map = new HashMap<>();
         try {
-            List<QnAProjection> list = qService.selectQnaList(code);
+            int rpage1 = page * 10;
+            int rpage = rpage1 - (10 - 1);
+            
+            map.put("page", rpage);
+            map.put("page1", rpage1);
+            //map.put("code", code);
+            List<QnAProjection> list = qService.selectqna(map);
             map.put("list", list);
             map.put("result", 1);
         } catch (Exception e) {
