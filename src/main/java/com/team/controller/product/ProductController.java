@@ -144,13 +144,12 @@ public class ProductController {
         try {
             List<SubProjection> list = psService.SubImgNumList(productCode);
 
-            int index = 0;
+            List<String> list1 = new ArrayList<>();
             for (SubProjection subProjection : list) {
-                index++;
-                map.put("image" + index,
+                list1.add(
                         "http://127.0.0.1:8080/ROOT/product/select_subimage?subImgNum=" + subProjection.getsubImgNum());
             }
-
+            map.put("list1", list1);
             map.put("status", 200);
         } catch (Exception e) {
             e.printStackTrace();
