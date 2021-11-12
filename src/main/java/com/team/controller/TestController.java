@@ -42,13 +42,13 @@ public class TestController {
     UserService uService;
 
     @Autowired
+    SellerService sService;
+
+    @Autowired
     UserinputController uController;
 
     @Autowired
     ProductService pService;
-
-    @Autowired
-    SellerService sService;
 
     @Autowired
     JwtUtil jwtUtil;
@@ -89,11 +89,11 @@ public class TestController {
         
         Map<String, Object> map = new HashMap<>();
         System.out.println(checkid);
-        if(uService.selectUserOne(checkid.get("userId")) == null){
-            map.put("status", 401);
+        if(uService.selectUserOne(checkid.get("userId")) == null && sService.selectSellerOne(checkid.get("userId")) == null){
+            map.put("status", 200);
         }
         else{
-            map.put("status", 200);
+            map.put("status", 401);
         }
         return map;
     }
