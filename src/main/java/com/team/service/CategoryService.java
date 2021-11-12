@@ -29,4 +29,10 @@ public interface CategoryService {
     // return List<Category>
     public List<Category> selectAllCategory();
 
+    public List<Category> selectCategoryList(Long categoryParent);
+
+    Long countByTier(Integer categoryTier);
+
+    Long countByTierParent(Integer categoryTier, Long categoryParent);
+
 }

@@ -7,16 +7,21 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "PAYMENT")
 public class Payment {
-    
+
     @Id
     @Column(name = "PAYMENT_NO")
     private Long paymentNo;
 
     @Column(name = "PAYMENT_STATE")
-    private int paymentStatus;
+    private int paymentStatus = 0;
 
     @Column(name = "PAYMENT_REGDATE")
     private Date paymentRegdate;

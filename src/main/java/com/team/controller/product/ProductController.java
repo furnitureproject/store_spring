@@ -89,6 +89,7 @@ public class ProductController {
         return map;
     }
 
+    // http://127.0.0.1:8080/ROOT/product/select_one?productCode=202111090004
     @GetMapping(value = "/select_one", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectOneGET(@RequestParam long productCode) {
         Map<String, Object> map = new HashMap<>();
@@ -119,17 +120,18 @@ public class ProductController {
         return map;
     }
 
+    // http://127.0.0.1:8080/ROOT/product/select_desimglist?productCode=202111090005
     @GetMapping(value = "/select_desimglist", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectDesGET(@RequestParam long productCode) {
         Map<String, Object> map = new HashMap<>();
         try {
             List<DesProjection> list = pdServise.DesImgNumList(productCode);
-            int index = 0;
+
+            List<String> list1 = new ArrayList<>();
             for (DesProjection desProjection : list) {
-                index++;
-                map.put("image" + index,
-                        "http://127.0.0.1:8080/ROOT/product/select_desimage?desImgNum=" + desProjection.getdesImgNum());
+                list1.add("/ROOT/product/select_desimage?desImgNum=" + desProjection.getdesImgNum());
             }
+            map.put("list1", list1);
             map.put("status", 200);
         } catch (Exception e) {
             e.printStackTrace();
@@ -138,6 +140,7 @@ public class ProductController {
         return map;
     }
 
+    // http://127.0.0.1:8080/ROOT/product/select_subimglist?productCode=202111090004
     @GetMapping(value = "/select_subimglist", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectSubGET(@RequestParam long productCode) {
         Map<String, Object> map = new HashMap<>();
@@ -146,8 +149,7 @@ public class ProductController {
 
             List<String> list1 = new ArrayList<>();
             for (SubProjection subProjection : list) {
-                list1.add(
-                        "http://127.0.0.1:8080/ROOT/product/select_subimage?subImgNum=" + subProjection.getsubImgNum());
+                list1.add("/ROOT/product/select_subimage?subImgNum=" + subProjection.getsubImgNum());
             }
             map.put("list1", list1);
             map.put("status", 200);
@@ -189,7 +191,9 @@ public class ProductController {
 
     }
 
-    // 전체물품 검색
+    // 전체물품 검색 sort 1:최신순 2: 조회수순 3: 가격높은순, 4: 가격낮은순
+    // or title[검색어] 없으면 전체검색 or page: 없으면 1페이지
+    // http://127.0.0.1:8080/ROOT/product/select_list?sort=3
     @GetMapping(value = "/select_list", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectListGET1(@RequestParam(name = "sort") long sort,
             @RequestParam(name = "title", required = false, defaultValue = "") String title,
@@ -260,9 +264,9 @@ public class ProductController {
         return map;
     }
 
-    // 소분류 물품 검색
-    // 127.0.0.1:8080/ROOT/product/select_list?sort=
-    // return [{ Product }, { Product }...]
+    // 소분류 물품 검색 필요한 파라미터
+    // sort 1:최신순 2: 조회수순 3: 가격높은순, 4: 가격낮은순 and categoryCode or page: 없으면 1페이지
+    // http://127.0.0.1:8080/ROOT/product/select_list1?sort=4&categoryCode=201001&page=2
     @GetMapping(value = "/select_list1", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectListGET(@RequestParam long sort,
             @RequestParam(name = "categoryCode") long categoryCode,
@@ -331,6 +335,9 @@ public class ProductController {
         return map;
     }
 
+    // 중분류(거실 주방 ...) 필요한 파라미터 sort 1:최신순 2: 조회수순 3: 가격높은순, 4: 가격낮은순
+    // and categeryParent or page: 없으면 1페이지
+    // http://127.0.0.1:8080/ROOT/product/select_list2?sort=2&page=2&categoryParent=201000
     @GetMapping(value = "/select_list2", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectList1GET(@RequestParam long sort,
             @RequestParam(name = "categoryParent") long categoryParent,
@@ -396,8 +403,8 @@ public class ProductController {
     }
 
     // 상품등록
-    // <POST> 127.0.0.1:8080/ROOT/product/insert
-    // 필요 {productTitle, productDesc, category3, seller}
+    // http://127.0.0.1:8080/ROOT/product/insert?categoryCode=201001
+    // 필요 {productTitle, productDesc, category3, seller} - form data
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertPOST(@ModelAttribute Product product, @RequestParam long categoryCode,
             @RequestParam(name = "file") MultipartFile file, @RequestHeader("token") String token) {
@@ -477,6 +484,7 @@ public class ProductController {
         return map;
     }
 
+    // http://127.0.0.1:8080/ROOT/product/insert_desimage?productCode=202111090005
     @PostMapping(value = "/insert_desimage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertdesImagePOST(@RequestParam long productCode,
             @RequestParam(name = "file") MultipartFile[] files) {
@@ -503,6 +511,7 @@ public class ProductController {
         return map;
     }
 
+    // http://127.0.0.1:8080/ROOT/product/insert_subimage?productCode=202111090005
     @PostMapping(value = "/insert_subimage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertImagePOST(@RequestParam long productCode,
             @RequestParam(name = "file") MultipartFile[] files) {
@@ -529,6 +538,7 @@ public class ProductController {
         return map;
     }
 
+    // http://127.0.0.1:8080/ROOT/product/select_desimage?desImgNum=6
     @GetMapping(value = "/select_desimage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<byte[]> selectDesImage(@RequestParam long desImgNum) throws IOException {
         try {
@@ -558,6 +568,7 @@ public class ProductController {
         }
     }
 
+    // http://127.0.0.1:8080/ROOT/product/select_subimage?subImgNum=6
     @GetMapping(value = "/select_subimage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<byte[]> selectSubImage(@RequestParam long subImgNum) throws IOException {
         try {

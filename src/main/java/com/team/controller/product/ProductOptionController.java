@@ -49,6 +49,7 @@ public class ProductOptionController {
     }
 
     // 상품에 따른 옵션리스트
+    // http://127.0.0.1:8080/ROOT/productoption/select_list?productCode=202111100007
     @GetMapping(value = "/select_list", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectListGET(@RequestParam long productCode) {
         Map<String, Object> map = new HashMap<>();
@@ -64,6 +65,7 @@ public class ProductOptionController {
     }
 
     // 한개 등록
+    // http://127.0.0.1:8080/ROOT/productoption/insert?productCode=202111100007&eventCode=1
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertPOST(@RequestBody ProductOption productOption, @RequestParam long productCode,
             @RequestParam(name = "eventCode", required = false, defaultValue = "0") long eventCode) {
@@ -91,6 +93,7 @@ public class ProductOptionController {
     }
 
     // 다수 등록
+    // http://127.0.0.1:8080/ROOT/productoption/insertAll?productCode=202111110009&eventCode=1
     @PostMapping(value = "/insertAll", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertPOST(@RequestBody List<ProductOption> list, @RequestParam long productCode,
             @RequestParam(name = "eventCode", required = false, defaultValue = "0") long eventCode) {

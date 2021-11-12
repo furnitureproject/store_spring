@@ -54,4 +54,20 @@ public class CategoryServiceImpl implements CategoryService {
         return cRepository.findAll();
     }
 
+    @Override
+    public List<Category> selectCategoryList(Long categoryParent) {
+        return cRepository.findByCategoryParent(categoryParent);
+    }
+
+    @Override
+    public Long countByTier(Integer categoryTier) {
+        return cRepository.countByCategoryTier(categoryTier);
+    }
+
+    @Override
+    public Long countByTierParent(Integer categoryTier, Long categoryParent) {
+
+        return cRepository.countByCategoryTierAndCategoryParent(categoryTier, categoryParent);
+    }
+
 }
