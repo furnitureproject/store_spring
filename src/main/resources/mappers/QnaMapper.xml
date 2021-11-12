@@ -4,20 +4,39 @@
 <mapper namespace="QnA">
 
     <!-- 물품 코드 별 qna 조회 -->
-    <resultMap type="com.team.entity.QnAProjection" id="map1">
+    <resultMap type="com.team.vo.QnAVO" id="map1">
         <result column="QNA_NUM" property="qnaNum" />
         <result column="QNA_TITLE" property="qnaTitle" />
         <result column="QNA_CONTENT" property="qnaContent" />
         <result column="QNA_REGDATE" property="qnaRegdate" />
         <result column="QNA_REPLY" property="qnaReply" />
         <result column="QNA_REPLY_REGDATE" property="qnaReplyRegdate" />
-        <result column="PRODUCT_CODE" property="product" />
+        <!-- <result column="PRODUCT_CODE" property="productCode" /> -->
     </resultMap>
     
     <select id="select_product_code_qna_list" parameterType="map" resultMap="map1">
     SELECT * FROM (SELECT QNA_NUM, QNA_TITLE, QNA_CONTENT, QNA_REGDATE, 
     PRODUCT_CODE, ROW_NUMBER() OVER (ORDER BY PRODUCT_CODE DESC) ROWN 
-    FROM QNA_TB2) WHERE PRODUCT_CODE =#{code} AND ROWN BETWEEN #{page} AND #{page}+9;
+    FROM QNA_TB2 WHERE PRODUCT_CODE =${code}) WHERE ROWN BETWEEN #{page} AND #{page1};
     </select>
+
+    <!-- 유저 id 별 qna 조회-->
+    <resultMap type="com.team.vo.QnAVO" id="map2">
+        <result column="QNA_NUM" property="qnaNum" />
+        <result column="QNA_TITLE" property="qnaTitle" />
+        <result column="QNA_CONTENT" property="qnaContent" />
+        <result column="QNA_REGDATE" property="qnaRegdate" />
+        <result column="QNA_REPLY" property="qnaReply" />
+        <result column="QNA_REPLY_REGDATE" property="qnaReplyRegdate" />
+        <!-- <result column="PRODUCT_CODE" property="productCode" /> -->
+    </resultMap>
+
+    <select id="select_user_id_qna_list" parameterType="map" resultMap="map2">
+    SELECT * FROM (SELECT QNA_NUM, QNA_TITLE, QNA_CONTENT, QNA_REGDATE, 
+    USER_ID, ROW_NUMBER() OVER (ORDER BY USER_ID DESC) ROWN 
+    FROM QNA_TB2 WHERE USER_ID=#{userid}) WHERE ROWN BETWEEN #{page} AND #{page1};
+    </select>
+
+
 </mapper>
 

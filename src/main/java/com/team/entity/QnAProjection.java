@@ -16,4 +16,6 @@ public interface QnAProjection {
 
     Date getQna_Reply_RegDate();
 
+    Long getProduct_Product_Code();
+
 }

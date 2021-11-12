@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.team.entity.QnA;
 import com.team.entity.QnAProjection;
 import com.team.repository.QnaRepository;
+import com.team.vo.QnAVO;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,23 +54,27 @@ public class QnaServiceImpl implements QnaService{
         qRepository.deleteById(no);
     }
 
-    //qna 물품 코드 별 목록 조회
+    //물품 코드 별 qna 조회
     @Override
-    public List<QnAProjection> selectQnaList(Long code, Long page) {
-        return qRepository.queryListPcodeQna(code, page);
-    }
-
-    //회원id 별 qna 조회
-    @Override
-    public List<QnAProjection> selectUserQnaList(String userid) {
-        return qRepository.queryListUseridQna(userid);
-    }
-
-    //물품 코드 별 조회
-    @Override
-    public List<QnAProjection> selectqna(Map<String, Object> map) {
+    public List<QnAVO> selectPcodeQnaList(Map<String, Object> map) {
         return sqlFactory.openSession().selectList("select_product_code_qna_list", map);
     }
 
-    
+    //회원 id 별 목록 qna 조회
+    @Override
+    public List<QnAVO> selectUserQnaList(Map<String, Object> map) {
+        return sqlFactory.openSession().selectList("select_user_id_qna_list", map);
+    }
+
+    //qna 총 개수 조회(제품 코드 기준)
+    @Override
+    public long countByPcodeQna(Long code) {
+        return qRepository.countByProduct_ProductCode(code);
+    }
+
+    @Override
+    public long countByUseridQna(String id) {
+        return qRepository.countByUser_UserId(id);
+    }
+
 }

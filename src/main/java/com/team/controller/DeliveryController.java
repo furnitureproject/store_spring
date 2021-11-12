@@ -3,7 +3,6 @@ package com.team.controller;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.team.entity.Cart;
 import com.team.entity.Delivery;
 import com.team.entity.Order;
 import com.team.entity.ProductOption;
@@ -81,8 +80,9 @@ public class DeliveryController {
             //주문이 성공하면 product option quantity에서 cart quantity를 뺀다.
             if(delivery.getDeliveryNo() != null){
                 ProductOption productOption = uiSrvice.selectUserInput(no).getOrder().getCart().getProductOption(); //주문한 product option 정보 호출
-                //int cart = uiSrvice.selectUserInput(no).getOrder().getCart().getCartOptionCount();  //주문한 cart 수량 호출
-                //productOption.setOptionQuantity(productOption.getOptionQuantity() - cart);
+                Long c = uiSrvice.selectUserInput(no).getOrder().getCart().getCartOptionCount();  //주문한 cart 수량 호출
+                int cart = Long.valueOf(c).intValue();  //cart 수량(c) type 변경(long -> int)
+                productOption.setOptionQuantity(productOption.getOptionQuantity() - cart);
                 poService.updateProductOption(productOption);
             }
             else{

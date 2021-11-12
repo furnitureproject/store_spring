@@ -14,11 +14,10 @@ import com.team.service.ProductService;
 import com.team.service.QnaService;
 import com.team.service.SellerService;
 import com.team.service.UserService;
+import com.team.vo.QnAVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +42,8 @@ public class QnaController {
 
     @Autowired
     SellerService sService;
+
+    int PAGECNT = 10;
 
     // qna 등록
     // 127.0.0.1:8080/ROOT/qna/insert?pno=
@@ -111,7 +112,7 @@ public class QnaController {
         Map<String, Object> map = new HashMap<>();
         String tsellerid = jwtUtil.extractUsername(token); // token을 통해 판매자 찾기
         try {
-            String sellerid = qService.selectQna(no).getProduct().getSeller().getSellerId();
+            String sellerid = qService.selectQna(no).getProduct().getSeller().getSellerId(); //qna의 물품을 등록한 sellerid 찾기
             if(tsellerid.equals(sellerid)){
                 QnA qnA2 = qService.selectQna(no);
                 qnA2.setQnaReply(qnA.getQnaReply());
@@ -182,19 +183,20 @@ public class QnaController {
     @RequestMapping(value = "/select_qnalist", method = {
         RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectPcodeQnaGET(
-        @RequestParam("code") Long code,
-        @RequestParam(value = "page", defaultValue = "1")int page) {
-        //페이지 네이션 처리
-        //PageRequest pageable = PageRequest.of(page-1,10);
+    @RequestParam("code") Long code,
+    @RequestParam(value = "page", defaultValue = "1")int page) {
         Map<String, Object> map = new HashMap<>();
         try {
-            int rpage1 = page * 10;
-            int rpage = rpage1 - (10 - 1);
+            long cnt = qService.countByPcodeQna(code); //제품코드 별 qna 갯수
+            Map<String, Object> map1 = new HashMap<>();
+            int rpage1 = page * PAGECNT;
+            int rpage = rpage1 - (PAGECNT - 1);
             
-            map.put("page", rpage);
-            map.put("page1", rpage1);
-            //map.put("code", code);
-            List<QnAProjection> list = qService.selectqna(map);
+            map1.put("page", rpage);
+            map1.put("page1", rpage1);
+            map1.put("code", code);
+            List<QnAVO> list = qService.selectPcodeQnaList(map1);
+            map.put("cnt", (cnt - 1) / 10 + 1); //페이지 수
             map.put("list", list);
             map.put("result", 1);
         } catch (Exception e) {
@@ -205,14 +207,24 @@ public class QnaController {
     }
 
     // 회원id 별 qna 조회
-    // 127.0.0.1:8080/ROOT/select_userqnalist?id= userid
+    // 127.0.0.1:8080/ROOT/select_userqnalist?id= userid&page=
     @RequestMapping(value = "/select_userqnalist", method = {
         RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectPcodeQnaGET(
-    @RequestParam("id") String userid) {
+    @RequestParam("id") String userid,
+    @RequestParam(value = "page", defaultValue = "1")int page) {
         Map<String, Object> map = new HashMap<>();
         try {
-            List<QnAProjection> list = qService.selectUserQnaList(userid);
+            long cnt = qService.countByUseridQna(userid); //userid 별 qna 갯수
+            Map<String, Object> map1 = new HashMap<>();
+            int rpage1 = page * PAGECNT;
+            int rpage = rpage1 - (PAGECNT - 1);
+            
+            map1.put("page", rpage);
+            map1.put("page1", rpage1);
+            map1.put("userid", userid);
+            List<QnAVO> list = qService.selectUserQnaList(map1);
+            map.put("cnt", (cnt - 1) / 10 + 1); //페이지 수
             map.put("list", list);
             map.put("result", 1);
         } catch (Exception e) {
@@ -221,5 +233,4 @@ public class QnaController {
         }
         return map;
     }
-
 }
