@@ -27,4 +27,11 @@ public class PaymentServiceImpl implements PaymentService {
         return pRepository.getById(paymentNO);
     }
 
+    @Override
+    public int deletePayment(Long paymentNO) {
+        pRepository.deleteById(paymentNO);
+        return 1;
+
+    }
+
 }
