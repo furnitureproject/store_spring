@@ -3,14 +3,17 @@ package com.team.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.team.entity.Cart;
 import com.team.entity.Delivery;
 import com.team.entity.Order;
+import com.team.entity.Payment;
 import com.team.entity.ProductOption;
 import com.team.entity.UserInput;
 import com.team.jwt.JwtUtil;
 import com.team.service.CartService;
 import com.team.service.DeliveryService;
 import com.team.service.OrderService;
+import com.team.service.PaymentService;
 import com.team.service.ProductOptionService;
 import com.team.service.UserService;
 import com.team.service.UserinputService;
@@ -49,12 +52,16 @@ public class DeliveryController {
     @Autowired
     ProductOptionService poService;
 
+    @Autowired
+    PaymentService pyService;
+
     // delivery 등록
-    // 127.0.0.1:8080/ROOT/delivery/insert?uno=
+    // 127.0.0.1:8080/ROOT/delivery/insert?uno=&pno=
     @RequestMapping(value = "/insert", method = {
         RequestMethod.POST}, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> delInsertPOST(@RequestBody Delivery delivery,
         @RequestParam("uno")long no,
+        @RequestParam("pno")long pno,
         @RequestHeader("token") String token){
         Map<String, Object> map = new HashMap<>();
         try{
@@ -63,31 +70,39 @@ public class DeliveryController {
             String uinputid = uiSrvice.selectUserInput(no).getOrder().getCart().getUser().getUserId(); //userinput 정보를 통해 userid 찾기
             UserInput userinput = uiSrvice.selectUserInput(no); //userinput no 가져오기
             long cartquantity = uiSrvice.selectUserInput(no).getOrder().getCart().getCartOptionCount(); //cart 수량
-            long poquantity = uiSrvice.selectUserInput(no).getOrder().getCart().getProductOption().getOptionQuantity(); //product option 수량
+            Payment payment =pyService.selectPayment(pno); //patment 정보 받기
             //System.out.println(userid);
             //System.out.println(uinputid);
             if(userid.equals(uinputid)){
+                delivery.setPayment(payment);
                 delivery.setUserinput(userinput);
                 dService.insertDelivery(delivery);
+                //주문이 성공하면 product option quantity(전체 수량)에서 cart quantity(주문 수량)를 뺀다.
+                if(delivery.getDeliveryNo() != null){
+                    ProductOption productOption = uiSrvice.selectUserInput(no).getOrder().getCart().getProductOption(); //주문한 product option 정보 호출
+                    Long c = cartquantity;  //주문한 cart 수량 호출
+                    int cart = Long.valueOf(c).intValue();  //cart 수량(c) type 변경(long -> int)
+                    productOption.setOptionQuantity(productOption.getOptionQuantity() - cart);
+                    poService.updateProductOption(productOption);
+                    //주문이 성공하면 cartstatus를 2로 변경한다.
+                    Cart cart2 = uiSrvice.selectUserInput(no).getOrder().getCart();
+                    cart2.setCartStatus(2);
+                    cService.updateCart(cart2);
+                    //System.out.println(cart2.getCartNo());
+                    map.put("result", 1L);
+                }
+                else{
+                    map.put("result", 0L);
+                }
                 map.put("result", 1L);
             }
             else{
                 map.put("result", 0L);
             }
-            System.out.println(delivery.getDeliveryNo());
-            System.out.println(cartquantity);
-            System.out.println(poquantity);
-            //주문이 성공하면 product option quantity에서 cart quantity를 뺀다.
-            if(delivery.getDeliveryNo() != null){
-                ProductOption productOption = uiSrvice.selectUserInput(no).getOrder().getCart().getProductOption(); //주문한 product option 정보 호출
-                Long c = uiSrvice.selectUserInput(no).getOrder().getCart().getCartOptionCount();  //주문한 cart 수량 호출
-                int cart = Long.valueOf(c).intValue();  //cart 수량(c) type 변경(long -> int)
-                productOption.setOptionQuantity(productOption.getOptionQuantity() - cart);
-                poService.updateProductOption(productOption);
-            }
-            else{
-
-            }
+            // System.out.println(delivery.getDeliveryNo());   //주문 번호
+            // System.out.println(cartquantity);   
+            // System.out.println(poquantity);
+            
         }
         catch(Exception e){
             map.put("result", e.hashCode());
@@ -105,15 +120,26 @@ public class DeliveryController {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token); // token을 통해 회원정보 찾기
-            //delivery 정보를 통해 seller id 가져오기
+            //delivery 정보를 통해 seller id 가져오기(제품을 등록한 id)
             String sellerid = dService.selectDelivery(dno).getUserinput().getOrder().getCart().getProductOption().getProduct().getSeller().getSellerId();
             //System.out.println(userid);
             //System.out.println(sellerid);
-            if (userid.equals(sellerid)) {   // 회원정보를 통해 seller 찾기
+            if (userid.equals(sellerid)) {   // delivery의 제품을 등록한 id와 로그인한 seller id가 일치하는 지 확인
                 //System.out.println(delivery.toString());
                 Delivery delivery2 = dService.selectDelivery(dno);
                 delivery2.setDeliveryCode(delivery.getDeliveryCode());
                 dService.updateDelivery(delivery2);
+                // 송장 번호가 입력되면 cartstatus 변경
+                if(delivery.getDeliveryCode() != 0){
+                    Order order = dService.selectDelivery(dno).getUserinput().getOrder();
+                    order.setOrderState(3);
+                    //System.out.println(cart.getCartStatus());
+                    oService.updateOrder(order);
+                    map.put("result", 200L);
+                }
+                else{
+                    map.put("result", 300L);
+                }
                 map.put("result", 1L);
             }
             else{
@@ -122,17 +148,6 @@ public class DeliveryController {
             // System.out.println(dService.selectDelivery(dno).getUserinput().getOrder().getOrderNo());
             // System.out.println(dService.selectDelivery(dno).getUserinput().getOrder().getOrderState());
             // System.out.println(delivery.getDeliveryCode());
-            // 송장 번호가 입력되면 cartstatus 변경
-            if(delivery.getDeliveryCode() != null){
-                Order order = dService.selectDelivery(dno).getUserinput().getOrder();
-                order.setOrderState(3);
-                //System.out.println(cart.getCartStatus());
-                oService.updateOrder(order);
-                map.put("result", 200L);
-            }
-            else{
-                map.put("result", 300L);
-            }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("result", e.hashCode());

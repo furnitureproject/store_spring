@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -23,6 +25,7 @@ public class Payment {
     @Column(name = "PAYMENT_STATE")
     private int paymentStatus = 0;
 
+    @CreationTimestamp
     @Column(name = "PAYMENT_REGDATE")
     private Date paymentRegdate;
 
