@@ -1,8 +1,10 @@
 package com.team.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.team.entity.Delivery;
+import com.team.entity.DeliveryProjection;
 import com.team.repository.DeliveryRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,18 @@ public class DeliveryServiceImpl implements DeliveryService{
     @Override
     public void deleteDelivery(long no) {
         dRepository.deleteById(no);
+    }
+
+    //delivery 조회
+    @Override
+    public List<DeliveryProjection> selectUseridDelivery(String userid) {
+        return dRepository.findByUserinput_Order_Cart_User_UserIdOrderByDeliveryNo(userid);
+    }
+
+    //sellerid 별 delivery 정보 조회
+    @Override
+    public List<Delivery> selectSelleridDelivery(String sellerid) {
+        return dRepository.findByUserinput_Order_Cart_ProductOption_Product_Seller_SellerIdOrderByDeliveryNo(sellerid);
     }
     
     

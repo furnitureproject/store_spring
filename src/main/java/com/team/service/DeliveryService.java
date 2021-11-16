@@ -1,6 +1,10 @@
 package com.team.service;
 
+import java.util.List;
+
 import com.team.entity.Delivery;
+import com.team.entity.DeliveryProjection;
+import com.team.repository.DeliveryRepository;
 
 import org.springframework.stereotype.Service;
 
@@ -18,4 +22,10 @@ public interface DeliveryService {
 
     //delivery 삭제
     public void deleteDelivery(long no);
+
+    //userid 별 delivery 정보 조회
+    public List<DeliveryProjection> selectUseridDelivery(String userid);
+
+    //sellerid 별 delivery 정보 조회
+    public List<Delivery> selectSelleridDelivery(String sellerid);
 }

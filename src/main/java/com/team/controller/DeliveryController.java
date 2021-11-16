@@ -1,15 +1,18 @@
 package com.team.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.team.entity.Cart;
 import com.team.entity.Delivery;
+import com.team.entity.DeliveryProjection;
 import com.team.entity.Order;
 import com.team.entity.Payment;
 import com.team.entity.ProductOption;
 import com.team.entity.UserInput;
 import com.team.jwt.JwtUtil;
+import com.team.repository.DeliveryRepository;
 import com.team.service.CartService;
 import com.team.service.DeliveryService;
 import com.team.service.OrderService;
@@ -77,8 +80,9 @@ public class DeliveryController {
                 delivery.setPayment(payment);
                 delivery.setUserinput(userinput);
                 dService.insertDelivery(delivery);
-                //주문이 성공하면 product option quantity(전체 수량)에서 cart quantity(주문 수량)를 뺀다.
+                //주문이 성공했을 때
                 if(delivery.getDeliveryNo() != null){
+                    //주문이 성공하면 product option quantity(전체 수량)에서 cart quantity(주문 수량)를 뺀다.
                     ProductOption productOption = uiSrvice.selectUserInput(no).getOrder().getCart().getProductOption(); //주문한 product option 정보 호출
                     Long c = cartquantity;  //주문한 cart 수량 호출
                     int cart = Long.valueOf(c).intValue();  //cart 수량(c) type 변경(long -> int)
@@ -114,7 +118,7 @@ public class DeliveryController {
     // 127.0.0.1:8080/ROOT/delivery/update?dno=
     @RequestMapping(value = "/update", method = {
         RequestMethod.PUT }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> qnaUpdatePUT(@RequestBody Delivery delivery,
+    public Map<String, Object> delUpdatePUT(@RequestBody Delivery delivery,
             @RequestParam(name = "dno", defaultValue = "0") long dno,
             @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
@@ -159,7 +163,7 @@ public class DeliveryController {
     // 127.0.0.1:8080/ROOT/delivery/delete?dno=
     @RequestMapping(value = "/delete", method = {
         RequestMethod.DELETE }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> productDelete(@RequestBody UserInput userInput,
+    public Map<String, Object> delDelete(@RequestBody UserInput userInput,
         @RequestParam(name = "dno", defaultValue = "0") long dno, 
         @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
@@ -180,4 +184,41 @@ public class DeliveryController {
         }
         return map;
     }
+
+    //delivery 조회(userid 별)
+    // 127.0.0.1:8080/ROOT/delivery/uidselect?uid=
+    @RequestMapping(value = "/uidselect", method = {
+        RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> selectUseridGET(
+        @RequestParam(name = "uid", defaultValue = "0") String id) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<DeliveryProjection> delivery = dService.selectUseridDelivery(id);
+            map.put("delivery", delivery);
+            map.put("result", 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("result", e.hashCode());
+        }
+        return map;
+    }
+
+    //delivery 조회(sellerid 별)
+    // 127.0.0.1:8080/ROOT/delivery/sidselect?uid=
+    @RequestMapping(value = "/sidselect", method = {
+        RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> selectSelleridGET(
+        @RequestParam(name = "sid", defaultValue = "0") String id) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<Delivery> delivery = dService.selectSelleridDelivery(id);
+            map.put("delivery", delivery);
+            map.put("result", 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("result", e.hashCode());
+        }
+        return map;
+    }
+
 }

@@ -167,9 +167,12 @@ public class QnaController {
         @RequestParam(name = "qnano", defaultValue = "0") long no) {
         Map<String, Object> map = new HashMap<>();
         try {
+            QnA qna = new QnA();
             QnAProjection qnA = qService.selectQnaOne(no);
-            System.out.println(qnA.toString());
-            map.put("qna", qnA);
+            qna.setQnaContent(qnA.getQna_Content());
+            System.out.println(qnA.getQna_Content());
+            // map.put("qna", qnA);
+            map.put("qna", qna);
             map.put("result", 1);
         } catch (Exception e) {
             e.printStackTrace();
