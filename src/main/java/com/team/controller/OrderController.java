@@ -56,7 +56,7 @@ public class OrderController {
             for (int i = 0; i < sum.size(); i++) {
                 Long optioncode = sum.get(i).getOptionCode();
                 Long productcode = pOService.selectProductOptionOne(optioncode).getProduct().getProductCode();
-                map.put("image" + i, "127.0.0.1:8080/ROOT/product/select_image?productCode=" + productcode);
+                map.put("image" + i, "/ROOT/product/select_image?productCode=" + productcode);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,7 +75,7 @@ public class OrderController {
             if (oService.selectOrderOne(no).getCart().getUser().equals(user)) {
                 map.put("status", 200);
                 map.put("order", oService.selectOrderProjectionOne(no));
-                map.put("image", "127.0.0.1:8080/ROOT/product/select_image?productCode=" + proimg);
+                map.put("image", "/ROOT/product/select_image?productCode=" + proimg);
             } else {
                 map.put("status", "적합한 권한을 가지고 있지 않습니다");
             }

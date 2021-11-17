@@ -11,7 +11,6 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,13 +24,13 @@ import lombok.ToString;
 @Entity
 @Table(name = "ORDER_TB")
 public class Order {
-    
+
    @Id
    @Column(name = "ORDER_NO")
    private Long orderNo;
-   
+
    @Column(name = "ORDER_STATUS")
-   private int orderState;
+   private int orderState = 1;
 
    @CreationTimestamp
    @Column(name = "ORDER_DATE")

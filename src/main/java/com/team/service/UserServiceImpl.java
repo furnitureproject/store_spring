@@ -55,9 +55,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserProjection> selectUserOneProjection(String userId) {
+    public UserProjection selectUserOneProjection(String userId) {
+        Optional<UserProjection> user = uRepository.findByuserEmail(userId);
+        return user.orElse(null);
+    }
 
-        return uRepository.findByuserId(userId);
+    @Override
+    public UserProjection selectUserByEmail(String email) {
+        Optional<UserProjection> user = uRepository.findByuserEmail(email);
+        return user.orElse(null);
+    }
+
+    @Override
+    public UserProjection selectUserByPhone(String phone) {
+        Optional<UserProjection> user = uRepository.findByuserPhone(phone);
+        return user.orElse(null);
     }
 
 }

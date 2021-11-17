@@ -52,9 +52,9 @@ public class CartController {
             for (int i = 0; i < list.size(); i++) {
                 CartProjection cart = list.get(i);
                 Long number = cart.getProductOption_Product_ProductCode();
-                if (cart.getCartStatus() == 0) {
+                if (cart.getCartStatus() == 0 || cart.getCartStatus() == 1) {
                     list1.add(cart);
-                    map.put("image" + i, "127.0.0.1:8080/ROOT/product/select_image?productCode=" + number);
+                    map.put("image" + i, "/ROOT/product/select_image?productCode=" + number);
                 }
             }
             map.put("status", 200);
@@ -76,7 +76,7 @@ public class CartController {
             if (cart.getUser_UserId().equals(userid)) {
                 map.put("status", 200);
                 map.put("cart", cart);
-                map.put("image", "127.0.0.1:8080/ROOT/product/select_image?productCode=" + no1);
+                map.put("image", "/ROOT/product/select_image?productCode=" + no1);
             } else {
                 map.put("status", "적합한 권한을 가지고 있지 않습니다");
             }

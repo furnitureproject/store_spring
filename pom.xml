@@ -18,6 +18,22 @@
         <java.version>11</java.version>
     </properties>
     <dependencies>
+        <!-- jsp에서 사용하는 jstl -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+
+		<!-- jsp에서 사용 thymeleaf -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+        <!-- email -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
         <!-- jjwt -->
 		<!-- 토큰 발행용 라이브러리 -->
 		<dependency>

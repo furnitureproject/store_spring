@@ -3,24 +3,29 @@ package com.team.controller.user;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.mail.internet.MimeMessage;
 
+import com.team.aes.AesCording;
 import com.team.entity.User;
 import com.team.jwt.JwtUtil;
 import com.team.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
-// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -31,6 +36,12 @@ public class UserController {
 
     @Autowired
     JwtUtil jwtUtil;
+
+    @Autowired
+    JavaMailSender javaMailSender;
+
+    @Autowired
+    SpringTemplateEngine templateEngine;
 
     // TEST
     // @GetMapping(value = "/login")
@@ -59,8 +70,8 @@ public class UserController {
                 user.setUserPw(bcpe.encode(user.getUserPw()));
                 // TEST용 추가
                 String phone = user.getUserPhone();
-                String newphone = phone.toString().replaceAll("-", "");
-                user.setUserPhone(newphone);
+                // String newphone = phone.toString().replaceAll("-", "");
+                user.setUserPhone(phone);
 
                 uService.insertUser(user);
                 map.put("status", 200);
@@ -75,13 +86,34 @@ public class UserController {
         return map;
     }
 
+    // 아이디 찾기
+    @GetMapping(value = "/unknownid")
+    public Map<String, Object> selectUserGET() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", 200);
+        return map;
+    }
+
     // 아이디 찾기()
-    @PostMapping(value = "/select", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectUser(@RequestBody User user) {
+    @PostMapping(value = "/unknownid", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> selectUser(@RequestParam("name") String name,
+            @RequestParam(required = false) String email, @RequestParam(required = false) String phone) {
         Map<String, Object> map = new HashMap<>();
         try {
-
+            // String phone1 = phone.toString().replaceAll("-", "");
+            if (uService.selectUserByEmail(email).getuserName().equals(name) && phone == null) {
+                String userid = uService.selectUserByEmail(email).getuserId();
+                map.put("status", 200);
+                map.put("userid", userid);
+            } else if (uService.selectUserByPhone(phone).getuserName().equals(name) && email == null) {
+                String userid = uService.selectUserByPhone(phone).getuserId();
+                map.put("status", 200);
+                map.put("userid", userid);
+            } else {
+                map.put("status", "잘못된 요청입니다.");
+            }
             map.put("status", 200);
+
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
@@ -160,6 +192,7 @@ public class UserController {
     }
 
     // 비밀번호 수정(userPw)
+    // 아직은 로그인 한 상태에서만 가능 비밀번호 분실 시 사용 불가
     @PostMapping(value = "/pwchange", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> pwchangeUser(@RequestHeader("token") String token, @RequestBody User user) {
         Map<String, Object> map = new HashMap<>();
@@ -168,15 +201,59 @@ public class UserController {
             User user1 = uService.selectUserOne(userid);
             if (user.getUserId().equals(userid)) {
                 if (user1.getUserPw().equals(user.getUserPw())) {
-                    map.put("status", 100);
+                    map.put("status", "현재와 같은 비밀번호입니다");
                 } else {
-                    user1.setUserPw(user.getUserPw());
+                    BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
+                    user1.setUserPw(bcpe.encode(user.getUserPw()));
                     uService.updateUser(user1);
                     map.put("status", 200);
                 }
             } else {
                 // User가 서로 같지 않을 경우 오류 반환
                 map.put("status", "적합한 권한을 가지고 있지 않습니다");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+
+        return map;
+    }
+
+    // 비밀번호 확인 수정 email 보내기
+    @PostMapping(value = "/unknownpw", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> unknownPwEmail(@RequestBody User user) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String userid = user.getUserId();
+            String email = user.getUserEmail();
+            if (uService.selectUserOne(userid).getUserEmail().equals(email)) {
+                AesCording aesCording = new AesCording();
+                String encordtext = aesCording.encrypt(email);
+
+                Map<String, Object> values = new HashMap<>();
+                values.put("email", encordtext);
+                values.put("userid", uService.selectUserByEmail(email).getuserId());
+                MimeMessage message = javaMailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(message, true);
+                // 메일 제목 설정
+                String title = "비밀번호 변경 요청입니다";
+                helper.setSubject(title);
+                // 수신자 설정
+                helper.setTo(email);
+                // 템플릿에 전달할 데이터 설정
+                Context context = new Context();
+                values.forEach((key, value) -> {
+                    context.setVariable(key, value);
+                });
+                // 메일 내용 설정 : 템플릿 프로세스
+                String mail = "mail";
+                String jsp = templateEngine.process(mail, context);
+                helper.setText(jsp, true);
+                javaMailSender.send(message);
+                map.put("status", 200);
+            } else {
+                map.put("status", "잘못된 이메일입니다");
             }
         } catch (Exception e) {
             e.printStackTrace();

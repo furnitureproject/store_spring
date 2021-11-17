@@ -1,7 +1,6 @@
 package com.team.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.team.entity.User;
 import com.team.entity.UserProjection;
@@ -33,6 +32,14 @@ public interface UserService {
 
     // 유저 1명 조회
     // return 값은 UserProjection
-    public Optional<UserProjection> selectUserOneProjection(String userId);
+    public UserProjection selectUserOneProjection(String userId);
+
+    // 유저 1명 조회
+    // return UserProjection
+    public UserProjection selectUserByEmail(String email);
+
+    // 유저 1명 조회
+    // return UserProjection
+    public UserProjection selectUserByPhone(String phone);
 
 }

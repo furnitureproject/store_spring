@@ -59,17 +59,15 @@ public class ReviewController {
         Map<String, Object> map = new HashMap<>();
         try {
             List<ReviewProjection> list = rService.selectReviewList(productCode);
-            List<Long> list1 = new ArrayList<>();
             for (int i = 0; i < list.size(); i++) {
                 ReviewProjection review = list.get(i);
                 Long number = review.getReviewNum();
-                list1.add(number);
+                map.put("image" + number + "-1", "/ROOT/reviewimage?reviewnum=" + number + "&idx=0");
+                map.put("image" + number + "-2", "/ROOT/reviewimage?reviewnum=" + number + "&idx=1");
+                map.put("image" + number + "-3", "/ROOT/reviewimage?reviewnum=" + number + "&idx=2");
             }
             map.put("status", 200);
             map.put("list", list);
-            map.put("image", "127.0.0.1:8080/ROOT/reviewimage?reviewnum={reviewnum[i]}&idx=[0~2]");
-            map.put("reviewnum", list1);
-            map.put("idx", "0~2");
         } catch (Exception e) {
             map.put("status", e.hashCode());
         }
