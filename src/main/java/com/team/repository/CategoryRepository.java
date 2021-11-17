@@ -16,6 +16,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     List<Category> findByCategoryParent(Long categoryParent);
 
-    List<Category> findByCategoryTier(Integer categoryTier);
+    List<Category> findByCategoryTierOrderByCategoryCodeAsc(Integer categoryTier);
 
 }

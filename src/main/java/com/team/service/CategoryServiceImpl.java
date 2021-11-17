@@ -72,7 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> selectCateTier2(int categoryTier) {
-        return cRepository.findByCategoryTier(categoryTier);
+        return cRepository.findByCategoryTierOrderByCategoryCodeAsc(categoryTier);
     }
 
 }

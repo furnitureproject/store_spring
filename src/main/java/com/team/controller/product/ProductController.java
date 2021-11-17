@@ -71,7 +71,7 @@ public class ProductController {
     @Autowired
     JwtUtil jwtUtil;
 
-    int PAGECNT = 10;
+    int PAGECNT = 12;
 
     @GetMapping(value = "/test")
     public Map<String, Object> testproduct(@RequestParam long productCode) {
