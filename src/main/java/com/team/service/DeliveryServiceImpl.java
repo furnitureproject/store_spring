@@ -41,7 +41,13 @@ public class DeliveryServiceImpl implements DeliveryService{
         dRepository.deleteById(no);
     }
 
-    //delivery 조회
+     //deliveryCode 1개 조회
+     @Override
+     public Delivery selectDelOne(Long no) {
+         return dRepository.queryDelOne(no);
+     }
+
+    //userid 별 delivery 정보 조회
     @Override
     public List<DeliveryProjection> selectUseridDelivery(String userid) {
         return dRepository.findByUserinput_Order_Cart_User_UserIdOrderByDeliveryNo(userid);
@@ -49,9 +55,8 @@ public class DeliveryServiceImpl implements DeliveryService{
 
     //sellerid 별 delivery 정보 조회
     @Override
-    public List<Delivery> selectSelleridDelivery(String sellerid) {
+    public List<DeliveryProjection> selectSelleridDelivery(String sellerid) {
         return dRepository.findByUserinput_Order_Cart_ProductOption_Product_Seller_SellerIdOrderByDeliveryNo(sellerid);
     }
-    
-    
+
 }

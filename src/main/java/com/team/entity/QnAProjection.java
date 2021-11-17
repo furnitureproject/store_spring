@@ -4,7 +4,7 @@ import java.util.Date;
 
 public interface QnAProjection {
     
-    Long getQnANum();
+    Long getQnA_Num();
 
     String getQna_Title();
 
