@@ -25,4 +25,6 @@ public class ProductVO {
 
     private Long optionPrice;
 
+    private String image;
+
 }

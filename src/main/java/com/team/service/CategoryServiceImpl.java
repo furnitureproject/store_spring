@@ -70,4 +70,9 @@ public class CategoryServiceImpl implements CategoryService {
         return cRepository.countByCategoryTierAndCategoryParent(categoryTier, categoryParent);
     }
 
+    @Override
+    public List<Category> selectCateTier2(int categoryTier) {
+        return cRepository.findByCategoryTier(categoryTier);
+    }
+
 }

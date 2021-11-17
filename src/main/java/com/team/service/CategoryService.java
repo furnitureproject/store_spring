@@ -31,6 +31,8 @@ public interface CategoryService {
 
     public List<Category> selectCategoryList(Long categoryParent);
 
+    public List<Category> selectCateTier2(int categoryTier);
+
     Long countByTier(Integer categoryTier);
 
     Long countByTierParent(Integer categoryTier, Long categoryParent);

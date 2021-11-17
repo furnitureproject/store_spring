@@ -225,6 +225,9 @@ public class ProductController {
                 map1.put("epage", epage);
                 map1.put("title", title);
                 List<ProductVO> list = pService.selectCodeList(map1);
+                for (ProductVO productvo : list) {
+                    productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                }
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
@@ -239,7 +242,9 @@ public class ProductController {
                 map2.put("epage", epage);
                 map2.put("title", title);
                 List<ProductVO> list = pService.selectHitList(map2);
-
+                for (ProductVO productvo : list) {
+                    productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                }
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
@@ -253,6 +258,9 @@ public class ProductController {
                 map3.put("epage", epage);
                 map3.put("title", title);
                 List<ProductVO> list = pService.selectPriceHigh(map3);
+                for (ProductVO productvo : list) {
+                    productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                }
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
@@ -266,6 +274,9 @@ public class ProductController {
                 map4.put("epage", epage);
                 map4.put("title", title);
                 List<ProductVO> list = pService.selectPriceLow(map4);
+                for (ProductVO productvo : list) {
+                    productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                }
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
@@ -297,6 +308,9 @@ public class ProductController {
                 map1.put("epage", epage);
                 map1.put("categoryCode", categoryCode);
                 List<ProductVO> list = pService.categoryCodeSelect1(map1);
+                for (ProductVO productvo : list) {
+                    productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                }
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
@@ -311,6 +325,9 @@ public class ProductController {
                 map2.put("epage", epage);
                 map2.put("categoryCode", categoryCode);
                 List<ProductVO> list = pService.categoryHitSelect1(map2);
+                for (ProductVO productvo : list) {
+                    productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                }
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
@@ -324,6 +341,9 @@ public class ProductController {
                 map3.put("epage", epage);
                 map3.put("categoryCode", categoryCode);
                 List<ProductVO> list = pService.selectPriceHigh1(map3);
+                for (ProductVO productvo : list) {
+                    productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                }
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
@@ -337,6 +357,9 @@ public class ProductController {
                 map4.put("epage", epage);
                 map4.put("categoryCode", categoryCode);
                 List<ProductVO> list = pService.selectPriceLow1(map4);
+                for (ProductVO productvo : list) {
+                    productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                }
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
@@ -368,12 +391,9 @@ public class ProductController {
                 map1.put("epage", epage);
                 map1.put("categoryParent", categoryParent);
                 List<ProductVO> list = pService.categoryCodeSelect2(map1);
-                List<ProductVO> list1 = new ArrayList<>();
-                // for (ProductVO productvo : list) {
-                // list1.add("image", "/ROOT/product/select_image?productCode=" +
-                // productvo.getProductCode());
-                // }
-
+                for (ProductVO productvo : list) {
+                    productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                }
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
@@ -387,6 +407,9 @@ public class ProductController {
                 map2.put("epage", epage);
                 map2.put("categoryParent", categoryParent);
                 List<ProductVO> list = pService.categoryHitSelect2(map2);
+                for (ProductVO productvo : list) {
+                    productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                }
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
@@ -399,6 +422,9 @@ public class ProductController {
                 map3.put("epage", epage);
                 map3.put("categoryParent", categoryParent);
                 List<ProductVO> list = pService.selectPriceHigh2(map3);
+                for (ProductVO productvo : list) {
+                    productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                }
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
@@ -411,6 +437,9 @@ public class ProductController {
                 map4.put("epage", epage);
                 map4.put("categoryParent", categoryParent);
                 List<ProductVO> list = pService.selectPriceLow2(map4);
+                for (ProductVO productvo : list) {
+                    productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                }
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
