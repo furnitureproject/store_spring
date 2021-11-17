@@ -160,6 +160,19 @@ public class ProductController {
         return map;
     }
 
+    @GetMapping(value = "/select_Thumimage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> selectThumGET(@RequestParam long productCode) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            map.put("image", "/ROOT/product/select_image?productCode=" + productCode);
+            map.put("status", 200);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
     @GetMapping(value = "/select_image", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<byte[]> selectImage(@RequestParam long productCode) throws IOException {
         try {
@@ -350,10 +363,17 @@ public class ProductController {
                 Map<String, Object> map1 = new HashMap<>();
                 int epage = page * PAGECNT;
                 int spage = epage - (PAGECNT - 1);
+
                 map1.put("spage", spage);
                 map1.put("epage", epage);
                 map1.put("categoryParent", categoryParent);
                 List<ProductVO> list = pService.categoryCodeSelect2(map1);
+                List<ProductVO> list1 = new ArrayList<>();
+                // for (ProductVO productvo : list) {
+                // list1.add("image", "/ROOT/product/select_image?productCode=" +
+                // productvo.getProductCode());
+                // }
+
                 map.put("cnt", (cnt - 1) / PAGECNT + 1);
                 map.put("list", list);
                 map.put("status", 200);
