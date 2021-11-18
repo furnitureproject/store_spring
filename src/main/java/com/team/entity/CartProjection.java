@@ -35,6 +35,9 @@ public interface CartProjection {
     // // 대표 사진 타입
     // String getProductOption_Product_ThumImgType();
 
+    // 이미지 주소
+    String getCartCode();
+
     // 유저(카트에 담은 사람) 아이디
     String getUser_UserId();
 }

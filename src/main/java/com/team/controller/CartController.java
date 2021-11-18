@@ -17,6 +17,7 @@ import com.team.jwt.JwtUtil;
 import com.team.service.CartService;
 import com.team.service.ProductOptionService;
 import com.team.service.UserService;
+import com.team.vo.CartVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -48,14 +49,23 @@ public class CartController {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token);
-            List<CartProjection> list1 = new ArrayList<>();
+            List<CartVO> list1 = new ArrayList<>();
             List<CartProjection> list = cService.selectAllUserCart(userid);
             for (int i = 0; i < list.size(); i++) {
                 CartProjection cart = list.get(i);
                 Long number = cart.getProductOption_Product_ProductCode();
-                if (cart.getCartStatus() == 0 || cart.getCartStatus() == 1) {
-                    list1.add(cart);
-                    map.put("image" + i, "/ROOT/product/select_image?productCode=" + number);
+                CartVO cart1 = new CartVO();
+                cart1.setCartNo(cart.getCartNo());
+                cart1.setCartImgName("/ROOT/product/select_image?productCode=" + number);
+                cart1.setCartOptionCount(cart.getCartOptionCount());
+                cart1.setCartOptionPrice(cart.getProductOption_OptionPrice());
+                cart1.setCartStatus(cart.getCartStatus());
+                cart1.setCartCode(cart.getProductOption_Product_ProductCode());
+                cart1.setCartName(cart.getProductOption_Product_ProductTitle());
+                cart1.setCartOptionName(cart.getProductOption_OptionName());
+                cart1.setUser(cart.getUser_UserId());
+                if (cart1.getCartStatus() == 0 || cart1.getCartStatus() == 1) {
+                    list1.add(cart1);
                 }
             }
             map.put("status", 200);
