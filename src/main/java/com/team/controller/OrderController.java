@@ -2,6 +2,11 @@ package com.team.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,13 +92,13 @@ public class OrderController {
     }
 
     @PostMapping(value = "/order")
-    public Map<String, Object> userOrderPost(@RequestBody Order[] order, @RequestHeader("token") String token,
-            @RequestParam("cartno") Long[] no) {
+    public Map<String, Object> userOrderPost(@RequestBody Order[] order, @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token);
             for (int i = 0; i < order.length; i++) {
-                order[i].setCart(cService.selectCartOne(no[i]));
+                Long no = order[i].getCart().getCartCode();
+                order[i].setCart(cService.selectCartOne(no));
                 if (order[i].getCart().getUser().getUserId().equals(userid)) {
                     oService.insertOrder(order[i]);
                     map.put("status", 200);
@@ -144,4 +149,19 @@ public class OrderController {
         }
         return map;
     }
+
+    // TEST 중입니다
+    @GetMapping(value = "/order/date")
+    public Map<String, Object> dateSearch() throws ParseException {
+        Map<String, Object> map = new HashMap<>();
+        long num = 2L;
+        Date date1 = oService.selectOrderProjectionOne(num).getOrderDate();
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = dateFormat.parse("11/11/2011");
+        // Timestamp timeStampDate = new Timestamp(date.getTime());
+
+        System.out.println(date1);
+        return map;
+    }
+
 }

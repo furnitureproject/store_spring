@@ -3,6 +3,7 @@ package com.team.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,15 +89,15 @@ public class CartController {
     }
 
     @PostMapping(value = "/cart", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> insertCart(@RequestBody Cart[] cart, @RequestHeader("token") String token,
-            @RequestParam("optioncode") Long[] code) {
+    public Map<String, Object> insertCart(@RequestBody Cart[] cart, @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token);
             User user = uService.selectUserOne(userid);
-            for (int i = 0; i < code.length; i++) {
-                if (code[i] != null) {
-                    ProductOption productOption = pOService.selectProductOptionOne(code[i]);
+            for (int i = 0; i < cart.length; i++) {
+                if (cart[i] != null) {
+                    Long code = cart[i].getProductOption().getOptionCode();
+                    ProductOption productOption = pOService.selectProductOptionOne(code);
                     cart[i].setUser(user);
                     cart[i].setProductOption(productOption);
                     cService.insertCart(cart[i]);
@@ -104,6 +105,7 @@ public class CartController {
             }
             map.put("status", 200);
         } catch (Exception e) {
+            e.printStackTrace();
             map.put("status", e.hashCode());
         }
         return map;
@@ -146,8 +148,12 @@ public class CartController {
     @GetMapping(value = "/cart1")
     public Map<String, Object> Cart() {
         Map<String, Object> map = new HashMap<>();
+        Date date = uService.selectUserOne("aq").getUserRegdate();
+        long ing = date.getTime() / (1000 * 60 * 60 * 24 * 365);
+
         map.put("status", OrderStatus.COMPLETE.getCode());
         map.put("statis", OrderStatus.COMPLETE.getStatus());
+        map.put("datetest", ing);
         return map;
     }
 
