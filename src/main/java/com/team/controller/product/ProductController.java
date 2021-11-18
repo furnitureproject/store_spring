@@ -480,7 +480,7 @@ public class ProductController {
         return map;
     }
 
-    // update 사용자 정보 필요 이름, 설명 변경가능
+    // update 사용자 정보 필요 이름, 설명 변경가능 { "productTitle": " ", "productDesc": " "}
     @PutMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> UpdatePUT(@RequestBody Product product, @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();

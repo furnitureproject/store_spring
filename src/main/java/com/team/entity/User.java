@@ -43,6 +43,9 @@ public class User {
     @Column(name = "USER_EMAIL")
     private String userEmail;
 
+    @Column(name = "USER_POINT")
+    private int userPoint = 0;
+
     @CreationTimestamp
     @Column(name = "USER_REGDATE", updatable = false)
     private Date userRegdate;

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.team.entity.Cart;
 import com.team.entity.Order;
 import com.team.entity.User;
 import com.team.jwt.JwtUtil;
@@ -96,10 +97,15 @@ public class OrderController {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token);
+            User user = uService.selectUserOne(userid);
             for (int i = 0; i < order.length; i++) {
-                Long no = order[i].getCart().getCartCode();
+                Long no = order[i].getCart().getCartNo();
                 order[i].setCart(cService.selectCartOne(no));
                 if (order[i].getCart().getUser().getUserId().equals(userid)) {
+                    Cart cart = cService.selectCartOne(no);
+                    int price = Math.toIntExact(cart.getProductOption().getOptionPrice() * cart.getCartOptionCount());
+                    System.out.println(cart.getCartOptionCount());
+                    user.setUserPoint((int) user.getUserPoint() + (int) (price * 0.01));
                     oService.insertOrder(order[i]);
                     map.put("status", 200);
                 } else {
@@ -133,16 +139,23 @@ public class OrderController {
     }
 
     @DeleteMapping(value = "/order")
-    public Map<String, Object> orderDelete(@RequestHeader("token") String token, @RequestParam("orderno") Long no) {
+    public Map<String, Object> orderDelete(@RequestHeader("token") String token, @RequestParam("orderno") Long[] no) {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token);
             User user = uService.selectUserOne(userid);
-            if (oService.selectOrderOne(no).getCart().getUser().equals(user)) {
-                oService.deleteOrder(no);
-                map.put("status", 200);
+            for (int i = 0; i < no.length; i++) {
+                if (oService.selectOrderOne(no[i]).getCart().getUser().equals(user)) {
+                    Order order = oService.selectOrderOne(no[i]);
+                    System.out.println(order.getOrderNo());
+                    Long cartno = order.getCart().getCartNo();
+                    Cart cart = cService.selectCartOne(cartno);
+                    int price = Math.toIntExact(cart.getProductOption().getOptionPrice() * cart.getCartOptionCount());
+                    user.setUserPoint((int) user.getUserPoint() - (int) (price * 0.01));
+                    oService.deleteOrder(no[i]);
+                }
             }
-            map.put("status", "적합한 권한을 가지고 있지 않습니다");
+            map.put("status", 200);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());

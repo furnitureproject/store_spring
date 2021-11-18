@@ -53,6 +53,7 @@ public class ProductEventController {
         return map;
     }
 
+    // { "eventCode": 1 , "eventName" : "", "eventDiscount" : 20}
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertPOST(@RequestBody ProductEvent productEvent) {
         Map<String, Object> map = new HashMap<>();
@@ -66,6 +67,7 @@ public class ProductEventController {
         return map;
     }
 
+    // { "eventCode": 1 , "eventName" : "", "eventDiscount" : 20}
     @PutMapping(value = "/update", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> UpdatePOST(@RequestBody ProductEvent productEvent) {
         Map<String, Object> map = new HashMap<>();

@@ -26,7 +26,8 @@ public class CategoryController {
     CategoryService cService;
 
     // categoryTier categoryName categoryParent만 있으면 됨 -> 코드는 자동생성,
-    // 1tier 경우엔 name tier 값만!
+    // 1tier 경우 => { categoryName: "", categoryTier: 1}
+    // 나머지 경우 => { categoryName: "", categoryTier: 2 , categoryParent : 201000 }
     @PostMapping(value = "/insert_category", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertPOST(@RequestBody Category category) {
         Map<String, Object> map = new HashMap<>();
@@ -52,6 +53,8 @@ public class CategoryController {
         return map;
     }
 
+    // { "categoryCode": 201001 , "categoryName": "", "categoryTier" : "",
+    // "categoryParent": ""}
     @PutMapping(value = "/update_category", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> UpdatePOST(@RequestBody Category category) {
         Map<String, Object> map = new HashMap<>();
