@@ -53,6 +53,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<Order> selectAllOrder() {
+        return oRepository.findAll();
+    }
+
+    @Override
     public List<OrderProjection> selectOrderUser(String userid) {
 
         return oRepository.findByCart_User_UserIdOrderByOrderDateDesc(userid);

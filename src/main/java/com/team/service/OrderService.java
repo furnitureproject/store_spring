@@ -27,6 +27,9 @@ public interface OrderService {
     // 주문 하나 찾기
     public Order selectOrderOne(Long orderno);
 
+    // 모든 주문 찾기
+    public List<Order> selectAllOrder();
+
     // 프로젝션된 주문 하나 찾기
     public OrderProjection selectOrderProjectionOne(Long orderno);
 

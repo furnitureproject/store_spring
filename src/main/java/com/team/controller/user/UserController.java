@@ -65,7 +65,14 @@ public class UserController {
     public Map<String, Object> joinUser(@RequestBody User user) {
         Map<String, Object> map = new HashMap<>();
         try {
-            if (uService.selectUserOne(user.getUserId()) == null) {
+
+            if (uService.selectUserOne(user.getUserId()) != null) {
+                map.put("status", "같은 아이디가 존재하고 있습니다");
+            } else if (uService.selectUserByEmail(user.getUserEmail()) != null) {
+                map.put("status", "같은 이메일이 존재하고 있습니다");
+            } else if (uService.selectUserByPhone(user.getUserPhone()) != null) {
+                map.put("status", "같은 전화번호가 존재하고 있습니다");
+            } else {
                 BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
                 user.setUserPw(bcpe.encode(user.getUserPw()));
                 // TEST용 추가
@@ -75,9 +82,6 @@ public class UserController {
 
                 uService.insertUser(user);
                 map.put("status", 200);
-            } else {
-                // 이미 가입한 User의 아이디를 사용한 경우 오류 반환
-                map.put("status", "같은 아이디가 존재하고 있습니다");
             }
         } catch (Exception e) {
             e.printStackTrace();

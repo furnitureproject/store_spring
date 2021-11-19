@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +58,7 @@ public class OrderController {
             map1.put("userid", userid);
             List<OrderVO> sum = oService.selectQueryUserOrder(map1);
             map.put("status", 200);
+            // 물품 별 금액 총합이 아닌 그 프론트에 나타나는 금액의 총합값도 나오도록 해줄 것
             map.put("list", oService.selectOrderUser(userid));
             map.put("sum", sum);
             for (int i = 0; i < sum.size(); i++) {
@@ -139,7 +141,7 @@ public class OrderController {
     }
 
     @DeleteMapping(value = "/order")
-    public Map<String, Object> orderDelete(@RequestHeader("token") String token, @RequestParam("orderno") Long[] no) {
+    public Map<String, Object> orderDelete(@RequestHeader("token") String token, @RequestBody Long[] no) {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token);
@@ -164,16 +166,77 @@ public class OrderController {
     }
 
     // TEST 중입니다
+    // 월 별 전체 판매액
     @GetMapping(value = "/order/date")
-    public Map<String, Object> dateSearch() throws ParseException {
+    public Map<String, Object> dateSearch(@RequestParam("month") String month2, @RequestParam("year") String year2) {
         Map<String, Object> map = new HashMap<>();
-        long num = 2L;
-        Date date1 = oService.selectOrderProjectionOne(num).getOrderDate();
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = dateFormat.parse("11/11/2011");
-        // Timestamp timeStampDate = new Timestamp(date.getTime());
+        try {
+            List<Order> list = oService.selectAllOrder();
+            List<Long> list1 = new ArrayList<>();
+            for (int i = 0; i < list.size(); i++) {
+                Date date1 = list.get(i).getOrderDate();
+                Long orderno = list.get(i).getOrderNo();
+                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                String dateToStr = dateFormat.format(date1);
+                String[] timesplit = dateToStr.split("/");
+                String Month1 = timesplit[1];
+                String Year1 = timesplit[2];
+                if (Month1.equals(month2) && Year1.equals(year2)) {
+                    long Price = oService.selectOrderOne(orderno).getCart().getProductOption().getOptionPrice();
+                    long Quantity = oService.selectOrderOne(orderno).getCart().getCartOptionCount();
+                    list1.add(Price * Quantity);
+                    long sum = 0;
+                    for (int j = 0; j < list1.size(); j++) {
+                        sum += list1.get(j);
+                    }
+                    System.out.println(sum);
+                    map.put(year2 + "년" + month2 + "월 판매액", sum);
+                    map.put("status", 200);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
 
-        System.out.println(date1);
+    @GetMapping(value = "/order/seller")
+    public Map<String, Object> sellingPriceUser(@RequestParam("month") String month2,
+            @RequestParam("year") String year2, @RequestHeader("token") String token) {
+        Map<String, Object> map = new HashMap<>();
+        String sellerid = jwtUtil.extractUsername(token);
+        try {
+            List<Order> list = oService.selectAllOrder();
+            List<Long> list1 = new ArrayList<>();
+            for (int i = 0; i < list.size(); i++) {
+                Date date1 = list.get(i).getOrderDate();
+                Long orderno = list.get(i).getOrderNo();
+                if (oService.selectOrderOne(orderno).getCart().getProductOption().getProduct().getSeller().getSellerId()
+                        .equals(sellerid)) {
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    String dateToStr = dateFormat.format(date1);
+                    String[] timesplit = dateToStr.split("/");
+                    String Month1 = timesplit[1];
+                    String Year1 = timesplit[2];
+                    if (Month1.equals(month2) && Year1.equals(year2)) {
+                        long Price = oService.selectOrderOne(orderno).getCart().getProductOption().getOptionPrice();
+                        long Quantity = oService.selectOrderOne(orderno).getCart().getCartOptionCount();
+                        list1.add(Price * Quantity);
+                        long sum = 0;
+                        for (int j = 0; j < list1.size(); j++) {
+                            sum += list1.get(j);
+                        }
+                        System.out.println(sum);
+                        map.put(year2 + "년" + month2 + "월 판매액", sum);
+                        map.put("status", 200);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
         return map;
     }
 
