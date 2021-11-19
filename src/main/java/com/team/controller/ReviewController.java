@@ -19,6 +19,7 @@ import com.team.service.ProductService;
 import com.team.service.ReviewImgService;
 import com.team.service.ReviewService;
 import com.team.service.UserService;
+import com.team.vo.ReviewVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
@@ -59,15 +60,24 @@ public class ReviewController {
         Map<String, Object> map = new HashMap<>();
         try {
             List<ReviewProjection> list = rService.selectReviewList(productCode);
+            List<ReviewVO> list1 = new ArrayList<>();
             for (int i = 0; i < list.size(); i++) {
                 ReviewProjection review = list.get(i);
                 Long number = review.getReviewNum();
-                map.put("image" + number + "-1", "/ROOT/reviewimage?reviewnum=" + number + "&idx=0");
-                map.put("image" + number + "-2", "/ROOT/reviewimage?reviewnum=" + number + "&idx=1");
-                map.put("image" + number + "-3", "/ROOT/reviewimage?reviewnum=" + number + "&idx=2");
+                ReviewVO reviewVO = new ReviewVO();
+                reviewVO.setReviewNum(number);
+                reviewVO.setReivewTitle(review.getReviewTitle());
+                reviewVO.setReviewContent(review.getReviewContent());
+                reviewVO.setReviewRegDate(review.getReviewRegDate());
+                reviewVO.setReviewStar(review.getReviewStar());
+                reviewVO.setUser(review.getUser_UserId());
+                reviewVO.setReviewImage1("/ROOT/reviewimage?reviewnum=" + number + "&idx=0");
+                reviewVO.setReviewImage2("/ROOT/reviewimage?reviewnum=" + number + "&idx=1");
+                reviewVO.setReviewImage3("/ROOT/reviewimage?reviewnum=" + number + "&idx=2");
+                list1.add(reviewVO);
             }
             map.put("status", 200);
-            map.put("list", list);
+            map.put("list", list1);
         } catch (Exception e) {
             map.put("status", e.hashCode());
         }

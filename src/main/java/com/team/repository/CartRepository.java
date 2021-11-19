@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CartRepository extends JpaRepository<Cart, Long> {
 
-    List<CartProjection> findByUser_UserIdOrderByCartNoDesc(String userId);
+    List<CartProjection> findByUser_UserIdOrderByCartNoAsc(String userId);
 
     CartProjection findByCartNo(Long cartNo);
 

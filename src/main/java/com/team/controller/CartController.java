@@ -126,7 +126,7 @@ public class CartController {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token);
-            Cart cart1 = cService.selectCartOne(cart.getCartCode());
+            Cart cart1 = cService.selectCartOne(cart.getCartNo());
             if (cart1.getUser().getUserId().equals(userid)) {
                 cart1.setCartOptionCount(cart.getCartOptionCount());
                 // cart1.setProductOption(pOService.selectProductOptionOne(code));
@@ -147,7 +147,7 @@ public class CartController {
         try {
             String userid = jwtUtil.extractUsername(token);
             if (cart.getUser().getUserId().equals(userid)) {
-                cService.deleteCart(cart.getCartCode());
+                cService.deleteCart(cart.getCartNo());
             }
         } catch (Exception e) {
             map.put("status", e.hashCode());

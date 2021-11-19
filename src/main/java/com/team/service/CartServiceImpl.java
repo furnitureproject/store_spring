@@ -54,7 +54,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<CartProjection> selectAllUserCart(String userId) {
-        return cRepository.findByUser_UserIdOrderByCartNoDesc(userId);
+        return cRepository.findByUser_UserIdOrderByCartNoAsc(userId);
     }
 
 }

@@ -8,8 +8,7 @@
 <body>
     <div>
         <form th:action="@{http://127.0.0.1:8080/ROOT/email/pwchange(email=${email})}" method="post">
-            <col
-            <span style="width: 120px;" >새 비밀번호  </span><input  type="password" name="userPw" placeholder="새 비밀번호" />
+            <span style="width: 120px; display: inline-block;" >새 비밀번호  </span><input  type="password" name="userPw" placeholder="새 비밀번호" />
             <input style="width: 50px;" type="submit" value="수정"/>
         </form>
     </div>
