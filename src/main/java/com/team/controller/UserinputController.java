@@ -1,6 +1,7 @@
 package com.team.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.team.entity.Order;
@@ -46,26 +47,56 @@ public class UserinputController {
 
     //userinput 등록
     //127.0.0.1:8080/ROOT/userinput/insert?ono=
+    // @RequestMapping(value = "/insert", method = {
+    //     RequestMethod.POST }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    // public Map<String, Object> userinputInsertPOST(@RequestBody UserInput userInput,
+    //         @RequestParam("ono")long no,
+    //         @RequestHeader("token") String token) {
+    //     Map<String, Object> map = new HashMap<>();
+    //     //System.out.println(userInput.toString());
+    //     try {
+    //         String userid = jwtUtil.extractUsername(token); // token을 통해 회원정보 찾기
+    //         Order orderno = oService.selectOrderOne(no);    //order no 가져오기
+    //         String orderid = oService.selectOrderOne(no).getCart().getUser().getUserId(); //order 정보를 통해 userid 찾기
+    //         String ordername = oService.selectOrderOne(no).getCart().getUser().getUserName(); //order 정보를 통해 username 찾기
+    //         if(userid.equals(orderid)){
+    //             userInput.setUinputName(ordername); //주문자 이름
+    //             userInput.setOrder(orderno); //order no
+    //             uiService.insertUserinput(userInput);
+    //             map.put("result", 1L);
+    //         }
+    //         else{
+    //             map.put("result", 0L);
+    //         }
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         map.put("result", e.hashCode());
+    //     }
+    //     return map;
+    // }
+
     @RequestMapping(value = "/insert", method = {
         RequestMethod.POST }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> userinputInsertPOST(@RequestBody UserInput userInput,
-            @RequestParam("ono")long no,
+    public Map<String, Object> userinputInsertPOST(@RequestBody UserInput[] userInput,
             @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         //System.out.println(userInput.toString());
         try {
             String userid = jwtUtil.extractUsername(token); // token을 통해 회원정보 찾기
-            Order orderno = oService.selectOrderOne(no);    //order no 가져오기
-            String orderid = oService.selectOrderOne(no).getCart().getUser().getUserId(); //order 정보를 통해 userid 찾기
-            String ordername = oService.selectOrderOne(no).getCart().getUser().getUserName(); //order 정보를 통해 username 찾기
-            if(userid.equals(orderid)){
-                userInput.setUinputName(ordername); //주문자 이름
-                userInput.setOrder(orderno); //order no
-                uiService.insertUserinput(userInput);
-                map.put("result", 1L);
-            }
-            else{
-                map.put("result", 0L);
+            for(int i =0; i < userInput.length; i++ ){
+                Long no = userInput[i].getOrder().getOrderNo();
+                Order orderno = oService.selectOrderOne(no);    //order no 가져오기
+                String orderid = oService.selectOrderOne(no).getCart().getUser().getUserId(); //order 정보를 통해 userid 찾기
+                String ordername = oService.selectOrderOne(no).getCart().getUser().getUserName(); //order 정보를 통해 username 찾기
+                if(userid.equals(orderid)){
+                    userInput[i].setUinputName(ordername); //주문자 이름
+                    userInput[i].setOrder(orderno); //order no
+                    uiService.insertUserinput(userInput[i]);
+                    map.put("result", 1L);
+                }
+                else{
+                    map.put("result", 0L);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

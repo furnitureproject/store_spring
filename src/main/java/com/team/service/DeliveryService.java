@@ -13,6 +13,9 @@ public interface DeliveryService {
     //delivery 등록
     public void insertDelivery(Delivery delivery);
 
+    //일괄 추가1
+    public void insertAllDelivery(List<Delivery> list);
+
     //delivery 수정(seller)
     public void updateDelivery(Delivery delivery);
 

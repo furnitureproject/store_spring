@@ -1,5 +1,6 @@
 package com.team.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.team.entity.UserInput;
@@ -19,6 +20,11 @@ public class UserinputServiceImpl implements UserinputService{
     @Override
     public void insertUserinput(UserInput userInput) {
         uiRepository.save(userInput);
+    }
+    
+    @Override
+    public void insertAllUserinput(List<UserInput> list) {
+        uiRepository.saveAll(list);
     }
 
     //userinput 삭제

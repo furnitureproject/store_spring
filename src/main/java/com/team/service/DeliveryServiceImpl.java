@@ -3,6 +3,9 @@ package com.team.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import com.team.entity.Delivery;
 import com.team.entity.DeliveryProjection;
 import com.team.repository.DeliveryRepository;
@@ -16,10 +19,24 @@ public class DeliveryServiceImpl implements DeliveryService{
     @Autowired
     DeliveryRepository dRepository;
 
+    @Autowired
+    EntityManagerFactory emf;
+
     //delivery 등록
     @Override
     public void insertDelivery(Delivery delivery) {
         dRepository.save(delivery);        
+    }
+
+    @Override
+    public void insertAllDelivery(List<Delivery> list) {
+        dRepository.saveAll(list);
+        // EntityManager em = emf.createEntityManager();
+        // em.getTransaction().begin();    //트랜젝션 시작
+        // for(Delivery delivery : list) {
+        //     em.persist(delivery);
+        // }
+        // em.getTransaction().commit();
     }
 
     //delivery 수정(seller)

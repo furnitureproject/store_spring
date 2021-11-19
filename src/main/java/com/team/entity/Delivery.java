@@ -34,12 +34,16 @@ public class Delivery {
     private Long deliveryCode=0L;
 
     @ManyToOne
-    @JoinColumn(name = "UINPUT_NO", nullable = false)
-    private UserInput userinput;
+    @JoinColumn(name = "ORDER_NO", nullable = false)
+    private Order orderNo;
 
     @ManyToOne
     @JoinColumn(name = "PAY_NO", nullable = false)
     private Payment payment;
+
+    @ManyToOne
+    @JoinColumn(name = "USER_ADDRESS", nullable = false)
+    private UserAddress userAddress;
 
 
 }

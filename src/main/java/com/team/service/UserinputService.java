@@ -1,5 +1,7 @@
 package com.team.service;
 
+import java.util.List;
+
 import com.team.entity.UserInput;
 import com.team.entity.UserInputProjection;
 
@@ -10,6 +12,9 @@ public interface UserinputService {
     
     //userinput 등록
     public void insertUserinput(UserInput userInput);
+
+    //일괄 등록
+    public void insertAllUserinput(List<UserInput> list);
 
     //userinput 삭제
     public void deleteUserinput(long no);
