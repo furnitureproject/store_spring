@@ -146,8 +146,11 @@ public class CartController {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token);
-            if (cart.getUser().getUserId().equals(userid)) {
+            if (cService.selectCartProjectionOne(cart.getCartNo()).getUser_UserId().equals(userid)) {
                 cService.deleteCart(cart.getCartNo());
+                map.put("status", 200);
+            } else {
+                map.put("status", "적합한 권한을 가지고 있지 않습니다");
             }
         } catch (Exception e) {
             map.put("status", e.hashCode());
