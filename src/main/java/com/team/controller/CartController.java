@@ -142,15 +142,18 @@ public class CartController {
     }
 
     @DeleteMapping(value = "/cart", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> deleteCart(@RequestBody Cart cart, @RequestHeader("token") String token) {
+    public Map<String, Object> deleteCart(@RequestBody Long[] no, @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token);
-            if (cService.selectCartProjectionOne(cart.getCartNo()).getUser_UserId().equals(userid)) {
-                cService.deleteCart(cart.getCartNo());
-                map.put("status", 200);
-            } else {
-                map.put("status", "적합한 권한을 가지고 있지 않습니다");
+            for (int i = 0; i < no.length; i++) {
+                long num = no[i];
+                if (cService.selectCartProjectionOne(num).getUser_UserId().equals(userid)) {
+                    cService.deleteCart(num);
+                    map.put("status", 200);
+                } else {
+                    map.put("status", "적합한 권한을 가지고 있지 않습니다");
+                }
             }
         } catch (Exception e) {
             map.put("status", e.hashCode());
