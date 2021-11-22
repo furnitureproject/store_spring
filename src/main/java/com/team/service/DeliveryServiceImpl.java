@@ -27,6 +27,10 @@ public class DeliveryServiceImpl implements DeliveryService{
     public void insertDelivery(Delivery delivery) {
         dRepository.save(delivery);        
     }
+    @Override
+    public Delivery insertDelivery2(Delivery delivery) {
+        return dRepository.save(delivery);
+    }
 
     @Override
     public void insertAllDelivery(List<Delivery> list) {
@@ -64,16 +68,16 @@ public class DeliveryServiceImpl implements DeliveryService{
          return dRepository.queryDelOne(no);
      }
 
-    // //userid 별 delivery 정보 조회
-    // @Override
-    // public List<DeliveryProjection> selectUseridDelivery(String userid) {
-    //     return dRepository.findByUserinput_Order_Cart_User_UserIdOrderByDeliveryNo(userid);
-    // }
+    //userid 별 delivery 정보 조회
+    @Override
+    public List<DeliveryProjection> selectUseridDelivery(String userid) {
+        return dRepository.findByOrder_Cart_User_UserIdOrderByDeliveryNo(userid);
+    }
 
-    // //sellerid 별 delivery 정보 조회
-    // @Override
-    // public List<DeliveryProjection> selectSelleridDelivery(String sellerid) {
-    //     return dRepository.findByUserinput_Order_Cart_ProductOption_Product_Seller_SellerIdOrderByDeliveryNo(sellerid);
-    // }
+    //sellerid 별 delivery 정보 조회
+    @Override
+    public List<DeliveryProjection> selectSelleridDelivery(String sellerid) {
+        return dRepository.findByOrder_Cart_ProductOption_Product_Seller_SellerIdOrderByDeliveryNo(sellerid);
+    }
 
 }

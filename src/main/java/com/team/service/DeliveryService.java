@@ -13,6 +13,8 @@ public interface DeliveryService {
     //delivery 등록
     public void insertDelivery(Delivery delivery);
 
+    public Delivery insertDelivery2(Delivery delivery);
+
     //일괄 추가1
     public void insertAllDelivery(List<Delivery> list);
 
@@ -28,9 +30,9 @@ public interface DeliveryService {
     //deliveryCode 1개 조회
     public Delivery selectDelOne(Long no);
 
-    // //userid 별 delivery 정보 조회
-    // public List<DeliveryProjection> selectUseridDelivery(String userid);
+    //userid 별 delivery 정보 조회
+    public List<DeliveryProjection> selectUseridDelivery(String userid);
 
-    // //sellerid 별 delivery 정보 조회
-    // public List<DeliveryProjection> selectSelleridDelivery(String sellerid);
+    //sellerid 별 delivery 정보 조회
+    public List<DeliveryProjection> selectSelleridDelivery(String sellerid);
 }

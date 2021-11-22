@@ -44,8 +44,8 @@ public class TestController {
     @Autowired
     SellerService sService;
 
-    @Autowired
-    UserinputController uController;
+    // @Autowired
+    // UserinputController uController;
 
     @Autowired
     ProductService pService;

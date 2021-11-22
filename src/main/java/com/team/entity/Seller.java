@@ -9,6 +9,9 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,6 +32,7 @@ public class Seller {
     private String role = "SELLER";
 
     @Column(name = "SELLER_PW")
+    @JsonProperty(access = Access.WRITE_ONLY)
     private String sellerPw;
 
     @Column(name = "SELLER_NAME")

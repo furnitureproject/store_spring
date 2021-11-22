@@ -108,7 +108,7 @@ public class SellerController {
     }
 
     // 판매자정보 수정
-    @RequestMapping(value = "/update", method = RequestMethod.POST,
+    @RequestMapping(value = "/update", method = RequestMethod.PUT,
     consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> postSellerInfo(@RequestBody Seller seller){
         Map<String, Object> map = new HashMap<>();
@@ -117,12 +117,14 @@ public class SellerController {
             // if(seller.getSellerEmail() != null){
             //     oldSeller.setSellerEmail(seller.getSellerEmail());            
             // }
+            BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
+            oldSeller.setSellerPw(bcpe.encode(seller.getSellerPw()));
             oldSeller.setSellerEmail(seller.getSellerEmail());    
             oldSeller.setSellerPhone(seller.getSellerPhone());
             oldSeller.setStorePhone(seller.getStorePhone());
             int updateCheck = sservice.updateSeller(oldSeller);
             if(updateCheck == 1){
-
+                map.put("test", oldSeller.getSellerPw());
                 map.put("status", 200);
             }
         }

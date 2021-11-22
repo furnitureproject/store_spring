@@ -17,9 +17,9 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Long>{
     @Query(value = "SELECT * FROM DELIVERY WHERE DELIVERY_NO=:no", nativeQuery = true)
     public Delivery queryDelOne(@Param("no") Long no);
 
-    // //userid 별 delivery 정보 조회
-    // List<DeliveryProjection> findByUserinput_Order_Cart_User_UserIdOrderByDeliveryNo(String userid);
+    //userid 별 delivery 정보 조회
+    List<DeliveryProjection> findByOrder_Cart_User_UserIdOrderByDeliveryNo(String userid);
 
-    // //sellerid 별 delivery 정보 조회
-    // List<DeliveryProjection> findByUserinput_Order_Cart_ProductOption_Product_Seller_SellerIdOrderByDeliveryNo(String sellerid);
+    //sellerid 별 delivery 정보 조회
+    List<DeliveryProjection> findByOrder_Cart_ProductOption_Product_Seller_SellerIdOrderByDeliveryNo(String sellerid);
 }

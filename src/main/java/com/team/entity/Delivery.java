@@ -35,7 +35,7 @@ public class Delivery {
 
     @ManyToOne
     @JoinColumn(name = "ORDER_NO", nullable = false)
-    private Order orderNo;
+    private Order order;
 
     @ManyToOne
     @JoinColumn(name = "PAY_NO", nullable = false)
@@ -45,5 +45,8 @@ public class Delivery {
     @JoinColumn(name = "USER_ADDRESS", nullable = false)
     private UserAddress userAddress;
 
+    @ManyToOne
+    @JoinColumn(name = "SELLER", nullable = false)
+    private Seller seller;
 
 }
