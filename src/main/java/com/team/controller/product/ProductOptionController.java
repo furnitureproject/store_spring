@@ -70,7 +70,7 @@ public class ProductOptionController {
 
     @PostMapping(value = "/insert", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertPOST(@RequestBody ProductOption productOption, @RequestParam long productCode,
-            @RequestParam(name = "eventCode", required = false, defaultValue = "0") long eventCode) {
+            @RequestParam(name = "eventCode", required = false, defaultValue = "1") long eventCode) {
         Map<String, Object> map = new HashMap<>();
         try {
             long count = poService.countByCode(productCode);
