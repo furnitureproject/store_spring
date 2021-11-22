@@ -71,7 +71,7 @@ public class LoginController {
             
             map.put("status", 200);
             map.put("token", jwtUtil.generateToken(user.getUserId()));
-            map.put("role", "USER");
+            map.put("role", "user");
             // map.put("token", jwtUtil.generateToken(user.getUserId(), user.getRole()));
         } 
         // catch (Exception e) {
@@ -130,7 +130,7 @@ public class LoginController {
 
             map.put("status", 200);
             map.put("token", jwtUtil.generateToken(seller.getSellerId()));
-            map.put("role", "SELLER");
+            map.put("role", "seller");
             // map.put("token", jwtUtil.generateToken(seller.getSellerId(), seller.getRole()));
         } 
         // catch (Exception e) {
