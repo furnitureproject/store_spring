@@ -258,38 +258,38 @@ public class DeliveryController {
 
     //delivery 조회(userid 별)
     // 127.0.0.1:8080/ROOT/delivery/uidselect?uid=
-    @RequestMapping(value = "/uidselect", method = {
-        RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectUseridGET(
-        @RequestParam(name = "uid", defaultValue = "0") String id) {
-        Map<String, Object> map = new HashMap<>();
-        try {
-            List<DeliveryProjection> delivery = dService.selectUseridDelivery(id);
-            map.put("delivery", delivery);
-            map.put("result", 1);
-        } catch (Exception e) {
-            e.printStackTrace();
-            map.put("result", e.hashCode());
-        }
-        return map;
-    }
+    // @RequestMapping(value = "/uidselect", method = {
+    //     RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    // public Map<String, Object> selectUseridGET(
+    //     @RequestParam(name = "uid", defaultValue = "0") String id) {
+    //     Map<String, Object> map = new HashMap<>();
+    //     try {
+    //         List<DeliveryProjection> delivery = dService.selectUseridDelivery(id);
+    //         map.put("delivery", delivery);
+    //         map.put("result", 1);
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         map.put("result", e.hashCode());
+    //     }
+    //     return map;
+    // }
 
-    //delivery 조회(sellerid 별)
-    // 127.0.0.1:8080/ROOT/delivery/sidselect?sid=
-    @RequestMapping(value = "/sidselect", method = {
-        RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectSelleridGET(
-        @RequestParam(name = "sid", defaultValue = "0") String id) {
-        Map<String, Object> map = new HashMap<>();
-        try {
-            List<DeliveryProjection> delivery = dService.selectSelleridDelivery(id);
-            map.put("delivery", delivery);
-            map.put("result", 1);
-        } catch (Exception e) {
-            e.printStackTrace();
-            map.put("result", e.hashCode());
-        }
-        return map;
-    }
+    // //delivery 조회(sellerid 별)
+    // // 127.0.0.1:8080/ROOT/delivery/sidselect?sid=
+    // @RequestMapping(value = "/sidselect", method = {
+    //     RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    // public Map<String, Object> selectSelleridGET(
+    //     @RequestParam(name = "sid", defaultValue = "0") String id) {
+    //     Map<String, Object> map = new HashMap<>();
+    //     try {
+    //         List<DeliveryProjection> delivery = dService.selectSelleridDelivery(id);
+    //         map.put("delivery", delivery);
+    //         map.put("result", 1);
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         map.put("result", e.hashCode());
+    //     }
+    //     return map;
+    // }
 
 }

@@ -6,6 +6,4 @@ public interface DeliveryProjection {
 
     Long getDeliveryCode();
 
-    Long getUserinputUinputno();
-
 }
