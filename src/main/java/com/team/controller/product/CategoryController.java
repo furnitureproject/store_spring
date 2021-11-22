@@ -1,14 +1,24 @@
 package com.team.controller.product;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.team.entity.CateImageProjection;
 import com.team.entity.Category;
+import com.team.entity.CategoryImage;
+import com.team.service.CategoryImageService;
 import com.team.service.CategoryService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,13 +27,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/category")
 public class CategoryController {
 
     @Autowired
+    private ResourceLoader resourceLoader;
+
+    @Autowired
     CategoryService cService;
+
+    @Autowired
+    CategoryImageService ciService;
 
     // categoryTier categoryName categoryParent만 있으면 됨 -> 코드는 자동생성,
     // 1tier 경우 => { categoryName: "", categoryTier: 1}
@@ -106,6 +123,83 @@ public class CategoryController {
             map.put("list", list);
             map.put("status", 200);
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    // http://127.0.0.1:8080/ROOT/category/insert_cateimage?categoryCode=
+    @PostMapping(value = "/insert_cateimage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> insertImagePOST(@RequestParam long categoryCode,
+            @RequestParam(name = "file") MultipartFile[] files) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<CategoryImage> list = new ArrayList<>();
+            Category category = cService.selectCategory(categoryCode);
+            for (int i = 0; i < files.length; i++) {
+                CategoryImage categoryImage = new CategoryImage();
+                categoryImage.setCategory(category);
+                categoryImage.setCateImgData(files[i].getBytes());
+                categoryImage.setCateImgName(files[i].getOriginalFilename());
+                categoryImage.setCateImgSize(files[i].getSize());
+                categoryImage.setCateImgType(files[i].getContentType());
+                list.add(categoryImage);
+            }
+            ciService.insertCateImageList(list);
+            map.put("status", 200);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    // http://127.0.0.1:8080/ROOT/category/select_cateimage?cateImgNum=
+    @GetMapping(value = "/select_cateimage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<byte[]> selectDesImage(@RequestParam long cateImgNum) throws IOException {
+        try {
+            CategoryImage categoryImage = ciService.selectCateImageOne(cateImgNum);
+
+            if (categoryImage.getCateImgData().length > 0) {
+                HttpHeaders headers = new HttpHeaders();
+                if (categoryImage.getCateImgType().equals("image/jpeg")) {
+                    headers.setContentType(MediaType.IMAGE_JPEG);
+                } else if (categoryImage.getCateImgType().equals("image/png")) {
+                    headers.setContentType(MediaType.IMAGE_PNG);
+                } else if (categoryImage.getCateImgType().equals("image/gif")) {
+                    headers.setContentType(MediaType.IMAGE_GIF);
+                }
+                ResponseEntity<byte[]> response = new ResponseEntity<>(categoryImage.getCateImgData(), headers,
+                        HttpStatus.OK);
+                return response;
+            }
+            return null;
+
+        } catch (Exception e) {
+            InputStream is = resourceLoader.getResource("classpath:/static/images/noimage.jpg").getInputStream();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_JPEG);
+            ResponseEntity<byte[]> response = new ResponseEntity<>(is.readAllBytes(), headers, HttpStatus.OK);
+            return response;
+        }
+    }
+
+    // http://127.0.0.1:8080/ROOT/category/select_cateimglist?categoryCode=
+    @GetMapping(value = "/select_cateimglist", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> selectcateGET(@RequestParam long categoryCode) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<CateImageProjection> list = ciService.CateImgNumList(categoryCode);
+
+            List<String> list1 = new ArrayList<>();
+            for (CateImageProjection cateImageProjection : list) {
+                list1.add("/ROOT/category/select_cateimage?categoryCode=" + cateImageProjection.getcateImgNum());
+            }
+            map.put("list1", list1);
+            map.put("status", 200);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
