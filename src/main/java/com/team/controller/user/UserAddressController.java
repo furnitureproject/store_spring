@@ -130,4 +130,13 @@ public class UserAddressController {
         return map;
     }
 
+    @GetMapping(value = "/user")
+    public Map<String, Object> searchaddress(@RequestHeader("token") String token) {
+        Map<String, Object> map = new HashMap<>();
+        String userid = jwtUtil.extractUsername(token);
+        UserAddressProjection ua = uaService.selectUserAddressOneOrderByAddressNo(userid);
+        map.put("address", ua);
+        return map;
+    }
+
 }

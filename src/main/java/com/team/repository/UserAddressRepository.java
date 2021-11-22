@@ -18,4 +18,6 @@ public interface UserAddressRepository extends JpaRepository<UserAddress, Long> 
 
     Optional<UserAddressProjection> findByAddressNo(long addressNo);
 
+    Optional<UserAddressProjection> findFirstByUser_UserIdOrderByAddressNoDesc(String userId);
+
 }
