@@ -79,7 +79,7 @@ public class DeliveryController {
             for(int i = 0; i < delivery.length; i++){
                 Long no = delivery[i].getUserAddress().getAddressNo(); //adressNo 불러오기
                 Long ono = delivery[i].getOrder().getOrderNo(); //orderNo 불러오기
-                String id = oService.selectOrderOne(ono).getCart().getProductOption().getProduct().getSeller().getSellerId();
+                String id = oService.selectOrderOne(ono).getCart().getProductOption().getProduct().getSeller().getSellerId();   //sellerid 불러오기
                 delivery[i].setUserAddress(userAddressService.selectUserAddressOne(no));
                 
                 if(delivery[i].getUserAddress().getUser().getUserId().equals(userid)){
@@ -100,7 +100,7 @@ public class DeliveryController {
                     //System.out.println(ono);
                     //주문이 성공하면 product option quantity(전체 수량)에서 cart quantity(주문 수량)를 뺀다.
                     ProductOption productOption = oService.selectOrderOne(ono).getCart().getProductOption(); //주문한 product option 정보 호출
-                    long cartquantity = oService.selectOrderOne(ono).getCart().getCartOptionCount();
+                    long cartquantity = oService.selectOrderOne(ono).getCart().getCartOptionCount();    //cart 수량
                     //System.out.println(cartquantity);
                     int cart = Long.valueOf(cartquantity).intValue();  //cart 수량(cartquantity) type 변경(long -> int)
                     productOption.setOptionQuantity(productOption.getOptionQuantity() - cart);
@@ -136,7 +136,7 @@ public class DeliveryController {
             String userid = jwtUtil.extractUsername(token); // token을 통해 회원정보 찾기
             for(int i = 0; i < delivery.length; i++){
                 //delivery 정보를 통해 seller id 가져오기(제품을 등록한 id)
-                Long dno = delivery[i].getDeliveryNo(); //orderNo 불러오기
+                Long dno = delivery[i].getDeliveryNo(); //deliveryNo 불러오기
                 // System.out.println(dno);
                 String sellerid = dService.selectDelivery(dno).getSeller().getSellerId();   //sellerid 불러오기
                 
@@ -172,7 +172,7 @@ public class DeliveryController {
     }
 
     //delivery 삭제
-    // 127.0.0.1:8080/ROOT/delivery/delete?dno=
+    // 127.0.0.1:8080/ROOT/delivery/delete
     @RequestMapping(value = "/delete", method = {
         RequestMethod.DELETE }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> delDelete(@RequestBody Delivery[] delivery,
@@ -250,7 +250,7 @@ public class DeliveryController {
     }
 
     //delivery 조회(sellerid 별)
-    // 127.0.0.1:8080/ROOT/delivery/sidselect?sid=
+    // 127.0.0.1:8080/ROOT/delivery/sidselect
     @RequestMapping(value = "/sidselect", method = {
         RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectSelleridGET(

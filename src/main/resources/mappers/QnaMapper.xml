@@ -8,16 +8,20 @@
         <result column="QNA_NUM" property="qnaNum" />
         <result column="QNA_TITLE" property="qnaTitle" />
         <result column="QNA_CONTENT" property="qnaContent" />
-        <result column="QNA_REGDATE" property="qnaRegdate" />
+        <result column="QNA_REGDATE" property="qnaRegdateString" />
         <result column="QNA_REPLY" property="qnaReply" />
-        <result column="QNA_REPLY_REGDATE" property="qnaReplyRegdate" />
+        <result column="QNA_REPLY_REGDATE" property="qnaReplyRegdateString" />
         <!-- <result column="PRODUCT_CODE" property="productCode" /> -->
     </resultMap>
     
     <select id="select_product_code_qna_list" parameterType="map" resultMap="map1">
-    SELECT * FROM (SELECT QNA_NUM, QNA_TITLE, QNA_CONTENT, QNA_REGDATE, 
-    PRODUCT_CODE, ROW_NUMBER() OVER (ORDER BY PRODUCT_CODE DESC) ROWN 
-    FROM QNA_TB2 WHERE PRODUCT_CODE =${code}) WHERE ROWN BETWEEN #{page} AND #{page1};
+    SELECT * FROM (
+        SELECT 
+            QNA_NUM, QNA_TITLE, QNA_CONTENT, TO_CHAR(QNA_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REGDATE, QNA_REPLY, 
+            TO_CHAR(QNA_REPLY_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REPLY_REGDATE,
+        PRODUCT_CODE, ROW_NUMBER() OVER (ORDER BY PRODUCT_CODE DESC) ROWN 
+        FROM QNA_TB2 WHERE PRODUCT_CODE =${code}) 
+    WHERE ROWN BETWEEN #{page} AND #{page1};
     </select>
 
     <!-- 유저 id 별 qna 조회-->
@@ -25,18 +29,20 @@
         <result column="QNA_NUM" property="qnaNum" />
         <result column="QNA_TITLE" property="qnaTitle" />
         <result column="QNA_CONTENT" property="qnaContent" />
-        <result column="QNA_REGDATE" property="qnaRegdate" />
+        <result column="QNA_REGDATE" property="qnaRegdateString" />
         <result column="QNA_REPLY" property="qnaReply" />
-        <result column="QNA_REPLY_REGDATE" property="qnaReplyRegdate" />
+        <result column="QNA_REPLY_REGDATE" property="qnaReplyRegdateString" />
         <!-- <result column="PRODUCT_CODE" property="productCode" /> -->
     </resultMap>
 
     <select id="select_user_id_qna_list" parameterType="map" resultMap="map2">
-    SELECT * FROM (SELECT QNA_NUM, QNA_TITLE, QNA_CONTENT, QNA_REGDATE, 
-    USER_ID, ROW_NUMBER() OVER (ORDER BY USER_ID DESC) ROWN 
-    FROM QNA_TB2 WHERE USER_ID=#{userid}) WHERE ROWN BETWEEN #{page} AND #{page1};
+    SELECT * FROM (
+        SELECT QNA_NUM, QNA_TITLE, QNA_CONTENT, TO_CHAR(QNA_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REGDATE, QNA_REPLY, 
+            TO_CHAR(QNA_REPLY_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REPLY_REGDATE ,
+            USER_ID, ROW_NUMBER() OVER (ORDER BY USER_ID DESC) ROWN 
+        FROM QNA_TB2 WHERE USER_ID=#{userid}) 
+    WHERE ROWN BETWEEN #{page} AND #{page1};
     </select>
 
 
 </mapper>
-

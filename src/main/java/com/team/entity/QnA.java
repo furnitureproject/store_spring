@@ -11,8 +11,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,6 +44,7 @@ public class QnA {
     private String qnaContent;
 
     @CreationTimestamp
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "QNA_REGDATE", updatable = false)
     private Date qnaRegdate;
 
@@ -48,6 +52,7 @@ public class QnA {
     private String qnaReply = null;
 
     @Column(name = "QNA_REPLY_REGDATE")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date qnaReplyRegdate = null;
 
     @Column(name = "QNA_REPLY_CHECK")

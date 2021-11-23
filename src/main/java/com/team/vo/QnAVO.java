@@ -20,10 +20,11 @@ public class QnAVO {
     private String qnaContent;
 
     private Date qnaRegdate;
+    private String qnaRegdateString;
 
     private String qnaReply;
 
     private Date qnaReplyRegdate;
+    private String qnaReplyRegdateString;
 
-    //private Long productCode;
 }
