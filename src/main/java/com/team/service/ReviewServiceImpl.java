@@ -8,6 +8,8 @@ import com.team.entity.ReviewProjection;
 import com.team.repository.ReviewRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,13 +32,13 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<ReviewProjection> selectReviewList(Long productCode) {
-        return rRepository.findByProduct_ProductCodeOrderByReviewNum(productCode);
+        return rRepository.findByProduct_ProductCodeOrderByReviewNumDesc(productCode);
     }
 
     @Override
     public int countProductReview(Long productCode) {
 
-        return rRepository.findByProduct_ProductCodeOrderByReviewNum(productCode).size();
+        return rRepository.findByProduct_ProductCodeOrderByReviewNumDesc(productCode).size();
     }
 
     @Override
@@ -54,6 +56,12 @@ public class ReviewServiceImpl implements ReviewService {
     public int querySelectProductReviewAvgStar(Long no) {
 
         return rRepository.querySelectProductReviewAvgStar(no);
+    }
+
+    @Override
+    public Page<ReviewProjection> selectReviewPage(Long productCode, Pageable pageable) {
+
+        return rRepository.findByProduct_ProductCodeOrderByReviewNum(productCode, pageable);
     }
 
 }

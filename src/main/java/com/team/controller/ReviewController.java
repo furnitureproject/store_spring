@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.team.entity.CartProjection;
 import com.team.entity.Product;
 import com.team.entity.Review;
 import com.team.entity.ReviewImg;
@@ -15,6 +16,7 @@ import com.team.entity.ReviewImgProjection;
 import com.team.entity.ReviewProjection;
 import com.team.entity.User;
 import com.team.jwt.JwtUtil;
+import com.team.service.CartService;
 import com.team.service.ProductService;
 import com.team.service.ReviewImgService;
 import com.team.service.ReviewService;
@@ -23,6 +25,9 @@ import com.team.vo.ReviewVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -55,6 +60,9 @@ public class ReviewController {
     @Autowired
     ProductService pService;
 
+    @Autowired
+    CartService cService;
+
     @GetMapping(value = "/review", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectProductReview(@RequestParam("productcode") Long productCode) {
         Map<String, Object> map = new HashMap<>();
@@ -85,7 +93,44 @@ public class ReviewController {
         return map;
     }
 
-    @PostMapping(value = "/review", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/review/test", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> selectProductReviewtest(@RequestParam("productcode") Long productCode,
+            @RequestParam("page") int page) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<ReviewProjection> list = rService.selectReviewList(productCode);
+            int page1 = Math.max(page, 1);
+            PageRequest pageRequest = PageRequest.of(page1 - 1, 10);
+            List<ReviewVO> list1 = new ArrayList<>();
+            for (int i = 0; i < list.size(); i++) {
+                ReviewProjection review = list.get(i);
+                ReviewVO reviewVO = new ReviewVO();
+                Long number = review.getReviewNum();
+                reviewVO.setReviewNum(number);
+                reviewVO.setReivewTitle(review.getReviewTitle());
+                reviewVO.setReviewContent(review.getReviewContent());
+                reviewVO.setReviewRegDate(review.getReviewRegDate());
+                reviewVO.setReviewStar(review.getReviewStar());
+                reviewVO.setUser(review.getUser_UserId());
+                reviewVO.setReviewImage1("/ROOT/reviewimage?reviewnum=" + number + "&idx=0");
+                reviewVO.setReviewImage2("/ROOT/reviewimage?reviewnum=" + number + "&idx=1");
+                reviewVO.setReviewImage3("/ROOT/reviewimage?reviewnum=" + number + "&idx=2");
+                list1.add(reviewVO);
+            }
+            final int start = (int) pageRequest.getOffset();
+            final int end = Math.min((start + pageRequest.getPageSize()), list1.size());
+            Page<ReviewVO> list2 = new PageImpl<>(list1.subList(start, end), pageRequest, list1.size());
+            map.put("status", 200);
+            map.put("list", list2);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+
+        return map;
+    }
+
+    @PostMapping(value = "/review/test", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertReview(@RequestBody Review review, @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         String userid = jwtUtil.extractUsername(token);
@@ -93,6 +138,7 @@ public class ReviewController {
             User user = uService.selectUserOne(userid);
             Long productCode = review.getProduct().getProductCode();
             Product product = pService.selectProductOne(productCode);
+            List<CartProjection> list = cService.selectAllUserCart(userid);
             if (review.getReviewTitle() == null) {
                 // 리뷰 제목을 입력 안 함
                 map.put("status", "제목을 입력하지 않았습니다");
@@ -102,14 +148,19 @@ public class ReviewController {
             } else if (review.getReviewStar() == 0) {
                 // 리뷰 별점을 입력하지 않음
                 map.put("status", "별점을 입력하지 않았습니다");
-            } else if (user != null && product != null) {
-                review.setUser(user);
-                review.setProduct(product);
-                rService.insertReview(review);
-                map.put("status", 200);
-            } else {
-                // 유저가 없거나 제품이 없을 경우 오류로 반환
-                map.put("status", "제품이 없거나 권한을 가지고 있지 않습니다");
+            }
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getProductOption_Product_ProductCode().equals(productCode)
+                        && list.get(i).getCartStatus() == 2 && user != null && product != null) {
+                    review.setUser(user);
+                    review.setProduct(product);
+                    rService.insertReview(review);
+                    map.put("status", 200);
+                    break;
+                } else {
+                    // 유저가 없거나 제품이 없을 경우 오류로 반환
+                    map.put("status", "제품이 없거나 권한을 가지고 있지 않습니다");
+                }
             }
         } catch (Exception e) {
             map.put("status", e.hashCode());

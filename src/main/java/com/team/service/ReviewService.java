@@ -5,6 +5,8 @@ import java.util.List;
 import com.team.entity.Review;
 import com.team.entity.ReviewProjection;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,5 +32,8 @@ public interface ReviewService {
 
     // 제품 별 리뷰 점수
     public int querySelectProductReviewAvgStar(Long no);
+
+    // 제품에 따른 리뷰 조회(pagable)
+    public Page<ReviewProjection> selectReviewPage(Long productCode, Pageable pageable);
 
 }
