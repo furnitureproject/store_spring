@@ -3,7 +3,9 @@ package com.team.controller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,6 +114,12 @@ public class ReviewController {
                 reviewVO.setReviewRegDate(review.getReviewRegDate());
                 reviewVO.setReviewStar(review.getReviewStar());
                 reviewVO.setUser(review.getUser_UserId());
+                Date time = review.getReviewRegDate();
+                System.out.println(time);
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                String today = format.format(time);
+                reviewVO.setReviewRegDateString(today);
+
                 Long count = rIService.countReviewNum(review.getReviewNum());
                 System.out.println(count);
                 if (count == 3) {
@@ -124,7 +132,7 @@ public class ReviewController {
                 } else if (count == 1) {
                     reviewVO.setReviewImage1("/ROOT/reviewimage?reviewnum=" + number + "&idx=0");
                 }
-                
+
                 list1.add(reviewVO);
             }
             final int start = (int) pageRequest.getOffset();

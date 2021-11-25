@@ -386,7 +386,6 @@ public class ProductController {
                 Map<String, Object> map1 = new HashMap<>();
                 int epage = page * PAGECNT;
                 int spage = epage - (PAGECNT - 1);
-
                 map1.put("spage", spage);
                 map1.put("epage", epage);
                 map1.put("categoryParent", categoryParent);
@@ -538,7 +537,7 @@ public class ProductController {
     // http://127.0.0.1:8080/ROOT/product/insert_desimage?productCode=202111090005
     @PostMapping(value = "/insert_desimage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertdesImagePOST(@RequestParam long productCode,
-            @RequestParam(name = "file") MultipartFile[] files) {
+            @RequestParam(name = "File") MultipartFile[] files) {
         Map<String, Object> map = new HashMap<>();
         try {
             List<ProductDesImage> list = new ArrayList<>();

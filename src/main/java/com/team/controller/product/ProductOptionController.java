@@ -96,12 +96,11 @@ public class ProductOptionController {
 
     // 다수 등록
     // http://127.0.0.1:8080/ROOT/productoption/insertAll?productCode=202111110009&eventCode=1
-    // [{"optionCode" : 1 ,"optionName" : "", "optionQuantity": 1, "optionPrice":
-    // 10}]
+    // ["optionName" : "", "optionQuantity": 1, "optionPrice": 10}]
 
     @PostMapping(value = "/insertAll", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertPOST(@RequestBody List<ProductOption> list, @RequestParam long productCode,
-            @RequestParam(name = "eventCode", required = false, defaultValue = "0") long eventCode) {
+            @RequestParam(name = "eventCode", required = false, defaultValue = "1") long eventCode) {
         Map<String, Object> map = new HashMap<>();
         try {
             long count = poService.countByCode(productCode);
