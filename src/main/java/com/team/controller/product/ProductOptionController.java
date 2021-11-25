@@ -55,6 +55,9 @@ public class ProductOptionController {
         Map<String, Object> map = new HashMap<>();
         try {
             List<OptionProjection> list = poService.selectByProductCode(productCode);
+            Long price = poService.selectOptionPrice(productCode);
+            System.out.println(price);
+            map.put("price", price);
             map.put("list", list);
             map.put("status", 200);
         } catch (Exception e) {

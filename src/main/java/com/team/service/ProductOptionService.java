@@ -37,4 +37,6 @@ public interface ProductOptionService {
     public List<OptionProjection> selectByProductCode(Long productCode);
 
     Long countByCode(long productCode);
+
+    public Long selectOptionPrice(Long productCode);
 }

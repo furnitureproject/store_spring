@@ -90,4 +90,9 @@ public class ProductOptionServiceImpl implements ProductOptionService {
         return poRepository.findByProduct_ProductCodeOrderByOptionCodeAsc(productCode);
     }
 
+    @Override
+    public Long selectOptionPrice(Long productCode) {
+        return poRepository.SelectPriceLow(productCode);
+    }
+
 }
