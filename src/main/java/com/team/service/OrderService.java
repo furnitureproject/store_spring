@@ -39,4 +39,13 @@ public interface OrderService {
     // 유저에 따른 주문(같은 옵션인 경우 수량 그룹화로 통합)
     public List<OrderVO> selectQueryUserOrder(Map<String, Object> map);
 
+    // cartno에 따른 order 찾기
+    public Order selectOrderForCartNo(Long cartNo);
+
+    // ordercode에 따른 order 찾기
+    public List<OrderProjection> selectOrderForOrderCode(Long orderCode);
+
+    // ordercode
+    public Long nextCode();
+
 }

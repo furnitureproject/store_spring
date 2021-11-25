@@ -2,9 +2,7 @@ package com.team.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,6 +12,8 @@ import java.util.Map;
 
 import com.team.entity.Cart;
 import com.team.entity.Order;
+import com.team.entity.OrderProjection;
+import com.team.entity.ProductOption;
 import com.team.entity.User;
 import com.team.jwt.JwtUtil;
 import com.team.service.CartService;
@@ -23,6 +23,7 @@ import com.team.service.UserService;
 import com.team.vo.OrderVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -49,23 +50,89 @@ public class OrderController {
     @Autowired
     JwtUtil jwtUtil;
 
+    // @GetMapping(value="path")
+    // public String ird(HttpServletRequest request) {
+    // HttpSession session = request.getSession();
+    // String token =(String) session.getAttribute("token");
+    // return "sss";
+    // }
+
+    // // CartNum으로 Order Get하기
+    // @GetMapping(value = "/order")
+    // public Map<String, Object> userOrderListGet(@RequestBody Long[] num,
+    // @RequestHeader("token") String token) {
+    // Map<String, Object> map = new HashMap<>();
+    // try {
+    // String userid = jwtUtil.extractUsername(token);
+    // // List<OrderProjection> list = oService.selectOrderUser(userid);
+    // List<OrderProjection> list1 = new ArrayList<>();
+    // Map<String, Object> map1 = new HashMap<>();
+    // List<OrderVO> list2 = new ArrayList<>();
+    // for (int j = 0; j < num.length; j++) {
+    // Long no = num[j];
+    // Long code = cService.selectCartOne(no).getProductOption().getOptionCode();
+    // // OrderProjection order = oService.selectOrderForCartNo(no);
+    // // list1.add(order);
+    // map1.put("userid", userid);
+    // map1.put("optioncode", code);
+    // List<OrderVO> sum = oService.selectQueryUserOrder(map1);
+    // for (int i = 0; i < sum.size(); i++) {
+    // if (list2.contains(sum.get(i))) {
+    // } else {
+    // list2.add(sum.get(i));
+    // }
+    // }
+    // }
+    // // 물품 별 금액 총합이 아닌 그 프론트에 나타나는 금액의 총합값도 나오도록 해줄 것
+    // map.put("list", list1);
+    // map.put("sum", list2);
+    // for (int i = 0; i < list2.size(); i++) {
+    // Long optioncode = list2.get(i).getOptionCode();
+    // Long productcode =
+    // pOService.selectProductOptionOne(optioncode).getProduct().getProductCode();
+    // map.put("image" + i, "/ROOT/product/select_image?productCode=" +
+    // productcode);
+    // }
+    // map.put("status", 200);
+    // } catch (
+
+    // Exception e) {
+    // e.printStackTrace();
+    // map.put("status", e.hashCode());
+    // }
+    // return map;
+    // }
+
     @GetMapping(value = "/order")
-    public Map<String, Object> userOrderListGet(@RequestHeader("token") String token) {
+    public Map<String, Object> userOrderListGet(@RequestBody Long num, @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token);
-            Map<String, Object> map1 = new HashMap<>();
-            map1.put("userid", userid);
-            List<OrderVO> sum = oService.selectQueryUserOrder(map1);
-            map.put("status", 200);
-            // 물품 별 금액 총합이 아닌 그 프론트에 나타나는 금액의 총합값도 나오도록 해줄 것
-            map.put("list", oService.selectOrderUser(userid));
-            map.put("sum", sum);
-            for (int i = 0; i < sum.size(); i++) {
-                Long optioncode = sum.get(i).getOptionCode();
-                Long productcode = pOService.selectProductOptionOne(optioncode).getProduct().getProductCode();
-                map.put("image" + i, "/ROOT/product/select_image?productCode=" + productcode);
+            List<OrderProjection> list1 = oService.selectOrderForOrderCode(num);
+            List<OrderVO> list2 = new ArrayList<>();
+            for (int i = 0; i < list1.size(); i++) {
+                if (cService.selectCartOne(list1.get(i).getCart_CartNo()).getUser().getUserId().equals(userid)) {
+                    Long code = list1.get(i).getCart_ProductOption_OptionCode();
+                    Long productcode = pOService.selectProductOptionOne(code).getProduct().getProductCode();
+                    OrderVO orderVo = new OrderVO();
+                    OrderProjection porder = list1.get(i);
+                    orderVo.setOrderNo(porder.getOrderNo());
+                    orderVo.setOrderStatus(porder.getOrderState());
+                    orderVo.setOrderDate(porder.getOrderDate());
+                    orderVo.setImageurl("/ROOT/product/select_image?productCode=" + productcode);
+                    orderVo.setCartNo(porder.getCart_CartNo());
+                    orderVo.setOptionCode(porder.getCart_ProductOption_OptionCode());
+                    orderVo.setProductCode(porder.getCart_ProductOption_Product_ProductCode());
+                    orderVo.setProductTitle(porder.getCart_ProductOption_Product_ProductTitle());
+                    orderVo.setOptionName(porder.getCart_ProductOption_OptionName());
+                    orderVo.setOptionPrice(porder.getCart_ProductOption_OptionPrice());
+                    orderVo.setCartOptionCount(porder.getCart_CartOptionCount());
+                    list2.add(orderVo);
+                    map.put("list", list2);
+                    map.put("status", 200);
+                }
             }
+            // 물품 별 금액 총합이 아닌 그 프론트에 나타나는 금액의 총합값도 나오도록 해줄 것
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
@@ -94,24 +161,92 @@ public class OrderController {
         return map;
     }
 
+    // @PostMapping(value = "/order")
+    // public Map<String, Object> userOrderPost(@RequestBody Order[] order,
+    // @RequestHeader("token") String token) {
+    // Map<String, Object> map = new HashMap<>();
+    // try {
+    // String userid = jwtUtil.extractUsername(token);
+    // User user = uService.selectUserOne(userid);
+    // for (int i = 0; i < order.length; i++) {
+    // Long no = order[i].getCart().getCartNo();
+    // order[i].setCart(cService.selectCartOne(no));
+    // if (order[i].getCart().getUser().getUserId().equals(userid)) {
+    // Cart cart = cService.selectCartOne(no);
+    // int price = Math.toIntExact(cart.getProductOption().getOptionPrice() *
+    // cart.getCartOptionCount());
+    // System.out.println(cart.getCartOptionCount());
+    // user.setUserPoint((int) user.getUserPoint() + (int) (price * 0.01));
+    // oService.insertOrder(order[i]);
+    // map.put("status", 200);
+    // } else {
+    // map.put("status", "적합한 권한을 가지고 있지 않습니다");
+    // }
+    // }
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // map.put("status", e.hashCode());
+    // }
+    // return map;
+    // }
+
     @PostMapping(value = "/order")
-    public Map<String, Object> userOrderPost(@RequestBody Order[] order, @RequestHeader("token") String token) {
+    public Map<String, Object> userOrderPost(@RequestBody Long[] num, @RequestHeader("token") String token) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String userid = jwtUtil.extractUsername(token);
+            Long code = oService.nextCode();
+            for (int i = 0; i < num.length; i++) {
+                Long no = num[i];
+                Cart cart = cService.selectCartOne(no);
+                if (cart.getUser().getUserId().equals(userid) && oService.selectOrderForCartNo(no) == null) {
+                    Order order = new Order();
+                    order.setCart(cart);
+                    order.setOrderCode(code);
+                    oService.insertOrder(order);
+                    map.put("status", 200);
+                } else if (cart.getUser().getUserId().equals(userid)) {
+                    Order order1 = oService.selectOrderForCartNo(no);
+                    order1.setOrderCode(code);
+                    oService.insertOrder(order1);
+                    map.put("status", 200);
+                    map.put("orderCode", code);
+                } else {
+                    map.put("status", "적합한 권한을 가지고 있지 않습니다");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
+    @PostMapping(value = "/orderdir", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> insertCartOrder(@RequestBody Cart[] cart, @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token);
             User user = uService.selectUserOne(userid);
-            for (int i = 0; i < order.length; i++) {
-                Long no = order[i].getCart().getCartNo();
-                order[i].setCart(cService.selectCartOne(no));
-                if (order[i].getCart().getUser().getUserId().equals(userid)) {
-                    Cart cart = cService.selectCartOne(no);
-                    int price = Math.toIntExact(cart.getProductOption().getOptionPrice() * cart.getCartOptionCount());
-                    System.out.println(cart.getCartOptionCount());
-                    user.setUserPoint((int) user.getUserPoint() + (int) (price * 0.01));
-                    oService.insertOrder(order[i]);
+            List<Cart> list = new ArrayList<>();
+            Long ordercode = oService.nextCode();
+            for (int i = 0; i < cart.length; i++) {
+                if (cart[i] != null) {
+                    Long code = cart[i].getProductOption().getOptionCode();
+                    ProductOption productOption = pOService.selectProductOptionOne(code);
+                    cart[i].setCartStatus(1);
+                    cart[i].setUser(user);
+                    cart[i].setProductOption(productOption);
+                    cService.insertCart(cart[i]);
+                    list.add(cart[i]);
+                    Order order = new Order();
+                    order.setCart(list.get(i));
+                    order.setOrderCode(ordercode);
+                    oService.insertOrder(order);
                     map.put("status", 200);
+                    map.put("orderCode", ordercode);
                 } else {
-                    map.put("status", "적합한 권한을 가지고 있지 않습니다");
+                    map.put("status", "제품을 선택하지 않았습니다");
                 }
             }
         } catch (Exception e) {

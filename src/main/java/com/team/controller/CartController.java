@@ -20,6 +20,9 @@ import com.team.service.UserService;
 import com.team.vo.CartVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,6 +80,45 @@ public class CartController {
         return map;
     }
 
+    @GetMapping(value = "/cart/test", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> selectCarttest(@RequestHeader("token") String token,
+            @RequestParam(defaultValue = "1") int page) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String userid = jwtUtil.extractUsername(token);
+            int page1 = Math.max(page, 1);
+            PageRequest pageRequest = PageRequest.of(page1 - 1, 10);
+            List<CartVO> list1 = new ArrayList<>();
+            List<CartProjection> list = cService.selectAllUserCart(userid);
+            for (int i = 0; i < list.size(); i++) {
+                CartProjection cart = list.get(i);
+                Long number = cart.getProductOption_Product_ProductCode();
+                CartVO cart1 = new CartVO();
+                if (cart1.getCartStatus() == 0 || cart1.getCartStatus() == 1) {
+                    cart1.setCartNo(cart.getCartNo());
+                    cart1.setCartImgName("/ROOT/product/select_image?productCode=" + number);
+                    cart1.setCartOptionCount(cart.getCartOptionCount());
+                    cart1.setCartOptionPrice(cart.getProductOption_OptionPrice());
+                    cart1.setCartStatus(cart.getCartStatus());
+                    cart1.setCartCode(cart.getProductOption_Product_ProductCode());
+                    cart1.setCartName(cart.getProductOption_Product_ProductTitle());
+                    cart1.setCartOptionName(cart.getProductOption_OptionName());
+                    cart1.setUser(cart.getUser_UserId());
+                    list1.add(cart1);
+                }
+            }
+            final int start = (int) pageRequest.getOffset();
+            final int end = Math.min((start + pageRequest.getPageSize()), list1.size());
+            Page<CartVO> list2 = new PageImpl<>(list1.subList(start, end), pageRequest, list1.size());
+            map.put("status", 200);
+            map.put("list", list2);
+
+        } catch (Exception e) {
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
     @GetMapping(value = "/cart_one", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectCartOne(@RequestHeader("token") String token, @RequestParam("cartno") Long no) {
         Map<String, Object> map = new HashMap<>();
@@ -111,9 +153,9 @@ public class CartController {
                     cart[i].setUser(user);
                     cart[i].setProductOption(productOption);
                     cService.insertCart(cart[i]);
+                    map.put("status", 200);
                 }
             }
-            map.put("status", 200);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
@@ -146,9 +188,15 @@ public class CartController {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token);
+            OrderController orderController = new OrderController();
             for (int i = 0; i < no.length; i++) {
                 long num = no[i];
                 if (cService.selectCartProjectionOne(num).getUser_UserId().equals(userid)) {
+
+                    long orderno = orderController.oService.selectOrderForCartNo(num).getOrderNo();
+                    Long[] orderlist = new Long[1];
+                    orderlist[0] = orderno;
+                    orderController.orderDelete(token, orderlist);
                     cService.deleteCart(num);
                     map.put("status", 200);
                 } else {

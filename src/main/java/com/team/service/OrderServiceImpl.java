@@ -1,5 +1,7 @@
 package com.team.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -73,6 +75,35 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderVO> selectQueryUserOrder(Map<String, Object> map) {
 
         return sqlFactory.openSession().selectList("select_user_productoption_list", map);
+        // return sqlFactory.openSession().selectOne("select_user_productoption_list",
+        // map);
+    }
+
+    @Override
+    public Order selectOrderForCartNo(Long cartNo) {
+        return oRepository.findByCart_CartNo(cartNo);
+    }
+
+    @Override
+    public Long nextCode() {
+        Long seq = oRepository.getNextSeqVal();
+
+        String newseq = String.format("%08d", seq);
+
+        Date time = new Date();
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+
+        String today = format.format(time);
+
+        Long code = Long.parseLong(today + newseq);
+        return code;
+    }
+
+    @Override
+    public List<OrderProjection> selectOrderForOrderCode(Long orderCode) {
+
+        return oRepository.findByOrderCode(orderCode);
     }
 
 }
