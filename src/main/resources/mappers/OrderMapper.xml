@@ -4,7 +4,7 @@
 <mapper namespace="Order">
 
 
-    <resultMap type="com.team.vo.OrderVO" id="map1">
+    <!-- <resultMap type="com.team.vo.OrderVO" id="map1">
         <result column="OPTION_CODE" property="optionCode" />
         <result column="SUM(CART_QUANTITY)" property="cartOptionCount" />
         <result column="SUM(OPTION_PRICE * CART_QUANTITY)" property="optionPrice" />
@@ -21,6 +21,6 @@
         FIRST, PRODUCT_OPTION WHERE FIRST.OPTION_CODE = 
         PRODUCT_OPTION.OPTION_CODE)SECOND, PRODUCT WHERE SECOND.PRODUCT_CODE = 
         PRODUCT.PRODUCT_CODE)THR WHERE USER_ID = #{userid} AND THR.OPTION_CODE=#{optioncode} AND THR.ORDER_STATUS = 0 GROUP BY OPTION_CODE
-    </select>
+    </select> -->
 
 </mapper>

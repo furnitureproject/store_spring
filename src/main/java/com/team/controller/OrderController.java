@@ -208,6 +208,7 @@ public class OrderController {
                 } else if (cart.getUser().getUserId().equals(userid)) {
                     Order order1 = oService.selectOrderForCartNo(no);
                     order1.setOrderCode(code);
+                    order1.setOrderDate(new Date());
                     oService.insertOrder(order1);
                     map.put("status", 200);
                     map.put("orderCode", code);
