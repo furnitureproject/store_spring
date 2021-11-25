@@ -33,4 +33,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
         // 인기순 (판매량) -보류
 
+        // 총 개수
+        long countByseller_sellerId(String sellerid);
+
 }

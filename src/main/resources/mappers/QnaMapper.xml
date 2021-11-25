@@ -44,5 +44,34 @@
     WHERE ROWN BETWEEN #{page} AND #{page1};
     </select>
 
+    <!-- 판매자 id 별 qna 조회-->
+    <resultMap type="com.team.vo.QnAVO" id="map3">
+        <result column="QNA_NUM" property="qnaNum" />
+        <result column="QNA_TITLE" property="qnaTitle" />
+        <result column="QNA_CONTENT" property="qnaContent" />
+        <result column="QNA_REGDATE" property="qnaRegdateString" />
+        <result column="QNA_REPLY" property="qnaReply" />
+        <result column="QNA_REPLY_REGDATE" property="qnaReplyRegdateString" />
+        <result column="PRODUCT_CODE" property="productCode" />
+        <result column="SELLER_ID" property="sellerId" />
+        
+    </resultMap>
+
+    <select id="select_seller_id_qna_list" parameterType="map" resultMap="map3">
+    SELECT * FROM (
+        SELECT 
+            QNA_TITLE, QNA_CONTENT, QNA_REGDATE, QNA_REPLY, QNA_REPLY_REGDATE, SELLER_ID, PRODUCT_CODE,
+            ROW_NUMBER() OVER (ORDER BY SELLER_ID DESC) ROWN
+        FROM (
+    SELECT 
+        QNA_NUM, QNA_TITLE, QNA_CONTENT, QNA_REGDATE, QNA_REPLY, QNA_REPLY_REGDATE, SELLER_ID, PROQNA.PRODUCT_CODE
+    FROM (
+        SELECT QNA_NUM, QNA_TITLE, QNA_CONTENT, QNA_REGDATE, QNA_REPLY, QNA_REPLY_REGDATE, PRODUCT.PRODUCT_CODE
+        FROM PRODUCT, QnA_TB2 WHERE PRODUCT.PRODUCT_CODE = QnA_TB2.PRODUCT_CODE
+            )PROQNA, SELLER
+            )
+        WHERE SELLER_ID =#{userid}) 
+    WHERE ROWN BETWEEN #{page} AND #{page1};
+    </select>
 
 </mapper>

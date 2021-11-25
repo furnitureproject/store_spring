@@ -1,8 +1,12 @@
 package com.team.service;
 
 import java.util.List;
+import java.util.Map;
 
+import com.team.entity.Product;
 import com.team.entity.Seller;
+import com.team.vo.ProductVO;
+import com.team.vo.QnAVO;
 
 import org.springframework.stereotype.Service;
 
@@ -28,4 +32,17 @@ public interface SellerService {
     // 판매자 정보 삭제, 구현 X 사용 X, updateUser 사용할것
     // return 1
     public int deleteSeller(Seller seller);
+
+    // 판매자 별 제품 조회
+    public List<ProductVO> selectProductList(Map<String, Object> map);
+
+    // 제품 총 개수 조회(sellerid 기준)
+    long countBySelleridProduct(String id);
+
+    // 판매자 별 qna 조회
+    public List<QnAVO> selectQnaList(Map<String, Object> map);
+
+    // qna 총 개수 조회(sellerid 기준)
+    long countBySelleridQna(String id);
+
 }

@@ -72,6 +72,7 @@ public class QnaServiceImpl implements QnaService{
         return qRepository.countByProduct_ProductCode(code);
     }
 
+    //qna 총 개수 조회(유저id 기준)
     @Override
     public long countByUseridQna(String id) {
         return qRepository.countByUser_UserId(id);

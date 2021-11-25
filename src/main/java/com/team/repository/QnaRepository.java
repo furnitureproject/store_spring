@@ -21,4 +21,7 @@ public interface QnaRepository extends JpaRepository<QnA, Long>{
     //qna 총 개수 조회(userid 기준)
     Long countByUser_UserId(String id);
 
+    //qna 총 개수 조회(sellerid 기준)
+    Long countByProduct_Seller_SellerId(String id);
+
 }

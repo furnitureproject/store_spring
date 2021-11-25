@@ -27,4 +27,7 @@ public class QnAVO {
     private Date qnaReplyRegdate;
     private String qnaReplyRegdateString;
 
+    private Long productCode;
+
+    private String sellerId;
 }

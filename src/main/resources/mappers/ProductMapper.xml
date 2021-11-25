@@ -251,5 +251,28 @@
         SELECT PRODUCT.PRODUCT_CODE, PRODUCT.SELLER_ID FROM PRODUCT WHERE PRODUCT_CODE = #{productCode}
     </select>
 
+    <!-- 판매자 별 물품 조회 -->
+    <resultMap type="com.team.vo.ProductVO" id="map14">
+        <result column="PRODUCT_CODE" property="productCode" />
+        <result column="PRODUCT_TITLE" property="productTitle" />
+        <result column="PRODUCT_DESC" property="productDesc"/>
+        <result column="PRODUCT_HIT" property="productHit" />
+        <result column="CATE_CODE" property="categoryCode" />
+        <result column="OPTION_PRICE" property="optionPrice" />
+    </resultMap>
+
+    <select id="select_selleride_product_list" parameterType="map" resultMap="map14">
+        SELECT * FROM (
+            SELECT 
+                PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT, 
+                CATE_CODE, SELLER_ID,
+                ROW_NUMBER() OVER (ORDER BY SELLER_ID DESC) ROWN
+            FROM (
+                SELECT PRODUCT_TITLE, CATE_CODE, OPTION_PRICE, PRODUCT_IMG_TYPE, 
+                    PRODUCT.PRODUCT_CODE,  PRODUCT_DESC, PRODUCT_HIT, SELLER_ID
+                FROM PRODUCT, PRODUCT_OPTION WHERE PRODUCT.PRODUCT_CODE = PRODUCT_OPTION.PRODUCT_CODE) 
+            WHERE SELLER_ID =#{id}) 
+        WHERE ROWN BETWEEN #{page} AND #{page1};
+        </select>
 
 </mapper>
