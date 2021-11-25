@@ -95,7 +95,7 @@ public class ReviewController {
 
     @GetMapping(value = "/review/test", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectProductReviewtest(@RequestParam("productcode") Long productCode,
-            @RequestParam("page") int page) {
+            @RequestParam(defaultValue = "1") int page) {
         Map<String, Object> map = new HashMap<>();
         try {
             List<ReviewProjection> list = rService.selectReviewList(productCode);
@@ -139,18 +139,18 @@ public class ReviewController {
             Long productCode = review.getProduct().getProductCode();
             Product product = pService.selectProductOne(productCode);
             List<CartProjection> list = cService.selectAllUserCart(userid);
-            if (review.getReviewTitle() == null) {
-                // 리뷰 제목을 입력 안 함
-                map.put("status", "제목을 입력하지 않았습니다");
-            } else if (review.getReviewContent() == null) {
-                // 리뷰 내용을 입력하지 않음
-                map.put("status", "내용을 입력하지 않았습니다");
-            } else if (review.getReviewStar() == 0) {
-                // 리뷰 별점을 입력하지 않음
-                map.put("status", "별점을 입력하지 않았습니다");
-            }
+
             for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).getProductOption_Product_ProductCode().equals(productCode)
+                if (review.getReviewTitle() == null) {
+                    // 리뷰 제목을 입력 안 함
+                    map.put("status", "제목을 입력하지 않았습니다");
+                } else if (review.getReviewContent() == null) {
+                    // 리뷰 내용을 입력하지 않음
+                    map.put("status", "내용을 입력하지 않았습니다");
+                } else if (review.getReviewStar() == 0) {
+                    // 리뷰 별점을 입력하지 않음
+                    map.put("status", "별점을 입력하지 않았습니다");
+                } else if (list.get(i).getProductOption_Product_ProductCode().equals(productCode)
                         && list.get(i).getCartStatus() == 2 && user != null && product != null) {
                     review.setUser(user);
                     review.setProduct(product);
