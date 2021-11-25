@@ -24,6 +24,7 @@ public class ReviewVO {
     private int reviewStar;
 
     private Date reviewRegDate;
+    private String reviewRegDateString;
 
     private String reviewImage1;
 

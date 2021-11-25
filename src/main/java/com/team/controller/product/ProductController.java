@@ -466,12 +466,14 @@ public class ProductController {
             Category category = cService.selectCategory(categoryCode);
             product.setCategory(category);
             product.setProductCode(pService.codeNext());
+            System.out.println("----");
 
             product.setThumImgData(file.getBytes());
             product.setThumImgName(file.getOriginalFilename());
             product.setThumImgSize(file.getSize());
             product.setThumImgType(file.getContentType());
-            pService.insertProduct(product);
+            Product product1 = pService.insertProduct(product);
+            map.put("product", product1.getProductCode());
             map.put("status", 200);
         } catch (Exception e) {
             e.printStackTrace();

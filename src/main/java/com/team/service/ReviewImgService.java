@@ -24,4 +24,6 @@ public interface ReviewImgService {
     // 리뷰 코드에 따른 리뷰 삭제(TEST)
     public int deleteReviewImgList(Long reviewNum);
 
+    public Long countReviewNum(Long reviewNum);
+
 }

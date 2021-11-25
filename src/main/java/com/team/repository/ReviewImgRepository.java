@@ -12,4 +12,7 @@ public interface ReviewImgRepository extends JpaRepository<ReviewImg, Long> {
     List<ReviewImgProjection> findByReview_ReviewNum(Long reviewNum);
 
     void deleteByReview_ReviewNum(Long reviewNum);
+
+    Long countByReview_ReviewNum(Long reviewNum);
+
 }

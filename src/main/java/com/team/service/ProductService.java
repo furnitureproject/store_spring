@@ -15,7 +15,7 @@ public interface ProductService {
 
     // 입력받은 제품 정보를 DB에 저장
     // return 1
-    public int insertProduct(Product product);
+    public Product insertProduct(Product product);
 
     // 제품 정보 수정
     // return 1

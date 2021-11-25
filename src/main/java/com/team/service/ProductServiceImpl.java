@@ -27,11 +27,8 @@ public class ProductServiceImpl implements ProductService {
     SqlSessionFactory sqlFactory;
 
     @Override
-    public int insertProduct(Product product) {
-
-        pRepository.save(product);
-
-        return 1;
+    public Product insertProduct(Product product) {
+        return pRepository.save(product);
     }
 
     @Override
