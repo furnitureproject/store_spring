@@ -112,9 +112,19 @@ public class ReviewController {
                 reviewVO.setReviewRegDate(review.getReviewRegDate());
                 reviewVO.setReviewStar(review.getReviewStar());
                 reviewVO.setUser(review.getUser_UserId());
-                reviewVO.setReviewImage1("/ROOT/reviewimage?reviewnum=" + number + "&idx=0");
-                reviewVO.setReviewImage2("/ROOT/reviewimage?reviewnum=" + number + "&idx=1");
-                reviewVO.setReviewImage3("/ROOT/reviewimage?reviewnum=" + number + "&idx=2");
+                Long count = rIService.countReviewNum(review.getReviewNum());
+                System.out.println(count);
+                if (count == 3) {
+                    reviewVO.setReviewImage1("/ROOT/reviewimage?reviewnum=" + number + "&idx=0");
+                    reviewVO.setReviewImage2("/ROOT/reviewimage?reviewnum=" + number + "&idx=1");
+                    reviewVO.setReviewImage3("/ROOT/reviewimage?reviewnum=" + number + "&idx=2");
+                } else if (count == 2) {
+                    reviewVO.setReviewImage1("/ROOT/reviewimage?reviewnum=" + number + "&idx=0");
+                    reviewVO.setReviewImage2("/ROOT/reviewimage?reviewnum=" + number + "&idx=1");
+                } else if (count == 1) {
+                    reviewVO.setReviewImage1("/ROOT/reviewimage?reviewnum=" + number + "&idx=0");
+                }
+                
                 list1.add(reviewVO);
             }
             final int start = (int) pageRequest.getOffset();

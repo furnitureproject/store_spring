@@ -48,7 +48,7 @@ public class ReviewImgServiceImpl implements ReviewImgService {
 
     @Override
     public Long countReviewNum(Long reviewNum) {
-        return rIRepository.countByReview_ReviewNum(reviewNum);
+        return rIRepository.countReviewImg(reviewNum);
     }
 
 }
