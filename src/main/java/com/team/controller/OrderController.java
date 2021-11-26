@@ -105,32 +105,35 @@ public class OrderController {
     // }
 
     @GetMapping(value = "/order")
-    public Map<String, Object> userOrderListGet(@RequestBody Long num, @RequestHeader("token") String token) {
+    public Map<String, Object> userOrderListGet(@RequestBody Long[] num, @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token);
-            List<OrderProjection> list1 = oService.selectOrderForOrderCode(num);
-            List<OrderVO> list2 = new ArrayList<>();
-            for (int i = 0; i < list1.size(); i++) {
-                if (cService.selectCartOne(list1.get(i).getCart_CartNo()).getUser().getUserId().equals(userid)) {
-                    Long code = list1.get(i).getCart_ProductOption_OptionCode();
-                    Long productcode = pOService.selectProductOptionOne(code).getProduct().getProductCode();
-                    OrderVO orderVo = new OrderVO();
-                    OrderProjection porder = list1.get(i);
-                    orderVo.setOrderNo(porder.getOrderNo());
-                    orderVo.setOrderStatus(porder.getOrderState());
-                    orderVo.setOrderDate(porder.getOrderDate());
-                    orderVo.setImageurl("/ROOT/product/select_image?productCode=" + productcode);
-                    orderVo.setCartNo(porder.getCart_CartNo());
-                    orderVo.setOptionCode(porder.getCart_ProductOption_OptionCode());
-                    orderVo.setProductCode(porder.getCart_ProductOption_Product_ProductCode());
-                    orderVo.setProductTitle(porder.getCart_ProductOption_Product_ProductTitle());
-                    orderVo.setOptionName(porder.getCart_ProductOption_OptionName());
-                    orderVo.setOptionPrice(porder.getCart_ProductOption_OptionPrice());
-                    orderVo.setCartOptionCount(porder.getCart_CartOptionCount());
-                    list2.add(orderVo);
-                    map.put("list", list2);
-                    map.put("status", Status.COMPLETE.getCode());
+            for (int j = 0; j < num.length; j++) {
+                Long no = num[j];
+                List<OrderProjection> list1 = oService.selectOrderForOrderCode(no);
+                List<OrderVO> list2 = new ArrayList<>();
+                for (int i = 0; i < list1.size(); i++) {
+                    if (cService.selectCartOne(list1.get(i).getCart_CartNo()).getUser().getUserId().equals(userid)) {
+                        Long code = list1.get(i).getCart_ProductOption_OptionCode();
+                        Long productcode = pOService.selectProductOptionOne(code).getProduct().getProductCode();
+                        OrderVO orderVo = new OrderVO();
+                        OrderProjection porder = list1.get(i);
+                        orderVo.setOrderNo(porder.getOrderNo());
+                        orderVo.setOrderStatus(porder.getOrderState());
+                        orderVo.setOrderDate(porder.getOrderDate());
+                        orderVo.setImageurl("/ROOT/product/select_image?productCode=" + productcode);
+                        orderVo.setCartNo(porder.getCart_CartNo());
+                        orderVo.setOptionCode(porder.getCart_ProductOption_OptionCode());
+                        orderVo.setProductCode(porder.getCart_ProductOption_Product_ProductCode());
+                        orderVo.setProductTitle(porder.getCart_ProductOption_Product_ProductTitle());
+                        orderVo.setOptionName(porder.getCart_ProductOption_OptionName());
+                        orderVo.setOptionPrice(porder.getCart_ProductOption_OptionPrice());
+                        orderVo.setCartOptionCount(porder.getCart_CartOptionCount());
+                        list2.add(orderVo);
+                        map.put("list", list2);
+                        map.put("status", Status.COMPLETE.getCode());
+                    }
                 }
             }
             // 물품 별 금액 총합이 아닌 그 프론트에 나타나는 금액의 총합값도 나오도록 해줄 것
