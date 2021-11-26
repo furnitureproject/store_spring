@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Delivery">
+
+    <!-- 판매자 별 qna 조회 -->
+    <!-- <resultMap type="com.team.vo.QnAVO" id="map1">
+        <result column="QNA_NUM" property="qnaNum" />
+        <result column="QNA_TITLE" property="qnaTitle" />
+        <result column="QNA_CONTENT" property="qnaContent" />
+        <result column="QNA_REGDATE" property="qnaRegdateString" />
+        <result column="QNA_REPLY" property="qnaReply" />
+        <result column="QNA_REPLY_REGDATE" property="qnaReplyRegdateString" />
+        
+    </resultMap>
+    
+    <select id="select_product_code_qna_list" parameterType="map" resultMap="map1">
+    SELECT * FROM (
+            SELECT 
+                ORDER_DATE,  ORDER_CODE, DELIVERY_NO, DELIVERY_CODE,  USER_ADDRESS, USER_NAME, PRODUCT_TITLE, PRODUCT_CODE,
+                ROW_NUMBER() OVER (ORDER BY SELLER DESC) ROWN
+            FROM (
+		        SELECT ORDER_DATE,  ORDER_CODE, DELIVERY_NO, DELIVERY_CODE,  USER_ADDRESS, USER_NAME, SELLER, PRODUCT_TITLE, PRODUCT_CODE
+                FROM CART_OPTION_PRODUCT, ORDER_DELIVERY_USERADD_USER WHERE CART_OPTION_PRODUCT.CART_NO = ORDER_DELIVERY_USERADD_USER.CART_NO
+		) WHERE SELLER =#{id}) 
+        WHERE ROWN BETWEEN #{page} AND #{page1};
+    </select> -->
+
+    <!--
+        CART, PRODUCT OPTION, PRODUCT 조인문 VIEW 생성
+        CREATE VIEW CART_OPTION_PRODUCT AS
+        SELECT CARTPRO.PRODUCT_CODE, CART_NO ,PRODUCT_TITLE FROM(
+            SELECT PRODUCT_OPTION.OPTION_CODE, PRODUCT_CODE, CART_NO FROM CART, PRODUCT_OPTION WHERE CART.OPTION_CODE = PRODUCT_OPTION.OPTION_CODE
+        )CARTPRO, PRODUCT WHERE CARTPRO.PRODUCT_CODE = PRODUCT.PRODUCT_CODE;
+    -->
+    <!--
+        ORDER, DELIVERY, USERADDRESS 조인문 VIEW 생성
+        CREATE VIEW ORDER_DELIVERY_USERADD_USER AS
+        SELECT ORDER_DATE, ORDER_CODE, DELIVERY_NO, DELIVERY_CODE, USER_ADDRESS, SELLER, USER_NAME, CART_NO
+        FROM(
+	        SELECT * FROM(
+		        SELECT 
+			        ORDER_DATE, ORDER_CODE, DELIVERY_NO, DELIVERY_CODE, USER_ADDRESS, SELLER, CART_NO
+		        FROM ORDER_TB, DELIVERY WHERE ORDER_TB.ORDER_NO = DELIVERY.ORDER_NO
+		) ORDE, USER_ADDRESS
+	WHERE ORDE.USER_ADDRESS = USER_ADDRESS.ADDRESS_NO)ORDEADD, USER_TB WHERE ORDEADD.USER_ID = USER_TB .USER_ID;
+    -->
+
+</mapper>

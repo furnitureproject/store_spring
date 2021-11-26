@@ -81,20 +81,17 @@ public class DeliveryController {
                 Long ono = delivery[i].getOrder().getOrderNo(); //orderNo 불러오기
                 String id = oService.selectOrderOne(ono).getCart().getProductOption().getProduct().getSeller().getSellerId();   //sellerid 불러오기
                 delivery[i].setUserAddress(userAddressService.selectUserAddressOne(no));
-                
                 if(delivery[i].getUserAddress().getUser().getUserId().equals(userid)){
                 //seller 정보 set
-                sService.selectSellerOne(id);
                 delivery[i].setSeller(sService.selectSellerOne(id));
                 //일괄 추가
-                Delivery del = dService.insertDelivery2(delivery[i]);
-                
+                dService.insertDelivery(delivery[i]);
                 map.put("result", 1L);
-                map.put("result1", del);
                 }
                 else{
                     map.put("result", 0L);
                 }
+                
                 //주문이 성공했을 때
                 if(delivery[i].getDeliveryNo() != null){
                     //System.out.println(ono);

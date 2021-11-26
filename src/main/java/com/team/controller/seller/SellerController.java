@@ -73,10 +73,10 @@ public class SellerController {
     }
     
     // 판매자 계정 생성
+    // 127.0.0.1:8080/ROOT/seller/insert
     @RequestMapping(value="/insert", method=RequestMethod.POST,
     consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> registSellerPost(@RequestBody Seller seller) {
-
         Map<String, Object> map = new HashMap<>();
         try{
             BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
@@ -88,7 +88,6 @@ public class SellerController {
             e.printStackTrace();
             map.put("400", e.hashCode());
         }
-
         return map;
     }
 
@@ -120,10 +119,12 @@ public class SellerController {
     // 판매자정보 수정
     @RequestMapping(value = "/update", method = RequestMethod.PUT,
     consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> postSellerInfo(@RequestBody Seller seller){
+    public Map<String, Object> postSellerInfo(@RequestBody Seller seller,
+        @RequestHeader("token") String token){
         Map<String, Object> map = new HashMap<>();
         try{
-            Seller oldSeller = sservice.selectSellerOne(seller.getSellerId());
+            String sellerid = jwtUtil.extractUsername(token); // token을 통해 판매자 정보 찾기
+            Seller oldSeller = sservice.selectSellerOne(sellerid);
             // if(seller.getSellerEmail() != null){
             //     oldSeller.setSellerEmail(seller.getSellerEmail());            
             // }
@@ -194,7 +195,7 @@ public class SellerController {
     @RequestParam(value = "page", defaultValue = "1")int page) {
         Map<String, Object> map = new HashMap<>();
         try {
-            String sellerid = jwtUtil.extractUsername(token); // token을 통해 회원정보 찾기
+            String sellerid = jwtUtil.extractUsername(token); // token을 통해 판매자 정보 찾기
             long cnt = sservice.countBySelleridProduct(sellerid); //sellerid 별 제품 갯수
             Map<String, Object> map1 = new HashMap<>();
             int rpage1 = page * PAGECNT;
@@ -230,12 +231,11 @@ public class SellerController {
     @RequestParam(value = "page", defaultValue = "1")int page) {
         Map<String, Object> map = new HashMap<>();
         try {
-            String sellerid = jwtUtil.extractUsername(token); // token을 통해 회원정보 찾기
+            String sellerid = jwtUtil.extractUsername(token); // token을 통해 판매자 정보 찾기
             long cnt = sservice.countBySelleridQna(sellerid); //sellerid 별 qna 갯수
             Map<String, Object> map1 = new HashMap<>();
             int rpage1 = page * PAGECNT;
             int rpage = rpage1 - (PAGECNT - 1);
-            
             map1.put("page", rpage);
             map1.put("page1", rpage1);
             map1.put("id", sellerid);
