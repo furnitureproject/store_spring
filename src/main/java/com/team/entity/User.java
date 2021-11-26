@@ -55,4 +55,7 @@ public class User {
 
     @Column(name = "USER_DELETE_CHECK")
     private int userDeletecheck = 0;
+
+    @Column(name = "USER_PWCHANGE_CHECK")
+    private int pwChangeCheck = 0;
 }

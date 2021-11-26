@@ -256,6 +256,10 @@ public class UserController {
                 String jsp = templateEngine.process(mail, context);
                 helper.setText(jsp, true);
                 javaMailSender.send(message);
+                // USER PWCHANGECHECK 변경
+                User user1 = uService.selectUserOne(userid);
+                user1.setPwChangeCheck(1);
+                uService.updateUser(user1);
                 map.put("status", Status.COMPLETE.getCode());
             } else {
                 map.put("status", "잘못된 이메일입니다");

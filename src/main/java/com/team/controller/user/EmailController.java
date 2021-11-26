@@ -38,9 +38,10 @@ public class EmailController {
         UserProjection user1 = uService.selectUserByEmail(decordemail);
         String userid = user1.getuserId();
         User user2 = uService.selectUserOne(userid);
-        if (user.getUserPw().length() > 8) {
+        if (user2.getPwChangeCheck() == 1 && user.getUserPw().length() > 1) {
             BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
             user2.setUserPw(bcpe.encode(user.getUserPw()));
+            user2.setPwChangeCheck(0);
             uService.updateUser(user2);
             redirect.addAttribute("msg", "비밀번호 변경 성공");
             redirect.addAttribute("url", "../");
