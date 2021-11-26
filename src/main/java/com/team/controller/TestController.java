@@ -7,13 +7,17 @@ import java.util.Map;
 
 import com.team.entity.Category;
 import com.team.entity.Product;
+import com.team.entity.ProductEvent;
+import com.team.entity.QnA;
 import com.team.entity.Seller;
 import com.team.entity.User;
 import com.team.entity.UserAddress;
 import com.team.jwt.JwtSellerUtil;
 import com.team.jwt.JwtUtil;
 import com.team.service.CategoryService;
+import com.team.service.ProductEventService;
 import com.team.service.ProductService;
+import com.team.service.QnaService;
 import com.team.service.SecurityUserDetailServiceimpl;
 import com.team.service.SellerService;
 import com.team.service.UserService;
@@ -56,13 +60,17 @@ public class TestController {
     @Autowired
     CategoryService cService;
 
+    @Autowired
+    ProductEventService pEventService;
+
 
     @PostMapping(value = "/eee", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> userinsertTest(@RequestBody Object obj) {
+    public Map<String, Object> userinsertTest(@RequestBody ProductEvent productEvent) {
         Map<String, Object> map = new HashMap<>();
         try {
-            System.out.println(obj.toString());
-            map.put("status", obj);
+            int a = pEventService.insertProductEvent(productEvent);
+            System.out.println(productEvent.toString());
+            map.put("status", a);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
