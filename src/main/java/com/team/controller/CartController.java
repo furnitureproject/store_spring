@@ -16,6 +16,7 @@ import com.team.enums.OrderStatus;
 import com.team.enums.Status;
 import com.team.jwt.JwtUtil;
 import com.team.service.CartService;
+import com.team.service.OrderService;
 import com.team.service.ProductOptionService;
 import com.team.service.UserService;
 import com.team.vo.CartVO;
@@ -47,6 +48,9 @@ public class CartController {
 
     @Autowired
     UserService uService;
+
+    @Autowired
+    OrderService oService;
 
     @GetMapping(value = "/cart", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectCart(@RequestHeader("token") String token) {
@@ -189,19 +193,19 @@ public class CartController {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token);
-            OrderController orderController = new OrderController();
             for (int i = 0; i < no.length; i++) {
                 long num = no[i];
                 if (cService.selectCartProjectionOne(num).getUser_UserId().equals(userid)) {
-
-                    long orderno = orderController.oService.selectOrderForCartNo(num).getOrderNo();
-                    Long[] orderlist = new Long[1];
-                    orderlist[0] = orderno;
-                    orderController.orderDelete(token, orderlist);
+                    if (oService.selectOrderForCartNo(num) != null) {
+                        long orderno = oService.selectOrderForCartNo(num).getOrderNo();
+                        Long[] orderlist = new Long[1];
+                        orderlist[0] = orderno;
+                        oService.deleteOrder(orderno);
+                    }
                     cService.deleteCart(num);
                     map.put("status", Status.COMPLETE.getCode());
                 } else {
-                    map.put("status", "적합한 권한을 가지고 있지 않습니다");
+                    map.put("status", Status.ERROR.getStatus());
                 }
             }
         } catch (Exception e) {
