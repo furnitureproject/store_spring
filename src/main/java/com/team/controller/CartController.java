@@ -13,6 +13,7 @@ import com.team.entity.CartProjection;
 import com.team.entity.ProductOption;
 import com.team.entity.User;
 import com.team.enums.OrderStatus;
+import com.team.enums.Status;
 import com.team.jwt.JwtUtil;
 import com.team.service.CartService;
 import com.team.service.ProductOptionService;
@@ -71,7 +72,7 @@ public class CartController {
                     list1.add(cart1);
                 }
             }
-            map.put("status", 200);
+            map.put("status", Status.COMPLETE.getCode());
             map.put("list", list1);
 
         } catch (Exception e) {
@@ -110,7 +111,7 @@ public class CartController {
             final int start = (int) pageRequest.getOffset();
             final int end = Math.min((start + pageRequest.getPageSize()), list1.size());
             Page<CartVO> list2 = new PageImpl<>(list1.subList(start, end), pageRequest, list1.size());
-            map.put("status", 200);
+            map.put("status", Status.COMPLETE.getCode());
             map.put("list", list2);
 
         } catch (Exception e) {
@@ -131,7 +132,7 @@ public class CartController {
                 map.put("cart", cart);
                 map.put("image", "/ROOT/product/select_image?productCode=" + no1);
             } else {
-                map.put("status", "적합한 권한을 가지고 있지 않습니다");
+                map.put("status", Status.ERROR.getStatus());
             }
 
         } catch (Exception e) {
@@ -153,7 +154,7 @@ public class CartController {
                     cart[i].setUser(user);
                     cart[i].setProductOption(productOption);
                     cService.insertCart(cart[i]);
-                    map.put("status", 200);
+                    map.put("status", Status.COMPLETE.getCode());
                 }
             }
         } catch (Exception e) {
@@ -173,9 +174,9 @@ public class CartController {
                 cart1.setCartOptionCount(cart.getCartOptionCount());
                 // cart1.setProductOption(pOService.selectProductOptionOne(code));
                 cService.updateCart(cart1);
-                map.put("status", 200);
+                map.put("status", Status.COMPLETE.getCode());
             } else {
-                map.put("status", "적합한 권한을 가지고 있지 않습니다");
+                map.put("status", Status.ERROR.getStatus());
             }
         } catch (Exception e) {
             map.put("status", e.hashCode());
@@ -198,7 +199,7 @@ public class CartController {
                     orderlist[0] = orderno;
                     orderController.orderDelete(token, orderlist);
                     cService.deleteCart(num);
-                    map.put("status", 200);
+                    map.put("status", Status.COMPLETE.getCode());
                 } else {
                     map.put("status", "적합한 권한을 가지고 있지 않습니다");
                 }

@@ -15,6 +15,7 @@ import com.team.entity.Order;
 import com.team.entity.OrderProjection;
 import com.team.entity.ProductOption;
 import com.team.entity.User;
+import com.team.enums.Status;
 import com.team.jwt.JwtUtil;
 import com.team.service.CartService;
 import com.team.service.OrderService;
@@ -129,7 +130,7 @@ public class OrderController {
                     orderVo.setCartOptionCount(porder.getCart_CartOptionCount());
                     list2.add(orderVo);
                     map.put("list", list2);
-                    map.put("status", 200);
+                    map.put("status", Status.COMPLETE.getCode());
                 }
             }
             // 물품 별 금액 총합이 아닌 그 프론트에 나타나는 금액의 총합값도 나오도록 해줄 것
@@ -148,11 +149,11 @@ public class OrderController {
             User user = uService.selectUserOne(userid);
             Long proimg = oService.selectOrderOne(no).getCart().getProductOption().getProduct().getProductCode();
             if (oService.selectOrderOne(no).getCart().getUser().equals(user)) {
-                map.put("status", 200);
+                map.put("status", Status.COMPLETE.getCode());
                 map.put("order", oService.selectOrderProjectionOne(no));
                 map.put("image", "/ROOT/product/select_image?productCode=" + proimg);
             } else {
-                map.put("status", "적합한 권한을 가지고 있지 않습니다");
+                map.put("status", Status.ERROR.getStatus());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -204,16 +205,17 @@ public class OrderController {
                     order.setCart(cart);
                     order.setOrderCode(code);
                     oService.insertOrder(order);
-                    map.put("status", 200);
+                    map.put("status", Status.COMPLETE.getCode());
+                    map.put("orderCode", code);
                 } else if (cart.getUser().getUserId().equals(userid)) {
                     Order order1 = oService.selectOrderForCartNo(no);
                     order1.setOrderCode(code);
                     order1.setOrderDate(new Date());
                     oService.insertOrder(order1);
-                    map.put("status", 200);
+                    map.put("status", Status.COMPLETE.getCode());
                     map.put("orderCode", code);
                 } else {
-                    map.put("status", "적합한 권한을 가지고 있지 않습니다");
+                    map.put("status", Status.ERROR.getStatus());
                 }
             }
         } catch (Exception e) {
@@ -244,7 +246,7 @@ public class OrderController {
                     order.setCart(list.get(i));
                     order.setOrderCode(ordercode);
                     oService.insertOrder(order);
-                    map.put("status", 200);
+                    map.put("status", Status.COMPLETE.getCode());
                     map.put("orderCode", ordercode);
                 } else {
                     map.put("status", "제품을 선택하지 않았습니다");
@@ -265,9 +267,9 @@ public class OrderController {
             Order order1 = oService.selectOrderOne(order.getOrderNo());
             if (order1.getCart().getUser().getUserId().equals(userid)) {
                 oService.updateOrder(order);
-                map.put("status", 200);
+                map.put("status", Status.COMPLETE.getCode());
             } else {
-                map.put("status", "적합한 권한을 가지고 있지 않습니다");
+                map.put("status", Status.ERROR.getStatus());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -293,7 +295,7 @@ public class OrderController {
                     oService.deleteOrder(no[i]);
                 }
             }
-            map.put("status", 200);
+            map.put("status", Status.COMPLETE.getCode());
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
@@ -327,7 +329,7 @@ public class OrderController {
                     }
                     System.out.println(sum);
                     map.put(year2 + "년" + month2 + "월 판매액", sum);
-                    map.put("status", 200);
+                    map.put("status", Status.COMPLETE.getCode());
                 }
             }
         } catch (Exception e) {
@@ -365,7 +367,7 @@ public class OrderController {
                         }
                         System.out.println(sum);
                         map.put(year2 + "년" + month2 + "월 판매액", sum);
-                        map.put("status", 200);
+                        map.put("status", Status.COMPLETE.getCode());
                     }
                 }
             }

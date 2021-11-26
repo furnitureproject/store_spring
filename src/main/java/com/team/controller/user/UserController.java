@@ -7,6 +7,7 @@ import javax.mail.internet.MimeMessage;
 
 import com.team.aes.AesCording;
 import com.team.entity.User;
+import com.team.enums.Status;
 import com.team.jwt.JwtUtil;
 import com.team.service.UserService;
 
@@ -56,7 +57,7 @@ public class UserController {
     @GetMapping(value = "/join")
     public Map<String, Object> joinUserGET() {
         Map<String, Object> map = new HashMap<>();
-        map.put("status", 200);
+        map.put("status", Status.COMPLETE.getCode());
         return map;
     }
 
@@ -81,7 +82,7 @@ public class UserController {
                 user.setUserPhone(phone);
 
                 uService.insertUser(user);
-                map.put("status", 200);
+                map.put("status", Status.COMPLETE.getCode());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,7 +95,7 @@ public class UserController {
     @GetMapping(value = "/unknownid")
     public Map<String, Object> selectUserGET() {
         Map<String, Object> map = new HashMap<>();
-        map.put("status", 200);
+        map.put("status", Status.COMPLETE.getCode());
         return map;
     }
 
@@ -107,14 +108,14 @@ public class UserController {
             // String phone1 = phone.toString().replaceAll("-", "");
             if (uService.selectUserByEmail(email).getuserName().equals(name) && phone == null) {
                 String userid = uService.selectUserByEmail(email).getuserId();
-                map.put("status", 200);
+                map.put("status", Status.COMPLETE.getCode());
                 map.put("userid", userid);
             } else if (uService.selectUserByPhone(phone).getuserName().equals(name) && email == null) {
                 String userid = uService.selectUserByPhone(phone).getuserId();
-                map.put("status", 200);
+                map.put("status", Status.COMPLETE.getCode());
                 map.put("userid", userid);
             } else {
-                map.put("status", "잘못된 요청입니다.");
+                map.put("status", Status.ERROR.getStatus());
             }
             map.put("status", 200);
 
@@ -142,9 +143,9 @@ public class UserController {
             User user = uService.selectUserOne(userid);
             if (uService.selectUserOne(user.getUserId()) != null) {
                 uService.deleteUser(user);
-                map.put("status", 200);
+                map.put("status", Status.COMPLETE.getCode());
             } else {
-                map.put("status", "존재하지 않는 유저입니다");
+                map.put("status", Status.UNUSER.getStatus());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -170,7 +171,7 @@ public class UserController {
                 user1.setUserPhone(user.getUserPhone());
                 user1.setUserEmail(user.getUserEmail());
                 uService.updateUser(user1);
-                map.put("status", 200);
+                map.put("status", Status.COMPLETE.getCode());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -210,11 +211,11 @@ public class UserController {
                     BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
                     user1.setUserPw(bcpe.encode(user.getUserPw()));
                     uService.updateUser(user1);
-                    map.put("status", 200);
+                    map.put("status", Status.COMPLETE.getCode());
                 }
             } else {
                 // User가 서로 같지 않을 경우 오류 반환
-                map.put("status", "적합한 권한을 가지고 있지 않습니다");
+                map.put("status", Status.ERROR.getStatus());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -255,7 +256,7 @@ public class UserController {
                 String jsp = templateEngine.process(mail, context);
                 helper.setText(jsp, true);
                 javaMailSender.send(message);
-                map.put("status", 200);
+                map.put("status", Status.COMPLETE.getCode());
             } else {
                 map.put("status", "잘못된 이메일입니다");
             }
@@ -274,7 +275,7 @@ public class UserController {
         try {
             User user1 = uService.selectUserOne(user.getUserId());
             if (user1.getUserPw().equals(user.getUserPw())) {
-                map.put("status", 200);
+                map.put("status", Status.COMPLETE.getCode());
             } else {
                 // 비밀번호가 틀릴 경우 오류 반환
                 map.put("status", "비밀번호가 틀렸습니다");

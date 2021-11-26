@@ -7,6 +7,7 @@ import com.team.entity.User;
 import com.team.entity.UserAddress;
 import com.team.entity.UserAddressProjection;
 import com.team.enums.OrderStatus;
+import com.team.enums.Status;
 import com.team.jwt.JwtUtil;
 import com.team.service.UserAddressService;
 import com.team.service.UserService;
@@ -61,7 +62,7 @@ public class UserAddressController {
             User user = uService.selectUserOne(userid);
             String id = user.getUserId();
 
-            map.put("status", 200);
+            map.put("status", Status.COMPLETE.getCode());
             map.put("list", uaService.selectOneUserAddressList(id));
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,11 +78,11 @@ public class UserAddressController {
         try {
             String userid = jwtUtil.extractUsername(token);
             if (uaService.selectUserAddressOne(no).getUser().getUserId().equals(userid)) {
-                map.put("status", 200);
+                map.put("status", Status.COMPLETE.getCode());
                 map.put("obj", uaService.selectUserAddressOneProjection(no));
             } else {
                 // address를 넣은 User와 같은 유저가 아닐 경우 오류 반환
-                map.put("status", "적합한 권한을 가지고 있지 않습니다");
+                map.put("status", Status.ERROR.getStatus());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,10 +99,10 @@ public class UserAddressController {
             String userid = jwtUtil.extractUsername(token);
             if (address.getUser().getUserId().equals(userid)) {
                 uaService.updateUserAddress(address);
-                map.put("status", 200);
+                map.put("status", Status.COMPLETE.getCode());
             } else {
                 // address를 넣은 User와 같은 유저가 아닐 경우 오류 반환
-                map.put("status", "적합한 권한을 가지고 있지 않습니다");
+                map.put("status", Status.ERROR.getStatus());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -118,10 +119,10 @@ public class UserAddressController {
             String userid = jwtUtil.extractUsername(token);
             if (uaService.selectOneUserAddressList(userid).contains(address)) {
                 uaService.deleteUserAddress(adno);
-                map.put("status", 200);
+                map.put("status", Status.COMPLETE.getCode());
             } else {
                 // address를 넣은 User와 같은 유저가 아닐 경우 오류 반환
-                map.put("status", "적합한 권한을 가지고 있지 않습니다");
+                map.put("status", Status.ERROR.getStatus());
             }
         } catch (Exception e) {
             e.printStackTrace();

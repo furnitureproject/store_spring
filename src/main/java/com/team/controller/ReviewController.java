@@ -17,6 +17,7 @@ import com.team.entity.ReviewImg;
 import com.team.entity.ReviewImgProjection;
 import com.team.entity.ReviewProjection;
 import com.team.entity.User;
+import com.team.enums.Status;
 import com.team.jwt.JwtUtil;
 import com.team.service.CartService;
 import com.team.service.ProductService;
@@ -86,7 +87,7 @@ public class ReviewController {
                 reviewVO.setReviewImage3("/ROOT/reviewimage?reviewnum=" + number + "&idx=2");
                 list1.add(reviewVO);
             }
-            map.put("status", 200);
+            map.put("status", Status.COMPLETE.getCode());
             map.put("list", list1);
         } catch (Exception e) {
             map.put("status", e.hashCode());
@@ -138,7 +139,7 @@ public class ReviewController {
             final int start = (int) pageRequest.getOffset();
             final int end = Math.min((start + pageRequest.getPageSize()), list1.size());
             Page<ReviewVO> list2 = new PageImpl<>(list1.subList(start, end), pageRequest, list1.size());
-            map.put("status", 200);
+            map.put("status", Status.COMPLETE.getCode());
             map.put("list", list2);
         } catch (Exception e) {
             e.printStackTrace();
@@ -173,7 +174,7 @@ public class ReviewController {
                     review.setUser(user);
                     review.setProduct(product);
                     rService.insertReview(review);
-                    map.put("status", 200);
+                    map.put("status", Status.COMPLETE.getCode());
                     break;
                 } else {
                     // 유저가 없거나 제품이 없을 경우 오류로 반환
@@ -200,10 +201,10 @@ public class ReviewController {
                     rIService.deleteReviewImg(rINum);
                 }
                 rService.deleteReview(reviewNum);
-                map.put("status", 200);
+                map.put("status", Status.COMPLETE.getCode());
             } else {
                 // review를 작성한 유저와 delete하려는 user가 다를 때 반환
-                map.put("status", "적합한 권한을 가지고 있지 않습니다");
+                map.put("status", Status.ERROR.getStatus());
             }
         } catch (Exception e) {
             map.put("status", e.hashCode());
@@ -231,14 +232,14 @@ public class ReviewController {
                         list.add(reviewImg);
                     }
                     rIService.insertReviewImg(list);
-                    map.put("status", 200);
+                    map.put("status", Status.COMPLETE.getCode());
                 } else {
                     // 이미지가 3개를 넘을 경우
                     map.put("status", "이미지 숫자를 초과하였습니다");
                 }
             } else {
                 // 리뷰한 아이디와 이미지 넣는 아이디가 다를 경우
-                map.put("status", "적합한 권한을 가지고 있지 않습니다");
+                map.put("status", Status.ERROR.getStatus());
             }
         } catch (Exception e) {
             map.put("status", e.hashCode());
