@@ -1,6 +1,7 @@
 package com.team.controller.user;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.team.entity.User;
@@ -113,16 +114,19 @@ public class UserAddressController {
 
     @DeleteMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> useraddressdeletePUT(@RequestParam("addressno") long adno,
-            @RequestBody UserAddressProjection address, @RequestHeader("token") String token) {
+            @RequestHeader("token") String token) {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token);
-            if (uaService.selectOneUserAddressList(userid).contains(address)) {
-                uaService.deleteUserAddress(adno);
-                map.put("status", Status.COMPLETE.getCode());
-            } else {
-                // address를 넣은 User와 같은 유저가 아닐 경우 오류 반환
-                map.put("status", Status.ERROR.getStatus());
+            List<UserAddressProjection> list = uaService.selectOneUserAddressList(userid);
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getUser_UserId().equals(userid)) {
+                    uaService.deleteUserAddress(adno);
+                    map.put("status", Status.COMPLETE.getCode());
+                } else {
+                    // address를 넣은 User와 같은 유저가 아닐 경우 오류 반환
+                    map.put("status", Status.ERROR.getStatus());
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -131,13 +135,15 @@ public class UserAddressController {
         return map;
     }
 
-    @GetMapping(value = "/user")
-    public Map<String, Object> searchaddress(@RequestHeader("token") String token) {
-        Map<String, Object> map = new HashMap<>();
-        String userid = jwtUtil.extractUsername(token);
-        UserAddressProjection ua = uaService.selectUserAddressOneOrderByAddressNo(userid);
-        map.put("address", ua);
-        return map;
-    }
+    // @GetMapping(value = "/user")
+    // public Map<String, Object> searchaddress(@RequestHeader("token") String
+    // token) {
+    // Map<String, Object> map = new HashMap<>();
+    // String userid = jwtUtil.extractUsername(token);
+    // UserAddressProjection ua =
+    // uaService.selectUserAddressOneOrderByAddressNo(userid);
+    // map.put("address", ua);
+    // return map;
+    // }
 
 }

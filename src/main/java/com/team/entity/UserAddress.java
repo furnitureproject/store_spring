@@ -38,6 +38,15 @@ public class UserAddress {
     @Column(name = "ADDRESS_DETAIL")
     private String addressDetail;
 
+    @Column(name = "ADDRESS_RECEIVER_PHONE")
+    private String receiverPhone;
+
+    @Column(name = "ADDRESS_RECEIVER_NAME")
+    private String receiverName;
+
+    @Column(name = "ADDRESS_COMMENT")
+    private String requireComment;
+
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     private User user;

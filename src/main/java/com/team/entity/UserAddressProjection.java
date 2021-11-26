@@ -9,6 +9,14 @@ public interface UserAddressProjection {
 
     String getaddressDetail();
 
+    String getreceiverPhone();
+
+    String getreceiverName();
+
+    String getrequireComment();
+
+    String getUser_UserId();
+
     String getUser_UserName();
 
     String getUser_UserPhone();

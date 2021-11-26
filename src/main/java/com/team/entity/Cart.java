@@ -29,33 +29,9 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_CART_NUM")
     private Long cartNo;
 
-    // 상품 이름
-    private String cartTitle;
-
-    // 상품 코드
-    private Long cartCode;
-
-    // 옵션 고른거 이름
-    private String cartOptionName;
-
     // 고른거 수량
     @Column(name = "CART_QUANTITY")
     private Long cartOptionCount;
-
-    // 금액
-    private Long cartOptionPrice;
-
-    // 대표 사진 이름
-    private String cartImgName;
-
-    // 대표 사진 데이터
-    private byte[] cartImgData;
-
-    // 대표 사진 사이즈
-    private Long cartImgSize;
-
-    // 대표 사진 타입
-    private String cartImgType;
 
     @Column(name = "CART_STATUS")
     private int cartStatus;

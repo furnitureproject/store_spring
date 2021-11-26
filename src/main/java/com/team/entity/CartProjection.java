@@ -23,21 +23,6 @@ public interface CartProjection {
     // 금액
     Long getProductOption_OptionPrice();
 
-    // 대표 사진 이름
-    // String getProductOption_Product_ThumImgName();
-
-    // // 대표 사진 데이터
-    // byte[] getProductOption_Product_ThumImgData();
-
-    // // 대표 사진 사이즈
-    // Long getProductOption_Product_ThumImgSize();
-
-    // // 대표 사진 타입
-    // String getProductOption_Product_ThumImgType();
-
-    // 이미지 주소
-    String getCartCode();
-
     // 유저(카트에 담은 사람) 아이디
     String getUser_UserId();
 }
