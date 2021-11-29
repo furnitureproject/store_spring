@@ -35,6 +35,8 @@ public class Seller {
     @JsonProperty(access = Access.WRITE_ONLY)
     private String sellerPw;
 
+    private String sellerNewPw;
+
     @Column(name = "SELLER_NAME")
     private String sellerName;
 

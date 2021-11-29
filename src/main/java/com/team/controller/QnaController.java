@@ -49,7 +49,7 @@ public class QnaController {
 
     // qna 등록
     // 127.0.0.1:8080/ROOT/qna/insert?pno=
-    // {"qnaTitle":"문의","qnaContent":"내용","user":{"userId":"user"},"product":{"productCode":1}}
+    // {"qnaTitle":"문의","qnaContent":"내용"}
     @RequestMapping(value = "/qna/insert", method = {
         RequestMethod.POST }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> qnaInsertPOST(@RequestBody QnA qnA,
@@ -64,10 +64,10 @@ public class QnaController {
                 qnA.setUser(user); //userid
                 qnA.setProduct(product);  //productcode
                 qService.insertQna(qnA);
-                map.put("result", 1L);
+                map.put("result", 200);
             }
             else{
-                map.put("result", 0L);
+                map.put("result", 400);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,10 +92,10 @@ public class QnaController {
                 qnA2.setQnaTitle(qnA.getQnaTitle());
                 qnA2.setQnaContent(qnA.getQnaContent());
                 qService.updateQna(qnA2);
-                map.put("result", 1L);
+                map.put("result", 200);
             }
             else{
-                map.put("result", 0L);
+                map.put("result", 400);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -115,6 +115,7 @@ public class QnaController {
         String tsellerid = jwtUtil.extractUsername(token); // token을 통해 판매자 찾기
         try {
             String sellerid = qService.selectQna(no).getProduct().getSeller().getSellerId(); //qna의 물품을 등록한 sellerid 찾기
+            System.out.println(sellerid);
             if(tsellerid.equals(sellerid)){
                 QnA qnA2 = qService.selectQna(no);
                 qnA2.setQnaReply(qnA.getQnaReply());
@@ -123,10 +124,10 @@ public class QnaController {
                 //System.out.println(timestamp);
                 qnA2.setQnaReplyRegdate(timestamp);
                 qService.updateQna(qnA2);
-                map.put("result", 1L);
+                map.put("result", 200);
             }
             else{
-                map.put("result", 0L);
+                map.put("result", 400);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -149,10 +150,10 @@ public class QnaController {
             if(userid.equals(quserid)){
                 //System.out.println(qnA.getQnaNum());
                 qService.deleteQna(qnA.getQnaNum());
-                map.put("result", 1L);
+                map.put("result", 200);
             }
             else{
-                map.put("result", 0L);
+                map.put("result", 400);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -171,7 +172,7 @@ public class QnaController {
         try {            
             QnAProjection qnA = qService.selectQnaOne(no);
             map.put("qna", qnA);
-            map.put("result", 1);
+            map.put("result", 200);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("result", e.hashCode());
@@ -199,7 +200,7 @@ public class QnaController {
             List<QnAVO> list = qService.selectPcodeQnaList(map1);
             map.put("cnt", (cnt - 1) / 10 + 1); //페이지 수
             map.put("list", list);
-            map.put("result", 1);
+            map.put("result", 200);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("result", e.hashCode());
@@ -208,26 +209,27 @@ public class QnaController {
     }
 
     // 회원id 별 qna 조회
-    // 127.0.0.1:8080/ROOT/select_userqnalist?id= userid&page=
+    // 127.0.0.1:8080/ROOT/select_userqnalist?page=
     @RequestMapping(value = "/select_userqnalist", method = {
         RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectPcodeQnaGET(
-    @RequestParam("id") String userid,
+    public Map<String, Object> selectUidQnaGET(
+    @RequestHeader("token") String token,
     @RequestParam(value = "page", defaultValue = "1")int page) {
         Map<String, Object> map = new HashMap<>();
         try {
-            long cnt = qService.countByUseridQna(userid); //userid 별 qna 갯수
+            String sellerid = jwtUtil.extractUsername(token); // token을 통해 판매자 정보 찾기
+            long cnt = qService.countByUseridQna(sellerid); //userid 별 qna 갯수
             Map<String, Object> map1 = new HashMap<>();
             int rpage1 = page * PAGECNT;
             int rpage = rpage1 - (PAGECNT - 1);
             
             map1.put("page", rpage);
             map1.put("page1", rpage1);
-            map1.put("userid", userid);
+            map1.put("id", sellerid);
             List<QnAVO> list = qService.selectUserQnaList(map1);
             map.put("cnt", (cnt - 1) / 10 + 1); //페이지 수
             map.put("list", list);
-            map.put("result", 1);
+            map.put("result", 200);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("result", e.hashCode());

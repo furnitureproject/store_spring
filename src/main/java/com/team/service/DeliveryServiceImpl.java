@@ -1,6 +1,7 @@
 package com.team.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
@@ -9,7 +10,9 @@ import javax.persistence.EntityManagerFactory;
 import com.team.entity.Delivery;
 import com.team.entity.DeliveryProjection;
 import com.team.repository.DeliveryRepository;
+import com.team.vo.DeliveryVO;
 
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,9 @@ public class DeliveryServiceImpl implements DeliveryService{
 
     @Autowired
     EntityManagerFactory emf;
+
+    @Autowired
+    SqlSessionFactory sqlFactory;
 
     //delivery 등록
     @Override
@@ -78,6 +84,18 @@ public class DeliveryServiceImpl implements DeliveryService{
     @Override
     public List<DeliveryProjection> selectSelleridDelivery(String sellerid) {
         return dRepository.findByOrder_Cart_ProductOption_Product_Seller_SellerIdOrderByDeliveryNo(sellerid);
+    }
+
+    // 유저 별 delivery 조회
+    @Override
+    public List<DeliveryVO> selectUserDelList(Map<String, Object> map) {
+        return sqlFactory.openSession().selectList("select_user_id_del_list", map);
+    }
+
+    // delivery 총 개수 조회(userid 기준)
+    @Override
+    public long countByUseridDelivery(String id) {
+        return dRepository.countByUserAddress_User_UserId(id);
     }
 
 }

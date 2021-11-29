@@ -11,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -29,7 +27,7 @@ import lombok.ToString;
 
 @Entity
 @SequenceGenerator(name = "SEQ_QNA_NUM", sequenceName = "SEQ_QNA_NUM", initialValue = 1, allocationSize = 1)
-@Table(name = "QNA_TB2")
+@Table(name = "QNA_TB")
 public class QnA {
     
     @Id

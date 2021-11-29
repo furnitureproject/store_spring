@@ -17,14 +17,19 @@ public class DeliveryVO {
 
     private Long deliveryCode;
 
-    private String sellerId;
-
     private Long addressNo;
-    
-    private Long paymentNo;
-
-    private Long orderNo;
 
     private Date orderDate;
+
+    private Long orderCode;
+
+    private String userName;
+
+    private String productTitle;
+
+    private Long productCode;
+
+    private String sellerId;
+
     
 }

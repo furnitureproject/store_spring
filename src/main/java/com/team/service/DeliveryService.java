@@ -1,9 +1,11 @@
 package com.team.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.team.entity.Delivery;
 import com.team.entity.DeliveryProjection;
+import com.team.vo.DeliveryVO;
 
 import org.springframework.stereotype.Service;
 
@@ -35,4 +37,10 @@ public interface DeliveryService {
 
     //sellerid 별 delivery 정보 조회
     public List<DeliveryProjection> selectSelleridDelivery(String sellerid);
+
+    // 유저 별 delivery 조회
+    public List<DeliveryVO> selectUserDelList(Map<String, Object> map);
+
+    // delivery 총 개수 조회(userid 기준)
+    long countByUseridDelivery(String id);
 }

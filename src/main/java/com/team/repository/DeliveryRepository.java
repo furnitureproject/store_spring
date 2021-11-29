@@ -22,4 +22,10 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Long>{
 
     //sellerid 별 delivery 정보 조회
     List<DeliveryProjection> findByOrder_Cart_ProductOption_Product_Seller_SellerIdOrderByDeliveryNo(String sellerid);
+
+    //delivery 총 개수 조회(sellerid 기준)
+    Long countBySeller_SellerId(String id);
+
+    //delivery 총 개수 조회(userid 기준)
+    Long countByUserAddress_User_UserId(String id);
 }

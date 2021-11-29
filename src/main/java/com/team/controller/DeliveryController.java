@@ -9,12 +9,8 @@ import com.team.entity.Cart;
 import com.team.entity.Delivery;
 import com.team.entity.DeliveryProjection;
 import com.team.entity.Order;
-import com.team.entity.Payment;
 import com.team.entity.ProductOption;
-import com.team.entity.Seller;
-import com.team.entity.UserAddress;
 import com.team.jwt.JwtUtil;
-import com.team.repository.DeliveryRepository;
 import com.team.service.CartService;
 import com.team.service.DeliveryService;
 import com.team.service.OrderService;
@@ -23,6 +19,7 @@ import com.team.service.ProductOptionService;
 import com.team.service.SellerService;
 import com.team.service.UserAddressService;
 import com.team.service.UserService;
+import com.team.vo.DeliveryVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -63,10 +60,12 @@ public class DeliveryController {
 
     @Autowired
     UserAddressService userAddressService;
-    
 
+    int PAGECNT = 10;
+    
     // delivery 등록
     // 127.0.0.1:8080/ROOT/delivery/insert
+    // [{"order":{"orderNo":10}, "payment":{"paymentNo":6},"userAddress":{"addressNo":1}}, { }]
     @RequestMapping(value = "/insert", method = {
         RequestMethod.POST}, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> delInsertPOST(@RequestBody Delivery[] delivery,
@@ -124,6 +123,7 @@ public class DeliveryController {
 
     // delivery 수정(seller)
     // 127.0.0.1:8080/ROOT/delivery/update
+    // [{"deliveryNo":93,"deliveryCode":123456}, { }]
     @RequestMapping(value = "/update", method = {
         RequestMethod.PUT }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> delUpdatePUT(@RequestBody Delivery[] delivery,
@@ -170,6 +170,7 @@ public class DeliveryController {
 
     //delivery 삭제
     // 127.0.0.1:8080/ROOT/delivery/delete
+    // [{"deliveryNo":80}, { }]
     @RequestMapping(value = "/delete", method = {
         RequestMethod.DELETE }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> delDelete(@RequestBody Delivery[] delivery,
@@ -229,6 +230,7 @@ public class DeliveryController {
 
     //delivery 조회(userid 별)
     // 127.0.0.1:8080/ROOT/delivery/uidselect
+    // 리턴값 : {"deliveryNo": , "deliveryCode": }
     @RequestMapping(value = "/uidselect", method = {
         RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectUseridGET(
@@ -248,6 +250,7 @@ public class DeliveryController {
 
     //delivery 조회(sellerid 별)
     // 127.0.0.1:8080/ROOT/delivery/sidselect
+    // 리턴값 : {"deliveryNo": , "deliveryCode": }
     @RequestMapping(value = "/sidselect", method = {
         RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectSelleridGET(
@@ -258,6 +261,35 @@ public class DeliveryController {
             List<DeliveryProjection> delivery = dService.selectSelleridDelivery(sellerid);
             map.put("delivery", delivery);
             map.put("result", 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("result", e.hashCode());
+        }
+        return map;
+    }
+
+    //delivery 조회(sellerid 별)
+    // 127.0.0.1:8080/ROOT/delivery/select_userdellist?page=
+    @RequestMapping(value = "/select_userdellist", method = {
+        RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> selectUidQnaGET(
+    @RequestHeader("token") String token,
+    @RequestParam(value = "page", defaultValue = "1")int page) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String userid = jwtUtil.extractUsername(token); // token을 통해 판매자 정보 찾기
+            long cnt = dService.countByUseridDelivery(userid); //userid 별 delivery 갯수
+            Map<String, Object> map1 = new HashMap<>();
+            int rpage1 = page * PAGECNT;
+            int rpage = rpage1 - (PAGECNT - 1);
+            
+            map1.put("page", rpage);
+            map1.put("page1", rpage1);
+            map1.put("id", userid);
+            List<DeliveryVO> list = dService.selectUserDelList(map1);
+            map.put("cnt", (cnt - 1) / 10 + 1); //페이지 수
+            map.put("list", list);
+            map.put("result", 200);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("result", e.hashCode());

@@ -20,7 +20,7 @@
             QNA_NUM, QNA_TITLE, QNA_CONTENT, TO_CHAR(QNA_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REGDATE, QNA_REPLY, 
             TO_CHAR(QNA_REPLY_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REPLY_REGDATE,
         PRODUCT_CODE, ROW_NUMBER() OVER (ORDER BY PRODUCT_CODE DESC) ROWN 
-        FROM QNA_TB2 WHERE PRODUCT_CODE =${code}) 
+        FROM QNA_TB WHERE PRODUCT_CODE =${code}) 
     WHERE ROWN BETWEEN #{page} AND #{page1};
     </select>
 
@@ -32,7 +32,6 @@
         <result column="QNA_REGDATE" property="qnaRegdateString" />
         <result column="QNA_REPLY" property="qnaReply" />
         <result column="QNA_REPLY_REGDATE" property="qnaReplyRegdateString" />
-        <!-- <result column="PRODUCT_CODE" property="productCode" /> -->
     </resultMap>
 
     <select id="select_user_id_qna_list" parameterType="map" resultMap="map2">
@@ -40,7 +39,7 @@
         SELECT QNA_NUM, QNA_TITLE, QNA_CONTENT, TO_CHAR(QNA_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REGDATE, QNA_REPLY, 
             TO_CHAR(QNA_REPLY_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REPLY_REGDATE ,
             USER_ID, ROW_NUMBER() OVER (ORDER BY USER_ID DESC) ROWN 
-        FROM QNA_TB2 WHERE USER_ID=#{userid}) 
+        FROM QNA_TB WHERE USER_ID=#{id}) 
     WHERE ROWN BETWEEN #{page} AND #{page1};
     </select>
 
@@ -76,7 +75,7 @@
 		FROM (
 			SELECT 
 			        QNA_NUM, QNA_TITLE, QNA_CONTENT, QNA_REGDATE, QNA_REPLY, QNA_REPLY_REGDATE, PRODUCT.PRODUCT_CODE, SELLER_ID
-		        FROM PRODUCT, QnA_TB2 WHERE PRODUCT.PRODUCT_CODE = QnA_TB2.PRODUCT_CODE
+		        FROM PRODUCT, QnA_TB WHERE PRODUCT.PRODUCT_CODE = QnA_TB.PRODUCT_CODE
 	      	)PROQNA, SELLER WHERE PROQNA.SELLER_ID = SELLER.SELLER_ID-->
     </select>
 

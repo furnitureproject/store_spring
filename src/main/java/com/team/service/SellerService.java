@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.team.entity.Product;
 import com.team.entity.Seller;
+import com.team.vo.DeliveryVO;
 import com.team.vo.ProductVO;
 import com.team.vo.QnAVO;
 
@@ -44,5 +45,11 @@ public interface SellerService {
 
     // qna 총 개수 조회(sellerid 기준)
     long countBySelleridQna(String id);
+
+    // 판매자 별 delivery 조회
+    public List<DeliveryVO> selectDelList(Map<String, Object> map);
+
+    // delivery 총 개수 조회(sellerid 기준)
+    long countBySelleridDelivery(String id);
 
 }
