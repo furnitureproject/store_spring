@@ -24,6 +24,7 @@ import com.team.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -63,6 +64,41 @@ public class TestController {
     @Autowired
     ProductEventService pEventService;
 
+    @RequestMapping(value="/info", method=RequestMethod.POST)
+    public Map<String, Object> getinfo(@RequestHeader("token") String token, @RequestBody User user) {
+        Map<String, Object> map = new HashMap<>();
+        String userid = jwtUtil.extractUsername(token);
+        User user1 = uService.selectUserOne(userid);
+        map.put("user", user1);
+        return map;
+    }
+
+    // 비밀번호변경, 전화번호, 이메일 다 변경의 경우
+    @RequestMapping(value="/user/update", method=RequestMethod.POST)
+    public Map<String, Object> userupdate(@RequestHeader("token") String token, @RequestBody Map<String, String> user) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String userid = jwtUtil.extractUsername(token);
+            User user1 = uService.selectUserOne(userid);
+            BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
+            String userpw = user.get("userPw");
+            if(bcpe.matches(userpw, user1.getUserPw())) {
+            user1.setUserPw(bcpe.encode(user.get("userNewPw")));
+            user1.setUserPhone(user.get("userPhone"));
+            user1.setUserEmail(user.get("userEmail"));
+            uService.updateUser(user1);
+            map.put("status", 200);
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            map.put("error", e);
+        }
+        
+        return map;
+    }
+    
+    
 
     @PostMapping(value = "/eee", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> userinsertTest(@RequestBody ProductEvent productEvent) {
