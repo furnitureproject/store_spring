@@ -66,7 +66,7 @@ public class UserController {
     public Map<String, Object> joinUser(@RequestBody User user) {
         Map<String, Object> map = new HashMap<>();
         try {
-
+            System.out.println(user);
             if (uService.selectUserOne(user.getUserId()) != null) {
                 map.put("status", "같은 아이디가 존재하고 있습니다");
             } else if (uService.selectUserByEmail(user.getUserEmail()) != null) {
@@ -78,11 +78,12 @@ public class UserController {
                 user.setUserPw(bcpe.encode(user.getUserPw()));
                 // TEST용 추가
                 String phone = user.getUserPhone();
+                System.out.println(phone);
                 // String newphone = phone.toString().replaceAll("-", "");
-                user.setUserPhone(phone);
+                // user.setUserPhone(phone);
 
                 uService.insertUser(user);
-                map.put("status", Status.COMPLETE.getCode());
+                map.put("status", 200);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -101,24 +102,24 @@ public class UserController {
 
     // 아이디 찾기()
     @PostMapping(value = "/unknownid", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> selectUser(@RequestParam("name") String name,
-            @RequestParam(required = false) String email, @RequestParam(required = false) String phone) {
+    public Map<String, Object> selectUser(@RequestBody User user) {
         Map<String, Object> map = new HashMap<>();
         try {
+            String name = user.getUserName();
+            String email = user.getUserEmail();
+            String phone = user.getUserPhone();
             // String phone1 = phone.toString().replaceAll("-", "");
-            if (uService.selectUserByEmail(email).getuserName().equals(name) && phone == null) {
+            if (uService.selectUserByEmail(email).getuserName().equals(name)) {
                 String userid = uService.selectUserByEmail(email).getuserId();
                 map.put("status", Status.COMPLETE.getCode());
                 map.put("userid", userid);
-            } else if (uService.selectUserByPhone(phone).getuserName().equals(name) && email == null) {
+            } else if (uService.selectUserByPhone(phone).getuserName().equals(name)) {
                 String userid = uService.selectUserByPhone(phone).getuserId();
                 map.put("status", Status.COMPLETE.getCode());
                 map.put("userid", userid);
             } else {
                 map.put("status", Status.ERROR.getStatus());
             }
-            map.put("status", 200);
-
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
@@ -130,7 +131,7 @@ public class UserController {
     @GetMapping(value = "/delete", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> deleteUserGET() {
         Map<String, Object> map = new HashMap<>();
-        map.put("status", 200);
+        map.put("status", Status.COMPLETE.getCode());
         return map;
     }
 
@@ -186,7 +187,7 @@ public class UserController {
         Map<String, Object> map = new HashMap<>();
         try {
             String userid = jwtUtil.extractUsername(token);
-            map.put("status", 200);
+            map.put("status", Status.COMPLETE.getCode());
             map.put("obj", uService.selectUserOneProjection(userid));
 
         } catch (Exception e) {

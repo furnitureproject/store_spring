@@ -214,15 +214,12 @@ public class CartController {
         return map;
     }
 
-    @GetMapping(value = "/cart1")
-    public Map<String, Object> Cart() {
+    @PostMapping(value = "/cart1")
+    public Map<String, Object> Cart(Cart cart) {
         Map<String, Object> map = new HashMap<>();
-        Date date = uService.selectUserOne("aq").getUserRegdate();
-        long ing = date.getTime() / (1000 * 60 * 60 * 24 * 365);
-
-        map.put("status", OrderStatus.COMPLETE.getCode());
-        map.put("statis", OrderStatus.COMPLETE.getStatus());
-        map.put("datetest", ing);
+        cService.insertCart(cart);
+        System.out.println(cart.toString());
+        map.put("cart", cart);
         return map;
     }
 
