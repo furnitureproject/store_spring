@@ -48,6 +48,7 @@ public class UserAddressController {
             address.setUser(user);
             uaService.insertUserAddress(address);
             map.put("status", OrderStatus.COMPLETE.getStatus());
+            map.put("address", address);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("status", e.hashCode());
