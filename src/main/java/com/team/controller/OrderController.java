@@ -197,6 +197,7 @@ public class OrderController {
         try {
             String userid = jwtUtil.extractUsername(token);
             Long code = oService.nextCode();
+            List<Long> idlist = new ArrayList<>();
             for (int i = 0; i < num.length; i++) {
                 Long no = num[i];
                 Cart cart = cService.selectCartOne(no);
@@ -206,16 +207,18 @@ public class OrderController {
                     order.setOrderCode(code);
                     oService.insertOrder(order);
                     Long orderid = order.getOrderNo();
+                    idlist.add(orderid);
                     map.put("status", Status.COMPLETE.getCode());
-                    map.put("orderId", orderid);
+                    map.put("orderId", idlist);
                 } else if (cart.getUser().getUserId().equals(userid)) {
                     Order order1 = oService.selectOrderForCartNo(no);
                     order1.setOrderCode(code);
                     order1.setOrderDate(new Date());
                     oService.insertOrder(order1);
                     Long orderid = order1.getOrderNo();
+                    idlist.add(orderid);
                     map.put("status", Status.COMPLETE.getCode());
-                    map.put("orderId", orderid);
+                    map.put("orderId", idlist);
                 } else {
                     map.put("status", Status.ERROR.getStatus());
                 }
@@ -235,6 +238,7 @@ public class OrderController {
             User user = uService.selectUserOne(userid);
             List<Cart> list = new ArrayList<>();
             Long ordercode = oService.nextCode();
+            List<Long> idlist = new ArrayList<>();
             for (int i = 0; i < cart.length; i++) {
                 if (cart[i] != null) {
                     Long code = cart[i].getProductOption().getOptionCode();
@@ -248,9 +252,10 @@ public class OrderController {
                     order.setCart(list.get(i));
                     order.setOrderCode(ordercode);
                     oService.insertOrder(order);
-                    Long orderid = order.getOrderNo()
+                    Long orderid = order.getOrderNo();
+                    idlist.add(orderid);
                     map.put("status", Status.COMPLETE.getCode());
-                    map.put("orderId", orderid);
+                    map.put("orderId", idlist);
                 } else {
                     map.put("status", "제품을 선택하지 않았습니다");
                 }
