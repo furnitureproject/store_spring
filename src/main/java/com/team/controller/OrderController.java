@@ -205,15 +205,17 @@ public class OrderController {
                     order.setCart(cart);
                     order.setOrderCode(code);
                     oService.insertOrder(order);
+                    Long orderid = order.getOrderNo();
                     map.put("status", Status.COMPLETE.getCode());
-                    map.put("orderCode", code);
+                    map.put("orderId", orderid);
                 } else if (cart.getUser().getUserId().equals(userid)) {
                     Order order1 = oService.selectOrderForCartNo(no);
                     order1.setOrderCode(code);
                     order1.setOrderDate(new Date());
                     oService.insertOrder(order1);
+                    Long orderid = order1.getOrderNo();
                     map.put("status", Status.COMPLETE.getCode());
-                    map.put("orderCode", code);
+                    map.put("orderId", orderid);
                 } else {
                     map.put("status", Status.ERROR.getStatus());
                 }
