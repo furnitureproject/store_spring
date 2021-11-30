@@ -248,8 +248,9 @@ public class OrderController {
                     order.setCart(list.get(i));
                     order.setOrderCode(ordercode);
                     oService.insertOrder(order);
+                    Long orderid = order.getOrderNo()
                     map.put("status", Status.COMPLETE.getCode());
-                    map.put("orderCode", ordercode);
+                    map.put("orderId", orderid);
                 } else {
                     map.put("status", "제품을 선택하지 않았습니다");
                 }
