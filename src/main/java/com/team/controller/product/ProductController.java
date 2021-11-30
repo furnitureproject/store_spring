@@ -204,6 +204,86 @@ public class ProductController {
 
     }
 
+    // 메인페이지 -> page 없음 안붙여도됨
+    @GetMapping(value = "/main", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> selectMainGET(@RequestParam(name = "sort") long sort,
+            @RequestParam(name = "page", required = false, defaultValue = "1") int page) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            if (sort == 1) { // 이름에 원목들어가는 애들
+                Map<String, Object> map1 = new HashMap<>();
+                String title = "원목";
+                int epage = page * PAGECNT;
+                int spage = epage - (PAGECNT - 1);
+                map1.put("spage", spage);
+                map1.put("epage", epage);
+                map1.put("title", title);
+                List<ProductVO> list = pService.selectPriceHigh(map1);
+                for (ProductVO productvo : list) {
+                    productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                }
+                map.put("list", list);
+                map.put("status", 200);
+
+            } else if (sort == 2) { // 이름에 엔틱 들어가는 애들
+                Map<String, Object> map2 = new HashMap<>();
+                String title = "엔틱";
+                int epage = page * PAGECNT;
+                int spage = epage - (PAGECNT - 1);
+
+                map2.put("spage", spage);
+                map2.put("epage", epage);
+                map2.put("title", title);
+                List<ProductVO> list = pService.selectPriceHigh(map2);
+                for (ProductVO productvo : list) {
+                    productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                }
+                map.put("list", list);
+                map.put("status", 200);
+
+            } else if (sort == 3) { // 이름에 고무나무 들어가는 애들
+                Map<String, Object> map3 = new HashMap<>();
+
+                String title = "고무나무";
+
+                int epage = page * PAGECNT;
+                int spage = epage - (PAGECNT - 1);
+
+                map3.put("spage", spage);
+                map3.put("epage", epage);
+                map3.put("title", title);
+                List<ProductVO> list = pService.selectPriceHigh(map3);
+                for (ProductVO productvo : list) {
+                    productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                }
+                map.put("list", list);
+                map.put("status", 200);
+
+            } else if (sort == 4) { // 물품 전체에서 최신 등록순
+                Map<String, Object> map4 = new HashMap<>();
+
+                String title = "";
+
+                int epage = page * PAGECNT;
+                int spage = epage - (PAGECNT - 1);
+
+                map4.put("spage", spage);
+                map4.put("epage", epage);
+                map4.put("title", title);
+                List<ProductVO> list = pService.selectCodeList(map4);
+                for (ProductVO productvo : list) {
+                    productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                }
+                map.put("list", list);
+                map.put("status", 200);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
     // 전체물품 검색 sort 1:최신순 2: 조회수순 3: 가격높은순, 4: 가격낮은순
     // or title[검색어] 없으면 전체검색 or page: 없으면 1페이지
     // http://127.0.0.1:8080/ROOT/product/select_list?sort=3
