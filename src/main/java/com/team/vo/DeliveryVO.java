@@ -32,5 +32,13 @@ public class DeliveryVO {
 
     private String sellerId;
 
-    
+    private Long cartOptionCount;
+
+    private String optionName;
+
+    private String sellerName;
+
+    private String receiverName;
+
+    private Long price;
 }

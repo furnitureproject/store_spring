@@ -11,7 +11,6 @@
         <result column="QNA_REGDATE" property="qnaRegdateString" />
         <result column="QNA_REPLY" property="qnaReply" />
         <result column="QNA_REPLY_REGDATE" property="qnaReplyRegdateString" />
-        <!-- <result column="PRODUCT_CODE" property="productCode" /> -->
     </resultMap>
     
     <select id="select_product_code_qna_list" parameterType="map" resultMap="map1">
@@ -26,41 +25,47 @@
 
     <!-- 유저 id 별 qna 조회-->
     <resultMap type="com.team.vo.QnAVO" id="map2">
-        <result column="QNA_NUM" property="qnaNum" />
-        <result column="QNA_TITLE" property="qnaTitle" />
-        <result column="QNA_CONTENT" property="qnaContent" />
-        <result column="QNA_REGDATE" property="qnaRegdateString" />
-        <result column="QNA_REPLY" property="qnaReply" />
-        <result column="QNA_REPLY_REGDATE" property="qnaReplyRegdateString" />
-    </resultMap>
-
-    <select id="select_user_id_qna_list" parameterType="map" resultMap="map2">
-    SELECT * FROM (
-        SELECT QNA_NUM, QNA_TITLE, QNA_CONTENT, TO_CHAR(QNA_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REGDATE, QNA_REPLY, 
-            TO_CHAR(QNA_REPLY_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REPLY_REGDATE ,
-            USER_ID, ROW_NUMBER() OVER (ORDER BY USER_ID DESC) ROWN 
-        FROM QNA_TB WHERE USER_ID=#{id}) 
-    WHERE ROWN BETWEEN #{page} AND #{page1};
-    </select>
-
-    <!-- 판매자 id 별 qna 조회-->
-    <resultMap type="com.team.vo.QnAVO" id="map3">
-        <result column="QNA_NUM" property="qnaNum" />
         <result column="QNA_TITLE" property="qnaTitle" />
         <result column="QNA_CONTENT" property="qnaContent" />
         <result column="QNA_REGDATE" property="qnaRegdateString" />
         <result column="QNA_REPLY" property="qnaReply" />
         <result column="QNA_REPLY_REGDATE" property="qnaReplyRegdateString" />
         <result column="PRODUCT_CODE" property="productCode" />
-        <result column="SELLER_ID" property="sellerId" />
-        
+        <result column="PRODUCT_TITLE" property="productTitle" />
+    </resultMap>
+
+    <select id="select_user_id_qna_list" parameterType="map" resultMap="map2">
+    
+
+    SELECT * FROM (
+        SELECT 
+            QNA_TITLE, QNA_CONTENT, TO_CHAR(QNA_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REGDATE, QNA_REPLY,
+            TO_CHAR(QNA_REPLY_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REPLY_REGDATE, SELLER_ID, PRODUCT_CODE, PRODUCT_TITLE,
+            ROW_NUMBER() OVER (ORDER BY SELLER_ID DESC) ROWN
+        FROM (
+            QNA_PRODUCT_SELLERID
+        )
+        WHERE USER_ID = #{id}) 
+    WHERE ROWN BETWEEN #{page} AND #{page1};
+    </select>
+
+    <!-- 판매자 id 별 qna 조회-->
+    <resultMap type="com.team.vo.QnAVO" id="map3">
+        <result column="QNA_TITLE" property="qnaTitle" />
+        <result column="QNA_CONTENT" property="qnaContent" />
+        <result column="QNA_REGDATE" property="qnaRegdateString" />
+        <result column="QNA_REPLY" property="qnaReply" />
+        <result column="QNA_REPLY_REGDATE" property="qnaReplyRegdateString" />
+        <result column="PRODUCT_CODE" property="productCode" />
+        <result column="PRODUCT_TITLE" property="productTitle" />
     </resultMap>
 
     <select id="select_seller_id_qna_list" parameterType="map" resultMap="map3">
 
     SELECT * FROM (
             SELECT 
-                QNA_TITLE, QNA_CONTENT, QNA_REGDATE, QNA_REPLY, QNA_REPLY_REGDATE, SELLER_ID, PRODUCT_CODE,
+                QNA_TITLE, QNA_CONTENT, TO_CHAR(QNA_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REGDATE, QNA_REPLY,
+                TO_CHAR(QNA_REPLY_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REPLY_REGDATE, SELLER_ID, PRODUCT_CODE, PRODUCT_TITLE,
                 ROW_NUMBER() OVER (ORDER BY SELLER_ID DESC) ROWN
             FROM (
                 QNA_PRODUCT_SELLERID
@@ -71,12 +76,13 @@
         <!--QNA, PRODUCT, SELLER 조인문 VIEW 생성
             CREATE VIEW QNA_PRODUCT_SELLERID AS
             SELECT 
-			QNA_NUM, QNA_TITLE, QNA_CONTENT, QNA_REGDATE, QNA_REPLY, QNA_REPLY_REGDATE, PROQNA.SELLER_ID, PROQNA.PRODUCT_CODE
-		FROM (
-			SELECT 
-			        QNA_NUM, QNA_TITLE, QNA_CONTENT, QNA_REGDATE, QNA_REPLY, QNA_REPLY_REGDATE, PRODUCT.PRODUCT_CODE, SELLER_ID
-		        FROM PRODUCT, QnA_TB WHERE PRODUCT.PRODUCT_CODE = QnA_TB.PRODUCT_CODE
-	      	)PROQNA, SELLER WHERE PROQNA.SELLER_ID = SELLER.SELLER_ID-->
+			QNA_NUM, QNA_TITLE, QNA_CONTENT, QNA_REGDATE, QNA_REPLY, QNA_REPLY_REGDATE, PROQNA.SELLER_ID, PROQNA.PRODUCT_CODE, PROQNA.PRODUCT_TITLE, USER_ID
+            FROM (
+                SELECT 
+                        QNA_NUM, QNA_TITLE, QNA_CONTENT, QNA_REGDATE, QNA_REPLY, QNA_REPLY_REGDATE, PRODUCT.PRODUCT_CODE, SELLER_ID, PRODUCT.PRODUCT_TITLE, USER_ID
+                FROM PRODUCT, QnA_TB WHERE PRODUCT.PRODUCT_CODE = QnA_TB.PRODUCT_CODE
+            )PROQNA, SELLER WHERE PROQNA.SELLER_ID = SELLER.SELLER_ID
+            -->
     </select>
 
 </mapper>

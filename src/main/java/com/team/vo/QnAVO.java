@@ -29,5 +29,7 @@ public class QnAVO {
 
     private Long productCode;
 
+    private String productTitle;
+
     private String sellerId;
 }
