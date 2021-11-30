@@ -210,6 +210,7 @@ public class OrderController {
                     idlist.add(orderid);
                     map.put("status", Status.COMPLETE.getCode());
                     map.put("orderId", idlist);
+                    map.put("orderCode", code);
                 } else if (cart.getUser().getUserId().equals(userid)) {
                     Order order1 = oService.selectOrderForCartNo(no);
                     order1.setOrderCode(code);
@@ -219,6 +220,7 @@ public class OrderController {
                     idlist.add(orderid);
                     map.put("status", Status.COMPLETE.getCode());
                     map.put("orderId", idlist);
+                    map.put("orderCode", code);
                 } else {
                     map.put("status", Status.ERROR.getStatus());
                 }
@@ -256,6 +258,7 @@ public class OrderController {
                     idlist.add(orderid);
                     map.put("status", Status.COMPLETE.getCode());
                     map.put("orderId", idlist);
+                    map.put("orderCode", ordercode);
                 } else {
                     map.put("status", "제품을 선택하지 않았습니다");
                 }
