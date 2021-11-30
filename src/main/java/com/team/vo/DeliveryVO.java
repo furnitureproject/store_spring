@@ -20,6 +20,7 @@ public class DeliveryVO {
     private Long addressNo;
 
     private Date orderDate;
+    private String orderDateString;
 
     private Long orderCode;
 

@@ -268,7 +268,7 @@ public class DeliveryController {
         return map;
     }
 
-    //delivery 조회(sellerid 별)
+    //delivery 조회(userid 별)
     // 127.0.0.1:8080/ROOT/delivery/select_userdellist?page=
     @RequestMapping(value = "/select_userdellist", method = {
         RequestMethod.GET }, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

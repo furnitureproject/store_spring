@@ -8,7 +8,7 @@
         <result column="DELIVERY_NO" property="deliveryNo" />
         <result column="DELIVERY_CODE" property="deliveryCode" />
         <result column="USER_ADDRESS" property="addressNo" />
-        <result column="ORDER_DATE" property="orderDate" />
+        <result column="ORDER_DATE" property="orderDateString" />
         <result column="ORDER_CODE" property="orderCode" />
         <result column="USER_NAME" property="userName" />
         <result column="PRODUCT_TITLE" property="productTitle" />
@@ -19,7 +19,7 @@
     <select id="select_seller_id_del_list" parameterType="map" resultMap="map1">
     SELECT * FROM (
             SELECT 
-                ORDER_DATE,  ORDER_CODE, DELIVERY_NO, DELIVERY_CODE, USER_ADDRESS, USER_NAME, PRODUCT_TITLE, PRODUCT_CODE,
+                TO_CHAR(ORDER_DATE, 'YYYY-MM-DD HH24:MI') ORDER_DATE,  ORDER_CODE, DELIVERY_NO, DELIVERY_CODE, USER_ADDRESS, USER_NAME, PRODUCT_TITLE, PRODUCT_CODE,
                 ROW_NUMBER() OVER (ORDER BY SELLER DESC) ROWN
             FROM (
 		        SELECT ORDER_DATE,  ORDER_CODE, DELIVERY_NO, DELIVERY_CODE,  USER_ADDRESS, USER_NAME, SELLER, PRODUCT_TITLE, PRODUCT_CODE
@@ -50,22 +50,19 @@
 
     <!-- 유저 별 delivery 조회 -->
     <resultMap type="com.team.vo.DeliveryVO" id="map2">
-        <result column="DELIVERY_NO" property="deliveryNo" />
         <result column="DELIVERY_CODE" property="deliveryCode" />
         <result column="USER_ADDRESS" property="addressNo" />
-        <result column="ORDER_DATE" property="orderDate" />
+        <result column="ORDER_DATE" property="orderDateString" />
         <result column="ORDER_CODE" property="orderCode" />
-        <result column="USER_NAME" property="userName" />
         <result column="PRODUCT_TITLE" property="productTitle" />
         <result column="PRODUCT_CODE" property="productCode" />
-        <result column="SELLER" property="sellerId" />
         
     </resultMap>
 
     <select id="select_user_id_del_list" parameterType="map" resultMap="map2">
         SELECT * FROM (
             SELECT 
-                ORDER_DATE,  ORDER_CODE, DELIVERY_NO, DELIVERY_CODE,  USER_ADDRESS, USER_NAME, PRODUCT_TITLE, PRODUCT_CODE, SELLER,
+                TO_CHAR(ORDER_DATE, 'YYYY-MM-DD HH24:MI') ORDER_DATE,  ORDER_CODE, DELIVERY_CODE,  USER_ADDRESS, PRODUCT_TITLE, PRODUCT_CODE,
                 ROW_NUMBER() OVER (ORDER BY SELLER DESC) ROWN
             FROM (
                 SELECT 
