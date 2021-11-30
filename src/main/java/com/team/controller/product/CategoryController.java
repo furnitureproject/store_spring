@@ -130,6 +130,21 @@ public class CategoryController {
         return map;
     }
 
+    @GetMapping(value = "/list_category1", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> CategoryList1() {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<Category> list = cService.selectCateTier2(1);
+            map.put("list", list);
+            map.put("status", 200);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
     // http://127.0.0.1:8080/ROOT/category/insert_cateimage?categoryCode=
     @PostMapping(value = "/insert_cateimage", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> insertImagePOST(@RequestParam long categoryCode,
