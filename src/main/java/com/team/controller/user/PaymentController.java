@@ -32,6 +32,7 @@ public class PaymentController {
             payment.setPaymentStatus(1);
             payment.setPaymentNo(pyService.codeNext()); // 시퀀스 생성시켜줘야함
             pyService.getpayment(payment);
+            map.put("payment", payment);
             map.put("status", 200);
         } catch (Exception e) {
             e.printStackTrace();
