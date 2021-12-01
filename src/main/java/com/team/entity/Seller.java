@@ -58,7 +58,7 @@ public class Seller {
 
     @Column(name = "SELLER_DELETE_CHECK")
     private int sellerDeletecheck = 0;
-
+ 
     @Column(name = "BUSINESS_NAME")
     private String businessName;
 
