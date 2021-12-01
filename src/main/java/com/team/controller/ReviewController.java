@@ -158,7 +158,6 @@ public class ReviewController {
             Long productCode = review.getProduct().getProductCode();
             Product product = pService.selectProductOne(productCode);
             List<CartProjection> list = cService.selectAllUserCart(userid);
-
             for (int i = 0; i < list.size(); i++) {
                 if (review.getReviewTitle() == null) {
                     // 리뷰 제목을 입력 안 함
@@ -175,6 +174,7 @@ public class ReviewController {
                     review.setProduct(product);
                     rService.insertReview(review);
                     map.put("status", Status.COMPLETE.getCode());
+                    map.put("reviewNum", review.getReviewNum());
                     break;
                 } else {
                     // 유저가 없거나 제품이 없을 경우 오류로 반환
