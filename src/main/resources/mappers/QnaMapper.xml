@@ -25,6 +25,7 @@
 
     <!-- 유저 id 별 qna 조회-->
     <resultMap type="com.team.vo.QnAVO" id="map2">
+        <result column="QNA_NUM" property="qnaNum" />
         <result column="QNA_TITLE" property="qnaTitle" />
         <result column="QNA_CONTENT" property="qnaContent" />
         <result column="QNA_REGDATE" property="qnaRegdateString" />
@@ -39,7 +40,7 @@
 
     SELECT * FROM (
         SELECT 
-            QNA_TITLE, QNA_CONTENT, TO_CHAR(QNA_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REGDATE, QNA_REPLY,
+            QNA_NUM, QNA_TITLE, QNA_CONTENT, TO_CHAR(QNA_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REGDATE, QNA_REPLY,
             TO_CHAR(QNA_REPLY_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REPLY_REGDATE, SELLER_ID, PRODUCT_CODE, PRODUCT_TITLE,
             ROW_NUMBER() OVER (ORDER BY SELLER_ID DESC) ROWN
         FROM (
@@ -51,6 +52,7 @@
 
     <!-- 판매자 id 별 qna 조회-->
     <resultMap type="com.team.vo.QnAVO" id="map3">
+        <result column="QNA_NUM" property="qnaNum" />
         <result column="QNA_TITLE" property="qnaTitle" />
         <result column="QNA_CONTENT" property="qnaContent" />
         <result column="QNA_REGDATE" property="qnaRegdateString" />
@@ -64,7 +66,7 @@
 
     SELECT * FROM (
             SELECT 
-                QNA_TITLE, QNA_CONTENT, TO_CHAR(QNA_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REGDATE, QNA_REPLY,
+                QNA_NUM, QNA_TITLE, QNA_CONTENT, TO_CHAR(QNA_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REGDATE, QNA_REPLY,
                 TO_CHAR(QNA_REPLY_REGDATE, 'YYYY-MM-DD HH24:MI') QNA_REPLY_REGDATE, SELLER_ID, PRODUCT_CODE, PRODUCT_TITLE,
                 ROW_NUMBER() OVER (ORDER BY SELLER_ID DESC) ROWN
             FROM (
