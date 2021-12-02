@@ -23,9 +23,6 @@ public class DeliveryServiceImpl implements DeliveryService{
     DeliveryRepository dRepository;
 
     @Autowired
-    EntityManagerFactory emf;
-
-    @Autowired
     SqlSessionFactory sqlFactory;
 
     //delivery 등록

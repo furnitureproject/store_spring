@@ -18,8 +18,7 @@ public class ProductDesImageServiceImpl implements ProductDesImageService {
     @Autowired
     ProductDesImageRepository pRepository;
 
-    @Autowired
-    EntityManagerFactory emf;
+    
 
     @Override
     public int insertDesImage(ProductDesImage productDesImage) {
