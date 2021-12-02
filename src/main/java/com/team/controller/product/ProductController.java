@@ -547,6 +547,154 @@ public class ProductController {
         return map;
     }
 
+    @GetMapping(value = "/select_list3", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> selectList3GET(@RequestParam long sort,
+            @RequestParam(name = "categoryParent", required = false, defaultValue = "0") long categoryParent,
+            @RequestParam(name = "categoryCode", required = false, defaultValue = "0") long categoryCode,
+            @RequestParam(name = "page", required = false, defaultValue = "1") int page) {
+        Map<String, Object> map = new HashMap<>();
+        long cnt = pService.countByProduct3(categoryParent);
+        long cnt1 = pService.countByProduct2(categoryCode);
+        try {
+            // 최신순
+            if (sort == 1) {
+                if (categoryCode == 0) {
+                    Map<String, Object> map1 = new HashMap<>();
+                    int epage = page * PAGECNT;
+                    int spage = epage - (PAGECNT - 1);
+                    map1.put("spage", spage);
+                    map1.put("epage", epage);
+                    map1.put("categoryParent", categoryParent);
+                    List<ProductVO> list = pService.categoryCodeSelect2(map1);
+                    for (ProductVO productvo : list) {
+                        productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                    }
+                    map.put("cnt", (cnt - 1) / PAGECNT + 1);
+                    map.put("list", list);
+                    map.put("status", 200);
+                } else if (categoryParent == 0) {
+                    Map<String, Object> map1 = new HashMap<>();
+                    int epage = page * PAGECNT;
+                    int spage = epage - (PAGECNT - 1);
+                    map1.put("spage", spage);
+                    map1.put("epage", epage);
+                    map1.put("categoryCode", categoryCode);
+                    List<ProductVO> list = pService.categoryCodeSelect1(map1);
+                    for (ProductVO productvo : list) {
+                        productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                    }
+                    map.put("cnt", (cnt1 - 1) / PAGECNT + 1);
+                    map.put("list", list);
+                    map.put("status", 200);
+
+                }
+
+                // 조회수순
+            } else if (sort == 2) {
+                if (categoryCode == 0) {
+                    Map<String, Object> map2 = new HashMap<>();
+                    int epage = page * PAGECNT;
+                    int spage = epage - (PAGECNT - 1);
+                    map2.put("spage", spage);
+                    map2.put("epage", epage);
+                    map2.put("categoryParent", categoryParent);
+                    List<ProductVO> list = pService.categoryHitSelect2(map2);
+                    for (ProductVO productvo : list) {
+                        productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                    }
+                    map.put("cnt", (cnt - 1) / PAGECNT + 1);
+                    map.put("list", list);
+                    map.put("status", 200);
+                } else if (categoryParent == 0) {
+                    Map<String, Object> map2 = new HashMap<>();
+                    int epage = page * PAGECNT;
+                    int spage = epage - (PAGECNT - 1);
+
+                    map2.put("spage", spage);
+                    map2.put("epage", epage);
+                    map2.put("categoryCode", categoryCode);
+                    List<ProductVO> list = pService.categoryHitSelect1(map2);
+                    for (ProductVO productvo : list) {
+                        productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                    }
+                    map.put("cnt", (cnt1 - 1) / PAGECNT + 1);
+                    map.put("list", list);
+                    map.put("status", 200);
+                }
+
+                // 가격 높은순
+            } else if (sort == 3) {
+                if (categoryCode == 0) {
+                    Map<String, Object> map3 = new HashMap<>();
+                    int epage = page * PAGECNT;
+                    int spage = epage - (PAGECNT - 1);
+                    map3.put("spage", spage);
+                    map3.put("epage", epage);
+                    map3.put("categoryParent", categoryParent);
+                    List<ProductVO> list = pService.selectPriceHigh2(map3);
+                    for (ProductVO productvo : list) {
+                        productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                    }
+                    map.put("cnt", (cnt - 1) / PAGECNT + 1);
+                    map.put("list", list);
+                    map.put("status", 200);
+                } else if (categoryParent == 0) {
+                    Map<String, Object> map3 = new HashMap<>();
+                    int epage = page * PAGECNT;
+                    int spage = epage - (PAGECNT - 1);
+
+                    map3.put("spage", spage);
+                    map3.put("epage", epage);
+                    map3.put("categoryCode", categoryCode);
+                    List<ProductVO> list = pService.selectPriceHigh1(map3);
+                    for (ProductVO productvo : list) {
+                        productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                    }
+                    map.put("cnt", (cnt1 - 1) / PAGECNT + 1);
+                    map.put("list", list);
+                    map.put("status", 200);
+                }
+                // 가격 낮은순
+            } else if (sort == 4) {
+                if (categoryCode == 0) {
+                    Map<String, Object> map4 = new HashMap<>();
+                    int epage = page * PAGECNT;
+                    int spage = epage - (PAGECNT - 1);
+                    map4.put("spage", spage);
+                    map4.put("epage", epage);
+                    map4.put("categoryParent", categoryParent);
+                    List<ProductVO> list = pService.selectPriceLow2(map4);
+                    for (ProductVO productvo : list) {
+                        productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                    }
+                    map.put("cnt", (cnt - 1) / PAGECNT + 1);
+                    map.put("list", list);
+                    map.put("status", 200);
+                } else if (categoryParent == 0) {
+                    Map<String, Object> map4 = new HashMap<>();
+                    int epage = page * PAGECNT;
+                    int spage = epage - (PAGECNT - 1);
+
+                    map4.put("spage", spage);
+                    map4.put("epage", epage);
+                    map4.put("categoryCode", categoryCode);
+                    List<ProductVO> list = pService.selectPriceLow1(map4);
+                    for (ProductVO productvo : list) {
+                        productvo.setImage("/ROOT/product/select_image?productCode=" + productvo.getProductCode());
+                    }
+                    map.put("cnt", (cnt1 - 1) / PAGECNT + 1);
+                    map.put("list", list);
+                    map.put("status", 200);
+
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
     // 상품등록
     // http://127.0.0.1:8080/ROOT/product/insert?categoryCode=201001
     // 필요 {productTitle, productDesc, category3, seller} - form data
