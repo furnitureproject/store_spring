@@ -105,6 +105,23 @@ public class ProductController {
         return map;
     }
 
+    // 상세페이지 조회수 1증가
+    @PutMapping(value = "/hit", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> HitPut(@RequestParam long productCode) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            Product product = pService.selectProductOne(productCode);
+            product.setProductHit(product.getProductHit() + 1);
+            pService.updateProduct(product);
+
+            map.put("status", 200);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("status", e.hashCode());
+        }
+        return map;
+    }
+
     // 2개만 뽑는거
     @GetMapping(value = "/select_one1", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> selectOneGET1(@RequestParam long productCode) {
