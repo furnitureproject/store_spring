@@ -275,17 +275,20 @@
         <result column="PRODUCT_HIT" property="productHit" />
         <result column="CATE_CODE" property="categoryCode" />
         <result column="OPTION_PRICE" property="optionPrice" />
+        <result column="PRODUCT_REGDATE" property="productRegdateString" />
+        <result column="OPTION_NAME" property="optionName" />
     </resultMap>
 
     <select id="select_selleride_product_list" parameterType="map" resultMap="map14">
         SELECT * FROM (
             SELECT 
                 PRODUCT_CODE, PRODUCT_TITLE, PRODUCT_DESC, PRODUCT_HIT, 
-                CATE_CODE, SELLER_ID,
+                CATE_CODE, SELLER_ID, OPTION_PRICE, OPTION_NAME,
+                TO_CHAR(PRODUCT_REGDATE, 'YYYY-MM-DD') PRODUCT_REGDATE,
                 ROW_NUMBER() OVER (ORDER BY SELLER_ID DESC) ROWN
             FROM (
-                SELECT PRODUCT_TITLE, CATE_CODE, OPTION_PRICE, PRODUCT_IMG_TYPE, 
-                    PRODUCT.PRODUCT_CODE,  PRODUCT_DESC, PRODUCT_HIT, SELLER_ID
+                SELECT PRODUCT_TITLE, CATE_CODE, OPTION_PRICE, PRODUCT_IMG_TYPE, PRODUCT_REGDATE,  
+                    PRODUCT.PRODUCT_CODE,  PRODUCT_DESC, PRODUCT_HIT, SELLER_ID, OPTION_NAME
                 FROM PRODUCT, PRODUCT_OPTION WHERE PRODUCT.PRODUCT_CODE = PRODUCT_OPTION.PRODUCT_CODE) 
             WHERE SELLER_ID =#{id}) 
         WHERE ROWN BETWEEN #{page} AND #{page1};

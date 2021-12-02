@@ -1,5 +1,7 @@
 package com.team.vo;
 
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -26,5 +28,11 @@ public class ProductVO {
     private Long optionPrice;
 
     private String image;
+
+    private Date productRegdate;
+    private String productRegdateString;
+
+    private String optionName;
+
 
 }
